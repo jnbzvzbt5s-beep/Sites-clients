@@ -408,7 +408,7 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
   --cd:var(--bg);
   font-size:clamp(7.6px,3.45cqw,14px);
   background:var(--bg);color:var(--fg);
-  aspect-ratio:4/3;overflow:hidden;
+  aspect-ratio:4/3.28;overflow:hidden;
   display:flex;flex-direction:column;
   position:relative;isolation:isolate;line-height:1.4;
 }
@@ -597,6 +597,82 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
 
 .s-foot{display:flex;justify-content:space-between;gap:.5em;padding:.42em .8em;
   border-top:1px solid var(--ln);font-size:.5em;opacity:.66;flex:0 0 auto}
+
+/* ------------------------------------------------------------
+   Vocabulaire de finition : ce qui distingue une maquette d'un
+   vrai site, ce sont les petits signes — une pastille sur une
+   photo, un prix posé dessus, un point qui respire, une rangée
+   de visages. Tout est en em, donc tout suit l'échelle.
+   ------------------------------------------------------------ */
+
+/* bandeau d'accueil pleine largeur, titre posé sur l'image */
+.s-hero{display:flex;align-items:flex-end;justify-content:flex-start;max-height:none;
+  aspect-ratio:var(--r,16/7.4)}
+.s-hero::before{position:absolute;top:.42em;right:.42em;font-size:.42em;opacity:.75;z-index:2}
+.s-hero::after{content:"";position:absolute;inset:0;z-index:0;
+  background:linear-gradient(to top,rgba(0,0,0,.68),rgba(0,0,0,.14) 56%,transparent)}
+.s-hero-c{position:relative;z-index:1;width:100%;padding:.6em .7em;color:#fff;
+  text-shadow:0 1px 5px rgba(0,0,0,.45)}
+.s-hero-c .s-h{font-size:1.28em}
+.s-hero-c .s-h em,.s-hero-c .s-k{color:#fff;opacity:.88}
+.s-hero-c .s-p{opacity:.88;margin-top:.15em}
+
+/* pastille posée sur une image */
+.s-badge{position:absolute;top:.45em;left:.45em;z-index:2;
+  font-size:.44em;letter-spacing:.11em;text-transform:uppercase;font-weight:800;
+  padding:.42em .7em;border-radius:999px;background:#fff;color:#1B1613;
+  box-shadow:0 2px 7px rgba(0,0,0,.22)}
+.s-badge.acc{background:var(--a1);color:#fff}
+
+/* prix posé sur une image */
+.s-tagp{position:absolute;right:.4em;bottom:.4em;z-index:2;font-family:var(--serif);
+  font-size:.78em;line-height:1;padding:.26em .5em;border-radius:.32em;
+  background:rgba(255,255,255,.95);color:#1B1613;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+
+/* liste de réassurance à coches */
+.s-tick{display:grid;gap:.22em}
+.s-tick li{display:flex;align-items:center;gap:.42em;font-size:.56em;line-height:1.3}
+.s-tick li::before{content:"";width:1em;height:1em;flex:0 0 auto;border-radius:50%;
+  background:var(--a1) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M2.6 6.3l2.4 2.4L9.4 3.6' stroke='%23fff' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/68% no-repeat}
+
+/* état d'ouverture : le point respire */
+.s-live{display:inline-flex;align-items:center;gap:.4em;font-size:.54em;font-weight:800}
+.s-live::before{content:"";width:.52em;height:.52em;border-radius:50%;background:#3E8E5A;flex:0 0 auto}
+@media (prefers-reduced-motion:no-preference){
+  .s-live::before{animation:beat 2.6s var(--ease-io) infinite}
+}
+@keyframes beat{0%{box-shadow:0 0 0 0 rgba(62,142,90,.55)}70%,100%{box-shadow:0 0 0 .55em rgba(62,142,90,0)}}
+
+/* rangée de visages */
+.s-av{display:flex;align-items:center;gap:.45em}
+.s-av i{width:1.4em;height:1.4em;border-radius:50%;flex:0 0 auto;margin-left:-.5em;
+  background:linear-gradient(140deg,var(--c1,var(--a1)),var(--c2,var(--a2)));
+  box-shadow:0 0 0 .13em var(--bg)}
+.s-av i:first-child{margin-left:0}
+.s-av span{font-size:.52em;opacity:.72;line-height:1.3}
+
+/* bandeau de confiance : labels, langues, marques */
+.s-trust{display:flex;flex-wrap:wrap;gap:.25em}
+.s-trust span{font-size:.46em;letter-spacing:.09em;text-transform:uppercase;font-weight:800;
+  padding:.34em .58em;border-radius:.3em;border:1px solid var(--ln);opacity:.72;white-space:nowrap}
+
+/* barre de recherche */
+.s-search{display:flex;align-items:center;gap:.45em;border:1px solid var(--ln);
+  border-radius:999px;padding:.38em .75em;font-size:.56em;background:var(--cd);opacity:.9}
+.s-search::before{content:"";width:.85em;height:.85em;flex:0 0 auto;border:.14em solid currentColor;
+  border-radius:50%;opacity:.55}
+
+/* bande de petites vues */
+.s-strip{display:grid;grid-template-columns:repeat(var(--c,4),minmax(0,1fr));gap:.3em}
+.s-strip .s-ph{border-radius:.3em;max-height:none}
+
+/* parcours en trois temps */
+.s-steps{display:flex;gap:.5em}
+.s-steps div{flex:1;display:flex;gap:.35em;align-items:center;font-size:.5em;line-height:1.25}
+.s-steps b{flex:0 0 auto;width:1.5em;height:1.5em;border-radius:50%;background:var(--ln);
+  color:var(--fg);display:grid;place-items:center;font-size:.9em;font-weight:800}
+.s-steps div.on b{background:var(--a1);color:#fff}
+.s-steps div.on{font-weight:700}
 </style>
 <style>
 .sect>.wrap>h2{max-width:26ch}
@@ -1511,23 +1587,26 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
               <div class="s-nav"><span class="on">Accueil</span><span>Pains</span><span>Horaires</span></div>
             </div>
             <div class="s-body">
-              <div class="s-row w">
-                <div>
+              <div class="s-ph s-hero g3" style="--r:16/6.4">
+                <span class="s-badge">Cuit sur place</span>
+                <div class="s-hero-c">
                   <p class="s-h">Le pain d'aujourd'hui, <em>pétri cette nuit</em>.</p>
-                  <p class="s-acts" style="margin-top:.55em"><span class="s-btn">Appeler</span><span class="s-btn s-btn2">Le plan</span></p>
+                  <p class="s-acts" style="margin-top:.45em"><span class="s-btn">Nous appeler</span><span class="s-btn s-btn2" style="background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.45);color:#fff">Le plan</span></p>
                 </div>
-                <div class="s-ph g3 sheen" style="--r:1/1;--sd:.3s"></div>
               </div>
               <ul class="s-hrs">
-                <li><span>Lundi – vendredi</span><b>6 h – 18 h 30</b></li>
-                <li><span>Samedi</span><b>6 h – 17 h</b></li>
-                <li><span>Dimanche</span><b>7 h – 12 h</b></li>
+                <li><span>Lundi – vendredi</span><b>6 h – 18 h 30</b></li>
+                <li><span>Samedi</span><b>6 h – 17 h</b></li>
+              </ul>
+              <ul class="s-tick">
+                <li>Farine du moulin de Kleinbettingen</li>
+                <li>Commande de pains spéciaux la veille</li>
               </ul>
             </div>
-            <div class="s-foot"><span>14 rue de l'Alzette · Esch</span><span>Ouvert</span></div>
+            <div class="s-foot"><span>14 rue de l'Alzette · Esch</span><span class="s-live">Ouvert</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Boulangerie Kremer</span><span class="tile-k">Une page</span><span class="tile-p t1">Vitrine · 450 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Boulangerie Kremer</span><span class="tile-k">Une page</span><span class="tile-p t1">Vitrine · 450 €</span></p>
       </article>
 
       <!-- ============ 2. Reuter & Associés — Vitrine ============ -->
@@ -1541,19 +1620,25 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
               <div class="s-nav"><span class="on">Cabinet</span><span>Domaines</span></div>
             </div>
             <div class="s-body">
+              <p class="s-k">Droit du travail · sociétés · baux</p>
               <p class="s-h">Droit du travail, <em>sans détour</em>.</p>
               <p class="s-p">Un interlocuteur du premier rendez-vous au dossier clos.</p>
+              <div class="s-av">
+                <i style="--c1:#A67C2E;--c2:#7B2233"></i><i style="--c1:#7B2233;--c2:#3E2A2E"></i><i style="--c1:#C0A15A;--c2:#8A6B2E"></i>
+                <span>Trois associés · 18 ans de barreau</span>
+              </div>
               <div class="s-list">
                 <div class="s-li"><b>Premier entretien 30 min</b><i></i><em>offert</em></div>
-                <div class="s-li"><b>Consultation</b><i></i><em>120 €</em></div>
-                <div class="s-li"><b>Création de société</b><i></i><em>dès 900 €</em></div>
+                <div class="s-li"><b>Consultation</b><i></i><em>120 €</em></div>
+                <div class="s-li"><b>Création de société</b><i></i><em>dès 900 €</em></div>
               </div>
               <p class="s-acts"><span class="s-btn">Demander un rendez-vous</span></p>
+              <div class="s-trust"><span>Français</span><span>Deutsch</span><span>Lëtzebuergesch</span><span>English</span></div>
             </div>
             <div class="s-foot"><span>8 bd Prince Henri · Esch</span><span>Lun – ven</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Reuter &amp; Associés</span><span class="tile-k">Une page</span><span class="tile-p t1">Vitrine · 450 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Reuter &amp; Associés</span><span class="tile-k">Une page</span><span class="tile-p t1">Vitrine · 450 €</span></p>
       </article>
 
       <!-- ============ 3. Sanitaire Weber — Vitrine ============ -->
@@ -1569,21 +1654,27 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
             <div class="s-body">
               <div class="s-row w">
                 <div>
-                  <p class="s-h">Une fuite ? <em>On arrive</em>.</p>
+                  <p class="s-h">Une fuite ? <em>On arrive</em>.</p>
                   <p class="s-p">Dépannage 7 j/7 dans tout le sud du pays.</p>
                   <p class="s-acts" style="margin-top:.5em"><span class="s-btn glow">Appeler maintenant</span></p>
                 </div>
-                <div class="s-ph g6 sheen" style="--r:1/1;--p1:#B0653A;--p2:#3F4A44;--sd:1.1s"></div>
+                <div class="s-ph g6 sheen" style="--r:1/1;--p1:#B0653A;--p2:#3F4A44;--sd:1.1s">
+                  <span class="s-badge acc">7 j/7</span>
+                </div>
               </div>
+              <ul class="s-tick">
+                <li>Sur place en moins de 2 h dans Esch</li>
+                <li>Prix annoncé avant l'intervention</li>
+              </ul>
               <div class="s-list">
-                <div class="s-li"><b>Déplacement + diagnostic</b><i></i><em>65 €</em></div>
-                <div class="s-li"><b>Remplacement chauffe-eau</b><i></i><em>dès 690 €</em></div>
+                <div class="s-li"><b>Déplacement + diagnostic</b><i></i><em>65 €</em></div>
+                <div class="s-li"><b>Remplacement chauffe-eau</b><i></i><em>dès 690 €</em></div>
               </div>
             </div>
-            <div class="s-foot"><span>Zone Lankelz · Esch</span><span>Urgences 7 j/7</span></div>
+            <div class="s-foot"><span>Zone Lankelz · Esch</span><span class="s-live">Urgences 7 j/7</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Sanitaire Weber</span><span class="tile-k">Une page</span><span class="tile-p t1">Vitrine · 450 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Sanitaire Weber</span><span class="tile-k">Une page</span><span class="tile-p t1">Vitrine · 450 €</span></p>
       </article>
 
       <!-- ============ 4. Studio Nova — Vitrine, format téléphone ============ -->
@@ -1600,12 +1691,18 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
                       <span class="s-id"><span class="s-name">Studio Nova</span><span class="s-sub">Coiffure</span></span></div>
                   </div>
                   <div class="s-body">
-                    <div class="s-ph g5" style="--r:4/3"></div>
+                    <div class="s-ph g5" style="--r:4/2.1">
+                      <span class="s-badge">Nouveau salon</span>
+                    </div>
                     <p class="s-h">Coupe, couleur, soin.</p>
+                    <div class="s-av">
+                      <i style="--c1:#C9707E;--c2:#8E6CA8"></i><i style="--c1:#8E6CA8;--c2:#4A3455"></i><i style="--c1:#E0A0AC;--c2:#C9707E"></i>
+                      <span>★★★★★ 4,9 · 128 avis</span>
+                    </div>
                     <div class="s-list">
-                      <div class="s-li"><b>Coupe &amp; brushing</b><i></i><em>42 €</em></div>
-                      <div class="s-li"><b>Balayage</b><i></i><em>95 €</em></div>
-                      <div class="s-li"><b>Soin kératine</b><i></i><em>35 €</em></div>
+                      <div class="s-li"><b>Coupe &amp; brushing</b><i></i><em>42 €</em></div>
+                      <div class="s-li"><b>Balayage</b><i></i><em>95 €</em></div>
+                      <div class="s-li"><b>Soin kératine</b><i></i><em>35 €</em></div>
                     </div>
                     <p class="s-acts"><span class="s-btn glow" style="width:100%;justify-content:center">Réserver</span></p>
                   </div>
@@ -1614,7 +1711,7 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
             </div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Studio Nova</span><span class="tile-k">Pensé téléphone</span><span class="tile-p t1">Vitrine · 450 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Studio Nova</span><span class="tile-k">Pensé téléphone</span><span class="tile-p t1">Vitrine · 450 €</span></p>
       </article>
 
       <!-- ============ 5. Garage Schmit — Pro ============ -->
@@ -1634,17 +1731,21 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
                 <div class="s-stat"><b>4 800</b><span>véhicules révisés</span></div>
                 <div class="s-stat"><b>4,8/5</b><span>214 avis</span></div>
               </div>
+              <div class="s-search">Rechercher un véhicule d'occasion</div>
               <div class="s-cards" style="--c:2">
-                <div class="s-card"><div class="s-ph g2" style="--r:16/9;--p1:#E08A1E;--p2:#8A4A12"></div>
-                  <div class="s-cb"><span class="s-t">VW Golf 8 TSI</span><span class="s-d">2021 · 42 000 km</span><span class="s-pr">21 900 €</span></div></div>
-                <div class="s-card"><div class="s-ph g6" style="--r:16/9;--p1:#C33A22;--p2:#5E1B0E"></div>
-                  <div class="s-cb"><span class="s-t">Škoda Octavia</span><span class="s-d">2020 · 78 500 km</span><span class="s-pr">17 400 €</span></div></div>
+                <div class="s-card"><div class="s-ph g2" style="--r:16/9;--p1:#E08A1E;--p2:#8A4A12">
+                    <span class="s-badge acc">Garanti 12 mois</span><span class="s-tagp">21 900 €</span></div>
+                  <div class="s-cb"><span class="s-t">VW Golf 8 TSI</span><span class="s-d">2021 · 42 000 km · essence</span></div></div>
+                <div class="s-card"><div class="s-ph g6" style="--r:16/9;--p1:#C33A22;--p2:#5E1B0E">
+                    <span class="s-tagp">17 400 €</span></div>
+                  <div class="s-cb"><span class="s-t">Škoda Octavia</span><span class="s-d">2020 · 78 500 km · diesel</span></div></div>
               </div>
+              <div class="s-trust"><span>Reprise de votre ancien</span><span>Financement</span><span>Véhicule de courtoisie</span></div>
             </div>
-            <div class="s-foot"><span>Occasions garanties 12 mois</span><span>Devis sous 24 h</span></div>
+            <div class="s-foot"><span>Occasions garanties 12 mois</span><span>Devis sous 24 h</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Garage Schmit</span><span class="tile-k">Catalogue véhicules</span><span class="tile-p t2">Pro · 890 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Garage Schmit</span><span class="tile-k">Catalogue véhicules</span><span class="tile-p t2">Pro · 890 €</span></p>
       </article>
 
       <!-- ============ 6. Le Comptoir — Pro ============ -->
@@ -1658,20 +1759,24 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
               <div class="s-nav"><span class="on">La carte</span><span>Réserver</span></div>
             </div>
             <div class="s-body">
-              <div class="s-row w">
-                <div><p class="s-h">La carte change, <em>le marché décide</em>.</p></div>
-                <div class="s-ph g6" style="--r:4/3;--p1:#B32B26;--p2:#5E1410"></div>
+              <div class="s-ph s-hero g6" style="--r:16/5.4;--p1:#B32B26;--p2:#5E1410">
+                <span class="s-badge">Carte du 13 août</span>
+                <div class="s-hero-c">
+                  <p class="s-h">La carte change, <em>le marché décide</em>.</p>
+                  <p class="s-p">28 couverts · réservation conseillée</p>
+                </div>
               </div>
               <div class="s-list">
-                <div class="s-li"><b>Terrine de campagne</b><i></i><em>12 €</em></div>
-                <div class="s-li"><b>Bouchée à la reine</b><i></i><em>24 €</em></div>
-                <div class="s-li"><b>Menu du midi, 2 services</b><i></i><em>19 €</em></div>
+                <div class="s-li"><b>Terrine de campagne</b><i></i><em>12 €</em></div>
+                <div class="s-li"><b>Bouchée à la reine</b><i></i><em>24 €</em></div>
+                <div class="s-li"><b>Menu du midi, 2 services</b><i></i><em>19 €</em></div>
               </div>
+              <div class="s-trust"><span>Réservation en ligne</span><span>Salle privative</span><span>Terrasse</span></div>
             </div>
-            <div class="s-foot"><span>5 place de la Résistance</span><span>Mar – sam</span></div>
+            <div class="s-foot"><span>5 place de la Résistance</span><span class="s-live">Ouvert · ferme à 22 h</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Le Comptoir</span><span class="tile-k">Carte du jour</span><span class="tile-p t2">Pro · 890 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Le Comptoir</span><span class="tile-k">Carte du jour</span><span class="tile-p t2">Pro · 890 €</span></p>
       </article>
 
       <!-- ============ 7. Bois & Cie — Pro ============ -->
@@ -1687,7 +1792,8 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
             <div class="s-body">
               <p class="s-k">Nos derniers chantiers</p>
               <div class="s-cards" style="--c:3">
-                <div class="s-card"><div class="s-ph g2" style="--r:1/1;--p1:#8A5A2E;--p2:#4A2F14"></div>
+                <div class="s-card"><div class="s-ph g2" style="--r:1/1;--p1:#8A5A2E;--p2:#4A2F14">
+                    <span class="s-badge">Avant / après</span></div>
                   <div class="s-cb"><span class="s-t">Escalier chêne</span><span class="s-d">Dudelange</span></div></div>
                 <div class="s-card"><div class="s-ph g4" style="--r:1/1;--p1:#6E8259;--p2:#3B4630"></div>
                   <div class="s-cb"><span class="s-t">Cuisine</span><span class="s-d">Belvaux</span></div></div>
@@ -1695,14 +1801,17 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
                   <div class="s-cb"><span class="s-t">Terrasse</span><span class="s-d">Esch</span></div></div>
               </div>
               <div class="s-bars">
-                <div class="s-bar-r"><div class="s-bar-h"><span>Délai tenu</span><span>96 %</span></div>
+                <div class="s-bar-r"><div class="s-bar-h"><span>Délai tenu</span><span>96 %</span></div>
                   <div class="s-bar-t"><div class="s-bar-f" data-w="96" style="--w:96%"></div></div></div>
+                <div class="s-bar-r"><div class="s-bar-h"><span>Chantier rendu propre</span><span>100 %</span></div>
+                  <div class="s-bar-t"><div class="s-bar-f" data-w="100" style="--w:100%"></div></div></div>
               </div>
+              <div class="s-trust"><span>Chêne</span><span>Hêtre</span><span>Frêne</span><span>Bois local</span></div>
             </div>
-            <div class="s-foot"><span>Devis gratuit sous 72 h</span><span>20 ans de métier</span></div>
+            <div class="s-foot"><span>Devis gratuit sous 72 h</span><span>20 ans de métier</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Bois &amp; Cie</span><span class="tile-k">Portfolio</span><span class="tile-p t2">Pro · 890 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Bois &amp; Cie</span><span class="tile-k">Portfolio</span><span class="tile-p t2">Pro · 890 €</span></p>
       </article>
 
       <!-- ============ 8. Belle Époque — Pro ============ -->
@@ -1716,21 +1825,26 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
               <div class="s-nav"><span class="on">Soins</span><span>Avis</span><span>Contact</span></div>
             </div>
             <div class="s-body">
+              <div class="s-strip" style="--c:3">
+                <div class="s-ph g5" style="--r:4/3;--p1:#D28A6A;--p2:#8A4E3A"></div>
+                <div class="s-ph g4" style="--r:4/3;--p1:#7E5478;--p2:#3E2A3C"></div>
+                <div class="s-ph g3" style="--r:4/3;--p1:#E0A88C;--p2:#7E5478"></div>
+              </div>
               <div class="s-list">
-                <div class="s-li"><b>Soin visage éclat · 1 h</b><i></i><em>65 €</em></div>
-                <div class="s-li"><b>Massage dos · 30 min</b><i></i><em>45 €</em></div>
-                <div class="s-li"><b>Forfait mariée</b><i></i><em>dès 180 €</em></div>
+                <div class="s-li"><b>Soin visage éclat · 1 h</b><i></i><em>65 €</em></div>
+                <div class="s-li"><b>Massage dos · 30 min</b><i></i><em>45 €</em></div>
+                <div class="s-li"><b>Forfait mariée</b><i></i><em>dès 180 €</em></div>
               </div>
               <div style="border:1px solid var(--ln);border-radius:.4em;padding:.5em .6em;background:var(--cd)">
                 <p class="s-stars">★★★★★</p>
-                <p class="s-quote">« Le seul endroit où je ressors vraiment détendue. »</p>
+                <p class="s-quote">« Le seul endroit où je ressors vraiment détendue. »</p>
                 <p class="s-by">Cliente — avis illustratif</p>
               </div>
             </div>
-            <div class="s-foot"><span>4,9/5 · 96 avis</span><span>Sur rendez-vous</span></div>
+            <div class="s-foot"><span>4,9/5 · 96 avis</span><span class="s-live">Sur rendez-vous</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Belle Époque</span><span class="tile-k">Soins &amp; avis</span><span class="tile-p t2">Pro · 890 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Belle Époque</span><span class="tile-k">Soins &amp; avis</span><span class="tile-p t2">Pro · 890 €</span></p>
       </article>
 
       <!-- ============ 9. Fleurs & Cie — Sur-mesure ============ -->
@@ -1744,24 +1858,29 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
               <div class="s-nav"><span class="on">Boutique</span><span>Panier</span></div>
             </div>
             <div class="s-body">
+              <div class="s-search">Rechercher une fleur, une occasion…</div>
               <div class="s-chips"><span class="s-chip on">Tout</span><span class="s-chip">Bouquets</span><span class="s-chip">Plantes</span><span class="s-chip">Deuil</span></div>
               <div class="s-cards" style="--c:3">
-                <div class="s-card"><div class="s-ph g5" style="--r:4/3"></div>
-                  <div class="s-cb"><span class="s-t">Bouquet du jour</span><span class="s-pr">28 €</span></div></div>
-                <div class="s-card"><div class="s-ph g2" style="--r:4/3;--p1:#D96A8A;--p2:#8A3552"></div>
-                  <div class="s-cb"><span class="s-t">Roses anciennes</span><span class="s-pr">42 €</span></div></div>
-                <div class="s-card"><div class="s-ph g4" style="--r:4/3;--p1:#6E9A62;--p2:#D9C05A"></div>
-                  <div class="s-cb"><span class="s-t">Champêtre</span><span class="s-pr">35 €</span></div></div>
+                <div class="s-card"><div class="s-ph g5" style="--r:4/2.7">
+                    <span class="s-badge acc">Du jour</span><span class="s-tagp">28 €</span></div>
+                  <div class="s-cb"><span class="s-t">Bouquet du jour</span></div></div>
+                <div class="s-card"><div class="s-ph g2" style="--r:4/2.7;--p1:#D96A8A;--p2:#8A3552">
+                    <span class="s-tagp">42 €</span></div>
+                  <div class="s-cb"><span class="s-t">Roses anciennes</span></div></div>
+                <div class="s-card"><div class="s-ph g4" style="--r:4/2.7;--p1:#6E9A62;--p2:#D9C05A">
+                    <span class="s-tagp">35 €</span></div>
+                  <div class="s-cb"><span class="s-t">Champêtre</span></div></div>
               </div>
               <div class="s-cart">
-                <div class="s-cl"><span>Bouquet du jour</span><i>2</i><b>56,00 €</b></div>
-                <div class="s-cl"><span>Livraison Esch</span><i>1</i><b>8,00 €</b></div>
-                <div class="s-tot"><span>Total</span><b>64,00 €</b></div>
+                <div class="s-cl"><span>Bouquet du jour</span><i>2</i><b>56,00 €</b></div>
+                <div class="s-cl"><span>Livraison Esch</span><i>1</i><b>8,00 €</b></div>
+                <div class="s-tot"><span>Total</span><b>64,00 €</b></div>
+                <p class="s-acts" style="margin-top:.2em"><span class="s-btn glow" style="width:100%;justify-content:center">Payer 64,00 €</span></p>
               </div>
             </div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Fleurs &amp; Cie</span><span class="tile-k">Panier · paiement</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Fleurs &amp; Cie</span><span class="tile-k">Panier · paiement</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
       </article>
 
       <!-- ============ 10. Le Comptoir Réservation — Sur-mesure ============ -->
@@ -1771,11 +1890,13 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
           <div class="site live" style="--a1:#B32B26;--a2:#E0A32E;--bg:#15100D;--fg:#F4EADB;--ln:#312720;--cd:#1E1712">
             <div class="s-bar">
               <div class="s-logo"><span class="s-mark">LC</span>
-                <span class="s-id"><span class="s-name">Le Comptoir</span><span class="s-sub">Réservation en ligne</span></span></div>
+                <span class="s-id"><span class="s-name">Le Comptoir</span><span class="s-sub">Reservierung</span></span></div>
               <div class="s-nav"><span>FR</span><span class="on">DE</span><span>EN</span><span>PT</span></div>
             </div>
             <div class="s-body">
-              <p class="s-k">Tag wählen</p>
+              <div class="s-steps">
+                <div class="on"><b>1</b>Tag</div><div class="on"><b>2</b>Uhrzeit</div><div><b>3</b>Kontakt</div>
+              </div>
               <div class="s-cal">
                 <span class="s-day"><i>Do</i><b>13</b></span><span class="s-day"><i>Fr</i><b>14</b></span>
                 <span class="s-day on"><i>Sa</i><b>15</b></span><span class="s-day"><i>So</i><b>16</b></span>
@@ -1787,13 +1908,14 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
                 <span class="s-slot on">19:30</span><span class="s-slot">20:00</span><span class="s-slot off">20:30</span>
               </div>
               <div class="s-sum"><span>Sa 15 · 19:30 · Tisch 6</span><b>4 Gäste</b></div>
-              <p class="s-acts"><span class="s-btn glow">Reservierung bestätigen</span></p>
-              <div class="s-ph g6" style="--r:16/3.4;--p1:#B32B26;--p2:#5E1410"></div>
+              <p class="s-acts"><span class="s-btn glow" style="width:100%;justify-content:center">Reservierung bestätigen</span></p>
+              <div class="s-trust"><span>Sofortige Bestätigung</span><span>Kostenlose Stornierung</span></div>
+              <div class="s-ph g6" style="--r:16/3.2;--p1:#B32B26;--p2:#5E1410"></div>
             </div>
             <div class="s-foot"><span>Bestätigung per E-Mail</span><span>FR · DE · EN · PT</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Le Comptoir</span><span class="tile-k">Réservation · 4 langues</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Le Comptoir</span><span class="tile-k">Réservation · 4 langues</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
       </article>
 
       <!-- ============ 11. Physio Sud — Sur-mesure ============ -->
@@ -1807,6 +1929,11 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
               <div class="s-nav"><span class="on">Rendez-vous</span><span>Espace patient</span></div>
             </div>
             <div class="s-body">
+              <div class="s-av">
+                <i style="--c1:#9A5B34;--c2:#6B7A4F"></i><i style="--c1:#6B7A4F;--c2:#333D26"></i>
+                <i style="--c1:#C08A5E;--c2:#9A5B34"></i><i style="--c1:#8A9A6E;--c2:#6B7A4F"></i>
+                <span>Quatre kinés · rééducation, sport, respiratoire</span>
+              </div>
               <p class="s-k">Prochains créneaux</p>
               <div class="s-cal">
                 <span class="s-day"><i>Lun</i><b>17</b></span><span class="s-day on"><i>Mar</i><b>18</b></span>
@@ -1821,14 +1948,14 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
               <div class="s-tbl">
                 <div class="s-tr"><span>Séance du 11 août</span><b class="s-ok">Réglée</b></div>
                 <div class="s-tr"><span>Bilan à télécharger</span><b class="s-wait">Prêt</b></div>
-                <div class="s-tr"><span>Solde à régler</span><b>0,00 €</b></div>
+                <div class="s-tr"><span>Solde à régler</span><b>0,00 €</b></div>
               </div>
-              <div class="s-ph g3" style="--r:16/3.1;--p1:#9A5B34;--p2:#6B7A4F"></div>
+              <div class="s-trust"><span>Conventionné CNS</span><span>Rappel SMS</span><span>Ordonnance en ligne</span></div>
             </div>
-            <div class="s-foot"><span>Conventionné CNS</span><span>Rappel SMS 24 h avant</span></div>
+            <div class="s-foot"><span>Conventionné CNS</span><span class="s-live">Cabinet ouvert</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Physio Sud</span><span class="tile-k">Rendez-vous · espace patient</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Physio Sud</span><span class="tile-k">Rendez-vous · espace patient</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
       </article>
 
       <!-- ============ 12. Marché Lankelz — Sur-mesure ============ -->
@@ -1843,7 +1970,7 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
             </div>
             <div class="s-body">
               <div class="s-stats">
-                <div class="s-stat"><b>1 284 €</b><span>ventes du jour</span></div>
+                <div class="s-stat"><b>1 284 €</b><span>ventes du jour</span></div>
                 <div class="s-stat"><b>37</b><span>commandes</span></div>
                 <div class="s-stat"><b>9</b><span>livraisons</span></div>
               </div>
@@ -1852,29 +1979,32 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
                 <i style="--h:61%"></i><i style="--h:88%"></i><i style="--h:100%"></i>
               </div>
               <div class="s-tbl">
-                <div class="s-tr"><span>#1042 · Panier bio 5 kg</span><b>32,90 €</b><b class="s-ok">Payée</b></div>
-                <div class="s-tr"><span>#1043 · Fromages fermiers</span><b>18,40 €</b><b class="s-wait">À préparer</b></div>
-                <div class="s-tr"><span>#1044 · Livraison Belval</span><b>54,10 €</b><b class="s-ok">Payée</b></div>
+                <div class="s-tr"><span>#1042 · Panier bio 5 kg</span><b>32,90 €</b><b class="s-ok">Payée</b></div>
+                <div class="s-tr"><span>#1043 · Fromages fermiers</span><b>18,40 €</b><b class="s-wait">À préparer</b></div>
+                <div class="s-tr"><span>#1044 · Livraison Belval</span><b>54,10 €</b><b class="s-ok">Payée</b></div>
               </div>
               <div class="s-cards" style="--c:3">
-                <div class="s-card"><div class="s-ph g2" style="--r:16/9;--p1:#B4462C;--p2:#7A2A18"></div>
-                  <div class="s-cb"><span class="s-t">Panier bio</span><span class="s-pr">32,90 €</span></div></div>
-                <div class="s-card"><div class="s-ph g5" style="--r:16/9;--p1:#D2A03A;--p2:#8A6318"></div>
-                  <div class="s-cb"><span class="s-t">Fromages</span><span class="s-pr">18,40 €</span></div></div>
-                <div class="s-card"><div class="s-ph g4" style="--r:16/9;--p1:#7A8A4A;--p2:#D2A03A"></div>
-                  <div class="s-cb"><span class="s-t">Légumes</span><span class="s-pr">12,60 €</span></div></div>
+                <div class="s-card"><div class="s-ph g2" style="--r:16/9;--p1:#B4462C;--p2:#7A2A18">
+                    <span class="s-tagp">32,90 €</span></div>
+                  <div class="s-cb"><span class="s-t">Panier bio</span><span class="s-d">12 en stock</span></div></div>
+                <div class="s-card"><div class="s-ph g5" style="--r:16/9;--p1:#D2A03A;--p2:#8A6318">
+                    <span class="s-tagp">18,40 €</span></div>
+                  <div class="s-cb"><span class="s-t">Fromages</span><span class="s-d">5 en stock</span></div></div>
+                <div class="s-card"><div class="s-ph g4" style="--r:16/9;--p1:#7A8A4A;--p2:#D2A03A">
+                    <span class="s-tagp">12,60 €</span></div>
+                  <div class="s-cb"><span class="s-t">Légumes</span><span class="s-d">Réassort mardi</span></div></div>
               </div>
             </div>
-            <div class="s-foot"><span>Stock mis à jour en direct</span><span>Paiement sécurisé</span></div>
+            <div class="s-foot"><span class="s-live">Stock mis à jour en direct</span><span>Paiement sécurisé</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Marché Lankelz</span><span class="tile-k">Boutique &amp; gestion</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Marché Lankelz</span><span class="tile-k">Boutique &amp; gestion</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
       </article>
 
     </div>
     <p class="gal-hint">Faites glisser pour voir les douze</p>
     <p class="mute rev" style="font-size:var(--f-xs);margin-top:1rem;max-width:60ch">
-      Les douze commerces sont inventés. Noms, adresses, chiffres et avis sont des exemples :
+      Les douze commerces sont inventés. Noms, adresses, chiffres et avis sont des exemples :
       aucun commerce réel n'est représenté.
     </p>
   </div>
