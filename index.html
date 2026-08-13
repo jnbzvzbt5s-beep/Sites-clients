@@ -8,6 +8,29 @@
 <meta name="theme-color" content="#17140F">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2317140F'/%3E%3Cpath d='M8 23V9h3.1l4.9 8.1L20.9 9H24v14h-3.05v-8.6L16.7 21.4h-1.4L11.05 14.4V23z' fill='%23EA5A3E'/%3E%3C/svg%3E">
+<script>
+/* RÈGLE ABSOLUE DE CETTE PAGE : rien n'est masqué par défaut.
+   Les animations d'entrée n'existent que si ce script a pu poser la
+   classe « anim ». Sans JavaScript — aperçu de pièce jointe iOS,
+   navigateur restreint, script bloqué — la page reste entièrement
+   lisible. Le filet ci-dessous retire « anim » si le script principal
+   n'a jamais tourné, pour qu'aucun contenu ne reste invisible. */
+(function(){
+  try{
+    var d = document.documentElement;
+    // mouvement réduit : on n'arme même pas les animations, donc rien
+    // n'est jamais masqué et il n'y a aucun filet à poser.
+    var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(mq && mq.matches) return;
+    d.className += ' anim';
+    setTimeout(function(){
+      if(d.className.indexOf('revealed') === -1){
+        d.className = d.className.replace(/\banim\b/, '');
+      }
+    }, 2500);
+  }catch(e){}
+})();
+</script>
 <style>
 /* ============================================================
    1. BASE
@@ -97,16 +120,20 @@ h2{font-size:var(--f-h2)}
   transform:translateY(-250%);transition:transform .25s var(--ease)}
 .skip:focus{transform:none}
 
-/* révélation générique */
-.rev{opacity:0;transform:translateY(18px);transition:opacity .55s var(--ease),transform .6s var(--ease);transition-delay:var(--d,0ms)}
-.rev.in{opacity:1;transform:none}
+/* Révélation générique — visible par défaut, masquée seulement
+   quand le JavaScript a confirmé qu'il pouvait l'animer. */
+.rev{opacity:1;transform:none}
+html.anim .rev{opacity:0;transform:translateY(18px);
+  transition:opacity .55s var(--ease),transform .6s var(--ease);transition-delay:var(--d,0ms)}
+html.anim .rev.in{opacity:1;transform:none}
 
 /* ============================================================
    2. ATMOSPHÈRE — rideau court, grain, halo
    ============================================================ */
-#intro{
-  position:fixed;inset:0;z-index:90;background:var(--ink);color:var(--on-ink);
-  display:grid;place-items:center;padding:var(--pad);
+#intro{display:none}
+html.anim #intro{
+  display:grid;position:fixed;inset:0;z-index:90;background:var(--ink);color:var(--on-ink);
+  place-items:center;padding:var(--pad);
   animation:lift .7s cubic-bezier(.76,0,.24,1) 1.05s forwards;
 }
 #intro.gone{animation:lift .55s cubic-bezier(.76,0,.24,1) forwards}
@@ -161,12 +188,13 @@ h2{font-size:var(--f-h2)}
 h1.hero-t{font-size:var(--f-hero);line-height:.99;letter-spacing:-.028em;max-width:13ch}
 h1.hero-t em{font-style:italic;color:var(--accent)}
 .hero-t .ln{display:block;overflow:hidden}
-.hero-t .ln>span{display:block;transform:translateY(105%);
+.hero-t .ln>span{display:block}
+html.anim .hero-t .ln>span{transform:translateY(105%);
   animation:up .85s cubic-bezier(.19,1,.22,1) forwards;animation-delay:calc(1.25s + var(--i,0)*.09s)}
 @keyframes up{to{transform:none}}
 
 .hero-sub{margin-top:1.1rem;font-size:var(--f-lead);color:var(--on-ink-mute);max-width:40ch}
-.hero-late{opacity:0;animation:fade .7s var(--ease) 1.75s forwards}
+html.anim .hero-late{opacity:0;animation:fade .7s var(--ease) 1.75s forwards}
 @keyframes fade{to{opacity:1}}
 
 /* les preuves chiffrées, tout de suite */
@@ -181,7 +209,8 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
 /* aperçu empilé de trois écrans, à droite du hero */
 .stack{position:relative;aspect-ratio:1/.86;max-width:640px;margin-inline:auto;width:100%}
 .stack>*{position:absolute;border-radius:12px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.85);
-  border:1px solid rgba(255,255,255,.10);opacity:0;animation:pop .8s var(--ease) forwards}
+  border:1px solid rgba(255,255,255,.10)}
+html.anim .stack>*{opacity:0;animation:pop .8s var(--ease) forwards}
 .stack .k1{left:0;top:5%;width:59%;animation-delay:1.9s}
 .stack .k2{right:0;top:0;width:43%;animation-delay:2.05s}
 .stack .k3{left:24%;bottom:0;width:53%;animation-delay:2.2s}
@@ -222,14 +251,14 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
   .gal-hint::before{content:"";width:26px;height:1px;background:var(--accent)}
 }
 
-/* --- la carte --- */
-.tile{
-  display:flex;flex-direction:column;gap:.55rem;min-width:0;
+/* --- la carte : visible par défaut, l'entrée en cascade est un bonus --- */
+.tile{display:flex;flex-direction:column;gap:.55rem;min-width:0}
+html.anim .tile{
   opacity:0;transform:translateY(26px) scale(.975);
   transition:opacity .5s var(--ease),transform .65s var(--ease-io);
   transition-delay:calc(var(--i,0) * 55ms);
 }
-.tile.in{opacity:1;transform:none}
+html.anim .tile.in{opacity:1;transform:none}
 
 .frame{
   container-type:inline-size;
@@ -626,7 +655,8 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
   html{scroll-behavior:auto}
   #intro{display:none}
   #halo{display:none}
-  .hero-t .ln>span,.hero-late,.stack>*,.tile,.rev{opacity:1;transform:none}
+  html .hero-t .ln>span,html .hero-late,html .stack>*,
+  html.anim .tile,html.anim .rev,html .tile,html .rev{opacity:1;transform:none}
   .sheen::after,.s-btn.glow::after{display:none}
   .s-mq div{animation:none}
   .site.live::before,.site.live::after{animation:none}
@@ -1000,7 +1030,7 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
               </div>
               <div class="s-bars">
                 <div class="s-bar-r"><div class="s-bar-h"><span>Délai tenu</span><span>96 %</span></div>
-                  <div class="s-bar-t"><div class="s-bar-f" data-w="96"></div></div></div>
+                  <div class="s-bar-t"><div class="s-bar-f" data-w="96" style="--w:96%"></div></div></div>
               </div>
             </div>
             <div class="s-foot"><span>Devis gratuit sous 72 h</span><span>20 ans de métier</span></div>
@@ -1223,18 +1253,22 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
             <div class="s-logo"><span class="s-mark" data-b="mark">BK</span>
               <span class="s-id"><span class="s-name" data-b="name">Boulangerie Kremer</span>
                 <span class="s-sub" data-b="tag">Levain — Esch-sur-Alzette</span></span></div>
-            <div class="s-nav" data-b="nav"></div>
+            <div class="s-nav" data-b="nav"><span class="on">Accueil</span><span>Pains</span><span>Horaires</span></div>
           </div>
           <div class="s-body">
             <div class="s-row w">
               <div>
                 <p class="s-h" data-b="hero">Le levain tous les matins.</p>
-                <p class="s-p" data-b="txt"></p>
+                <p class="s-p" data-b="txt">Farines du moulin voisin, cuisson au four à sole, fournée de 6 h encore tiède.</p>
                 <p class="s-acts" style="margin-top:.5em"><span class="s-btn" data-b="cta">Voir les horaires</span></p>
               </div>
               <div class="s-ph g3 sheen" style="--r:1/1"></div>
             </div>
-            <div class="s-list" data-b="offers"></div>
+            <div class="s-list" data-b="offers">
+              <div class="s-li"><b>Pain de campagne, 1 kg</b><i></i><em>4,20 €</em></div>
+              <div class="s-li"><b>Croissant pur beurre</b><i></i><em>1,30 €</em></div>
+              <div class="s-li"><b>Tarte aux quetsches</b><i></i><em>18,50 €</em></div>
+            </div>
           </div>
           <div class="s-foot"><span data-b="foot">14 rue de l'Alzette · Esch</span><span>Plan · Contact</span></div>
         </div>
@@ -1327,7 +1361,7 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
               <span class="goo-open" data-g="hours">Ouvert · ferme à 18 h 30</span></p>
             <p class="goo-d" data-g="desc">Pains au levain cuits sur place chaque matin, viennoiseries pur beurre
               et tartes de saison. Horaires, plan d'accès et commandes.</p>
-            <p class="goo-l" data-g="links"></p>
+            <p class="goo-l" data-g="links"><span>Nos pains</span><span>Horaires</span><span>Nous trouver</span></p>
           </div>
         </div>
         <p class="mute" style="font-size:var(--f-xs);margin-top:.5rem">La fiche suit le nom que vous tapez plus haut.</p>
@@ -1535,8 +1569,18 @@ mod('scroll', function(){
   frame();
 });
 
-/* --- 3. révélations + entrée en cascade de la galerie --- */
+/* --- 3. révélations + entrée en cascade de la galerie ---
+   Le script de tête a posé « anim » avant le premier rendu. On confirme
+   ici qu'il tourne (« revealed ») pour désarmer son filet, puis on
+   garantit qu'après 2 s tout est visible, même si l'observateur
+   d'intersection ne se déclenche jamais (certains navigateurs intégrés). */
 mod('reveal', function(){
+  root.className += ' revealed';
+  var all = $$('.rev').concat($$('.tile'));
+  setTimeout(function(){
+    all.forEach(function(el){ el.classList.add('in'); });
+  }, 2000);
+
   watch($$('.rev'), function(el){ el.classList.add('in'); });
 
   var gal = $('[data-gal]');
