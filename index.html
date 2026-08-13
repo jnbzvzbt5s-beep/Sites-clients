@@ -9,7 +9,13 @@
 <meta name="color-scheme" content="light">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2317140F'/%3E%3Cpath d='M8 23V9h3.1l4.9 8.1L20.9 9H24v14h-3.05v-8.6L16.7 21.4h-1.4L11.05 14.4V23z' fill='%23EA5A3E'/%3E%3C/svg%3E">
 <script>
-/* RÈGLE ABSOLUE DE CETTE PAGE : rien n'est masqué par défaut.
+/* RÈGLE ABSOLUE DE CETTE PAGE : les animations sont en CSS pur.
+   Elles tournent donc partout — y compris dans l'aperçu de pièce jointe
+   iOS, qui affiche le HTML et le CSS mais n'exécute aucun JavaScript.
+   Le JavaScript n'ajoute que du confort (glisser le curseur, passer le
+   rideau, réécrire la maquette). Il ne conditionne aucun affichage.
+   Ce script ne sert qu'à signaler sa présence.
+   ANCIENNE RÈGLE, CONSERVÉE PAR SÉCURITÉ : rien n'est masqué par défaut.
    Les animations d'entrée n'existent que si ce script a pu poser la
    classe « anim ». Sans JavaScript — aperçu de pièce jointe iOS,
    navigateur restreint, script bloqué — la page reste entièrement
@@ -120,32 +126,34 @@ h2{font-size:var(--f-h2)}
   transform:translateY(-250%);transition:transform .25s var(--ease)}
 .skip:focus{transform:none}
 
-/* Révélation générique — visible par défaut, masquée seulement
-   quand le JavaScript a confirmé qu'il pouvait l'animer. */
+/* Entrées en CSS pur.
+   « both » fait que l'élément finit TOUJOURS à l'état visible : même
+   animation coupée, même script absent, rien ne peut rester caché. */
 .rev{opacity:1;transform:none}
-html.anim .rev{opacity:0;transform:translateY(18px);
-  transition:opacity .55s var(--ease),transform .6s var(--ease);transition-delay:var(--d,0ms)}
-html.anim .rev.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:no-preference){
+  .rev{animation:riseIn .7s var(--ease) both;animation-delay:var(--d,80ms)}
+}
+@keyframes riseIn{from{opacity:0;transform:translateY(20px)}}
 
 /* ============================================================
    2. ATMOSPHÈRE — rideau court, grain, halo
    ============================================================ */
-#intro{display:none}
-html.anim #intro{
+#intro{
   display:grid;position:fixed;inset:0;z-index:90;background:var(--ink);color:var(--on-ink);
   place-items:center;padding:var(--pad);
-  animation:lift .7s cubic-bezier(.76,0,.24,1) 1.05s forwards;
+  animation:lift .8s cubic-bezier(.76,0,.24,1) 1.35s forwards;
 }
+@media (prefers-reduced-motion:reduce){#intro{display:none}}
 #intro.gone{animation:lift .55s cubic-bezier(.76,0,.24,1) forwards}
-@keyframes lift{to{transform:translateY(-101%)}}
+@keyframes lift{to{transform:translateY(-101%);visibility:hidden;pointer-events:none}}
 .intro-t{font-family:var(--serif);font-size:clamp(2rem,7vw,4.4rem);line-height:1.02;text-align:center;max-width:16ch}
 .intro-t em{font-style:italic;color:var(--accent)}
-.intro-t span{display:inline-block;opacity:0;transform:translateY(.4em);
-  animation:iw .5s var(--ease) forwards;animation-delay:calc(.1s + var(--i,0)*.11s)}
-@keyframes iw{to{opacity:1;transform:none}}
+.intro-t span{display:inline-block;
+  animation:iw .55s var(--ease) both;animation-delay:calc(.12s + var(--i,0)*.13s)}
+@keyframes iw{from{opacity:0;transform:translateY(.45em)}}
 .intro-bar{position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--accent);
-  transform-origin:left;transform:scaleX(0);animation:ib 1.05s linear forwards}
-@keyframes ib{to{transform:scaleX(1)}}
+  transform-origin:left;animation:ib 1.35s linear both}
+@keyframes ib{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
 #grain{
   position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.045;mix-blend-mode:multiply;
@@ -189,13 +197,17 @@ h1.hero-t{font-size:var(--f-hero);line-height:.99;letter-spacing:-.028em;max-wid
 h1.hero-t em{font-style:italic;color:var(--accent)}
 .hero-t .ln{display:block;overflow:hidden}
 .hero-t .ln>span{display:block}
-html.anim .hero-t .ln>span{transform:translateY(105%);
-  animation:up .85s cubic-bezier(.19,1,.22,1) forwards;animation-delay:calc(1.25s + var(--i,0)*.09s)}
-@keyframes up{to{transform:none}}
+@media (prefers-reduced-motion:no-preference){
+  .hero-t .ln>span{animation:up .9s cubic-bezier(.19,1,.22,1) both;
+    animation-delay:calc(1.55s + var(--i,0)*.1s)}
+}
+@keyframes up{from{transform:translateY(105%)}}
 
 .hero-sub{margin-top:1.1rem;font-size:var(--f-lead);color:var(--on-ink-mute);max-width:40ch}
-html.anim .hero-late{opacity:0;animation:fade .7s var(--ease) 1.75s forwards}
-@keyframes fade{to{opacity:1}}
+@media (prefers-reduced-motion:no-preference){
+  .hero-late{animation:fade .75s var(--ease) both;animation-delay:calc(1.95s + var(--d,0ms))}
+}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
 
 /* les preuves chiffrées, tout de suite */
 .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:1.6rem;max-width:34rem}
@@ -210,11 +222,13 @@ html.anim .hero-late{opacity:0;animation:fade .7s var(--ease) 1.75s forwards}
 .stack{position:relative;aspect-ratio:1/.86;max-width:640px;margin-inline:auto;width:100%}
 .stack>*{position:absolute;border-radius:12px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.85);
   border:1px solid rgba(255,255,255,.10)}
-html.anim .stack>*{opacity:0;animation:pop .8s var(--ease) forwards}
-.stack .k1{left:0;top:5%;width:59%;animation-delay:1.9s}
-.stack .k2{right:0;top:0;width:43%;animation-delay:2.05s}
-.stack .k3{left:24%;bottom:0;width:53%;animation-delay:2.2s}
-@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:no-preference){
+  .stack>*{animation:pop .85s var(--ease) both}
+}
+.stack .k1{left:0;top:5%;width:59%;animation-delay:2.15s}
+.stack .k2{right:0;top:0;width:43%;animation-delay:2.32s}
+.stack .k3{left:24%;bottom:0;width:53%;animation-delay:2.49s}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.96)}}
 @media (max-width:1079px){.stack{max-width:520px;margin-top:.5rem}}
 </style>
 <style>
@@ -251,14 +265,13 @@ html.anim .stack>*{opacity:0;animation:pop .8s var(--ease) forwards}
   .gal-hint::before{content:"";width:26px;height:1px;background:var(--accent)}
 }
 
-/* --- la carte : visible par défaut, l'entrée en cascade est un bonus --- */
+/* --- la carte : cascade en CSS pur, état final toujours visible --- */
 .tile{display:flex;flex-direction:column;gap:.55rem;min-width:0}
-html.anim .tile{
-  opacity:0;transform:translateY(26px) scale(.975);
-  transition:opacity .5s var(--ease),transform .65s var(--ease-io);
-  transition-delay:calc(var(--i,0) * 55ms);
+@media (prefers-reduced-motion:no-preference){
+  .tile{animation:tileIn .7s var(--ease-io) both;
+    animation-delay:calc(.25s + var(--i,0) * 70ms)}
 }
-html.anim .tile.in{opacity:1;transform:none}
+@keyframes tileIn{from{opacity:0;transform:translateY(28px) scale(.965)}}
 
 .frame{
   container-type:inline-size;
@@ -284,13 +297,22 @@ html.anim .tile.in{opacity:1;transform:none}
 .tile-cap{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;padding-inline:2px}
 .tile-n{font-family:var(--serif);font-size:1.02rem;line-height:1.15}
 .tile-k{font-size:var(--f-xs);color:var(--mute)}
+/* Trois niveaux, trois poids visuels : le badge dit tout de suite
+   où l'on se situe dans la gamme. */
 .tile-p{
   margin-left:auto;font-size:var(--f-micro);font-weight:800;letter-spacing:.04em;
-  padding:.28em .6em;border-radius:999px;white-space:nowrap;
-  background:var(--iv-3);color:var(--mute);
+  padding:.3em .68em;border-radius:999px;white-space:nowrap;
 }
-.tile-p.t2{background:rgb(var(--ar) var(--ag) var(--ab) / .15);color:#A6402A}
-.tile-p.t3{background:var(--ink);color:var(--on-ink)}
+.tile-p.t1{background:var(--iv-3);color:var(--mute)}
+.tile-p.t2{background:#F3DCC9;color:#9A4E22;box-shadow:inset 0 0 0 1px #E3BF9E}
+.tile-p.t3{
+  background:linear-gradient(110deg,#C2571C,#B32B26 55%,#8E4BA8);
+  color:#fff;box-shadow:0 2px 8px rgba(140,60,30,.3);
+}
+/* le haut de gamme se distingue aussi par son cadre */
+.tile.top .frame{border-color:#DCC0A6;box-shadow:0 1px 2px rgba(35,28,20,.05),
+  0 16px 34px -20px rgba(120,55,30,.42)}
+@media (hover:hover){.tile.top:hover .frame{border-color:#B4462C}}
 
 /* ============================================================
    5. LES MINI-SITES
@@ -532,6 +554,47 @@ html.anim .tile.in{opacity:1;transform:none}
 .ba-s{position:absolute;inset:0;overflow:hidden}
 .ba-new{clip-path:inset(0 0 0 var(--x,50%))}
 .ba-old{clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
+
+/* Balayage automatique en CSS pur : les trois calques partagent la même
+   durée, donc restent synchronisés sans aucun JavaScript. C'est ce qui
+   fait « vivre » la comparaison dans un aperçu où les scripts sont
+   coupés. Dès qu'on touche le curseur, le JS retire la classe et rend
+   la main au doigt. */
+@media (prefers-reduced-motion:no-preference){
+  .ba.auto .ba-new{animation:sweepNew 9s var(--ease-io) 1.2s infinite}
+  .ba.auto .ba-old{animation:sweepOld 9s var(--ease-io) 1.2s infinite}
+  .ba.auto .ba-h  {animation:sweepBar 9s var(--ease-io) 1.2s infinite}
+  .ba.auto .ba-hint{animation:hintFade 9s linear 1.2s infinite}
+}
+@keyframes sweepNew{
+  0%,4%   {clip-path:inset(0 0 0 82%)}
+  44%,56% {clip-path:inset(0 0 0 16%)}
+  96%,100%{clip-path:inset(0 0 0 82%)}
+}
+@keyframes sweepOld{
+  0%,4%   {clip-path:inset(0 18% 0 0)}
+  44%,56% {clip-path:inset(0 84% 0 0)}
+  96%,100%{clip-path:inset(0 18% 0 0)}
+}
+@keyframes sweepBar{
+  0%,4%   {left:82%}
+  44%,56% {left:16%}
+  96%,100%{left:82%}
+}
+@keyframes hintFade{0%,70%{opacity:1}88%,100%{opacity:0}}
+
+/* invite à glisser, visible tant que personne n'a touché */
+.ba-hint{
+  position:absolute;left:50%;bottom:9px;transform:translateX(-50%);z-index:7;
+  display:flex;align-items:center;gap:.4rem;pointer-events:none;
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.42em .8em;border-radius:999px;
+  background:rgba(23,20,15,.78);color:#F7F2E8;backdrop-filter:blur(3px);
+}
+.ba-hint::before,.ba-hint::after{content:"";width:0;height:0;border:4px solid transparent}
+.ba-hint::before{border-right-color:currentColor}
+.ba-hint::after{border-left-color:currentColor}
+.ba.touched .ba-hint{opacity:0;transition:opacity .3s}
 .ba-tag{position:absolute;top:8px;z-index:4;white-space:nowrap;pointer-events:none;
   font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;
   padding:.4em .7em;border-radius:999px;color:#fff}
@@ -585,35 +648,98 @@ html.anim .tile.in{opacity:1;transform:none}
 .goo-l span{font-size:12.4px;color:#5f4b8b}
 
 /* ============================================================
-   8. TARIFS
+   8. TARIFS — chaque formule montre ce qu'elle achète
    ============================================================ */
-.plans{display:grid;gap:.9rem;grid-template-columns:1fr;align-items:start}
-@media (min-width:820px){.plans{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.plan{border:1px solid var(--line);border-radius:14px;padding:clamp(1.1rem,2vw,1.6rem);
-  background:var(--iv);display:flex;flex-direction:column;gap:.75rem;position:relative;
-  transition:transform .3s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease)}
-@media (hover:hover){.plan:hover{transform:translateY(-4px);border-color:var(--accent);
-  box-shadow:0 18px 36px -24px rgba(35,28,20,.45)}}
-.plan.best{border-color:var(--accent);background:#fff;box-shadow:0 18px 40px -28px rgba(35,28,20,.5)}
-.plan-flag{position:absolute;top:0;left:clamp(1.1rem,2vw,1.6rem);transform:translateY(-50%);
-  background:var(--accent);color:#fff;font-size:var(--f-micro);font-weight:800;letter-spacing:.12em;
-  text-transform:uppercase;padding:.4em .75em;border-radius:999px;line-height:1.2;white-space:nowrap}
-.plan-n{font-family:var(--serif);font-size:1.5rem;line-height:1}
-.plan-p{display:flex;align-items:baseline;gap:.35rem;flex-wrap:wrap}
-.plan-p b{font-family:var(--serif);font-size:clamp(2.3rem,4.6vw,3rem);font-weight:400;line-height:.9;letter-spacing:-.03em}
-.plan-p i{font-style:normal;font-size:var(--f-xs);color:var(--mute)}
-.plan-f{display:grid;gap:.4rem;font-size:var(--f-sm);flex:1;border-top:1px solid var(--line);padding-top:.75rem}
-.plan-f li{display:flex;gap:.5rem;align-items:flex-start;line-height:1.35}
-.plan-f li::before{content:"";flex:0 0 auto;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:.5em}
-.plan .btn{width:100%}
+.plans{display:grid;gap:clamp(.9rem,1.6vw,1.3rem);grid-template-columns:1fr;align-items:stretch}
+@media (min-width:760px){.plans{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
-.launch{margin-top:1rem;border:1px solid var(--accent);border-radius:14px;
-  padding:clamp(1rem,2.2vw,1.6rem);display:grid;gap:.8rem;
-  background:rgb(var(--ar) var(--ag) var(--ab) / .07)}
+.plan{
+  position:relative;display:flex;flex-direction:column;
+  border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  background:#fff;
+  box-shadow:0 1px 2px rgba(35,28,20,.05),0 16px 32px -26px rgba(35,28,20,.4);
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s var(--ease);
+}
+@media (hover:hover){.plan:hover{transform:translateY(-5px);
+  box-shadow:0 26px 46px -26px rgba(35,28,20,.5);border-color:var(--pa1,var(--accent))}}
+
+/* l'aperçu en haut de carte : la preuve avant le tarif */
+.plan-shot{container-type:inline-size;border-bottom:1px solid var(--line);position:relative}
+.plan-shot .site{aspect-ratio:16/11}
+@media (max-width:759px){.plan-shot .site{aspect-ratio:16/12.2}}
+.plan-shot::after{
+  content:"";position:absolute;inset:auto 0 0 0;height:34%;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.55));
+}
+.plan.dark-shot .plan-shot::after{background:linear-gradient(180deg,transparent,rgba(21,16,13,.55))}
+
+.plan-in{padding:clamp(1rem,1.9vw,1.5rem);display:flex;flex-direction:column;gap:.7rem;flex:1}
+.plan-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.plan-top>div{min-width:0}
+.plan-n{font-family:var(--serif);font-size:1.42rem;line-height:1.05}
+.plan-for{font-size:var(--f-xs);color:var(--mute);margin-top:.15rem;line-height:1.35}
+/* le prix ne se coupe jamais : colonne à droite, largeur intrinsèque */
+.plan-p{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:.2rem;line-height:1}
+.plan-p b{font-family:var(--serif);font-size:clamp(2.1rem,3.6vw,2.8rem);font-weight:400;
+  line-height:.88;letter-spacing:-.03em;color:var(--pa1,var(--ink));white-space:nowrap}
+.plan-p i{font-style:normal;font-size:var(--f-micro);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--mute);white-space:nowrap}
+
+.plan-f{display:grid;gap:.34rem;align-content:start;font-size:var(--f-sm);flex:1;
+  border-top:1px solid var(--line);padding-top:.7rem;margin-top:.1rem}
+.plan-f li{display:flex;gap:.5rem;align-items:flex-start;line-height:1.3}
+.plan-f li::before{content:"";flex:0 0 auto;width:15px;height:15px;border-radius:50%;margin-top:.12em;
+  background:var(--pa1,var(--accent));
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.3l2.6 2.6L10 3.4' stroke='%23000' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.3l2.6 2.6L10 3.4' stroke='%23000' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;
+}
+@supports not (mask:url("#a")){
+  .plan-f li::before{width:5px;height:5px;margin-top:.5em;-webkit-mask:none;mask:none}
+}
+.plan .btn{width:100%;margin-top:.2rem}
+.plan-cta{background:var(--pa1,var(--accent));color:#fff;border-color:transparent}
+
+/* « tout ce que fait la Pro, et en plus » : la marche est écrite */
+.plan-plus{
+  font-size:var(--f-xs);font-weight:800;letter-spacing:.04em;color:var(--pa1);
+  border-top:1px solid var(--line);padding-top:.7rem;margin-top:.1rem;
+}
+.plan-plus+.plan-f{border-top:0;padding-top:.2rem;margin-top:0}
+
+/* le haut de gamme : cadre accentué, aperçu plus grand */
+.plan.topplan{border-color:var(--pa1);box-shadow:0 0 0 1px var(--pa1),0 22px 44px -26px rgba(30,60,35,.5)}
+@media (min-width:760px){.plan.topplan .plan-shot .site{aspect-ratio:16/12.4}}
+.plan-flag.alt{background:var(--pa1)}
+
+/* la formule mise en avant */
+.plan.best{border-color:var(--pa1);box-shadow:0 24px 48px -26px rgba(35,28,20,.55)}
+@media (min-width:760px){.plan.best{transform:translateY(-14px)}
+  .plan.best .plan-shot .site{aspect-ratio:16/11.7}}
+@media (min-width:760px) and (hover:hover){.plan.best:hover{transform:translateY(-19px)}}
+.plan-flag{
+  position:absolute;top:.85rem;right:.85rem;z-index:3;
+  background:var(--pa1);color:#fff;font-size:var(--f-micro);font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;padding:.42em .8em;border-radius:999px;line-height:1.2;white-space:nowrap;
+  box-shadow:0 4px 12px rgba(0,0,0,.28);
+}
+
+.launch{
+  margin-top:clamp(1rem,2vw,1.6rem);border-radius:16px;overflow:hidden;
+  background:var(--ink);color:var(--on-ink);
+  padding:clamp(1.1rem,2.4vw,1.7rem);display:grid;gap:.9rem;position:relative;isolation:isolate;
+}
+.launch::before{
+  content:"";position:absolute;width:52%;padding-bottom:52%;right:-12%;top:-30%;z-index:-1;
+  border-radius:50%;filter:blur(60px);opacity:.55;
+  background:radial-gradient(circle,var(--accent),transparent 68%);
+}
 @media (min-width:780px){.launch{grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1.6rem}}
-.launch b.n{font-family:var(--serif);font-size:clamp(2.6rem,6vw,3.6rem);color:var(--accent);line-height:.85;font-weight:400}
-.launch p{font-size:var(--f-sm);color:var(--mute)}
-.launch p strong{color:var(--ink)}
+.launch b.n{font-family:var(--serif);font-size:clamp(2.8rem,6vw,3.8rem);color:var(--accent);
+  line-height:.85;font-weight:400;display:block}
+.launch b.n small{display:block;font-family:var(--sans);font-size:var(--f-micro);
+  letter-spacing:.14em;text-transform:uppercase;color:var(--on-ink-mute);margin-top:.4rem;font-weight:700}
+.launch p{font-size:var(--f-sm);color:var(--on-ink-mute);line-height:1.45}
+.launch p strong{color:var(--on-ink)}
 
 /* ============================================================
    9. MÉTHODE — une bande, quatre étapes, zéro paragraphe
@@ -861,7 +987,7 @@ html.anim .tile.in{opacity:1;transform:none}
             <div class="s-foot"><span>14 rue de l'Alzette · Esch</span><span>Ouvert</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Boulangerie Kremer</span><span class="tile-k">Une page</span><span class="tile-p">450 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Boulangerie Kremer</span><span class="tile-k">Une page</span><span class="tile-p t1">Vitrine · 450 €</span></p>
       </article>
 
       <!-- ============ 2. Reuter & Associés — Vitrine ============ -->
@@ -887,7 +1013,7 @@ html.anim .tile.in{opacity:1;transform:none}
             <div class="s-foot"><span>8 bd Prince Henri · Esch</span><span>Lun – ven</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Reuter &amp; Associés</span><span class="tile-k">Une page</span><span class="tile-p">450 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Reuter &amp; Associés</span><span class="tile-k">Une page</span><span class="tile-p t1">Vitrine · 450 €</span></p>
       </article>
 
       <!-- ============ 3. Sanitaire Weber — Vitrine ============ -->
@@ -917,7 +1043,7 @@ html.anim .tile.in{opacity:1;transform:none}
             <div class="s-foot"><span>Zone Lankelz · Esch</span><span>Urgences 7 j/7</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Sanitaire Weber</span><span class="tile-k">Une page</span><span class="tile-p">450 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Sanitaire Weber</span><span class="tile-k">Une page</span><span class="tile-p t1">Vitrine · 450 €</span></p>
       </article>
 
       <!-- ============ 4. Studio Nova — Vitrine, format téléphone ============ -->
@@ -948,7 +1074,7 @@ html.anim .tile.in{opacity:1;transform:none}
             </div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Studio Nova</span><span class="tile-k">Pensé téléphone</span><span class="tile-p">450 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Studio Nova</span><span class="tile-k">Pensé téléphone</span><span class="tile-p t1">Vitrine · 450 €</span></p>
       </article>
 
       <!-- ============ 5. Garage Schmit — Pro ============ -->
@@ -978,14 +1104,14 @@ html.anim .tile.in{opacity:1;transform:none}
             <div class="s-foot"><span>Occasions garanties 12 mois</span><span>Devis sous 24 h</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Garage Schmit</span><span class="tile-k">Catalogue véhicules</span><span class="tile-p t2">890 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Garage Schmit</span><span class="tile-k">Catalogue véhicules</span><span class="tile-p t2">Pro · 890 €</span></p>
       </article>
 
       <!-- ============ 6. Le Comptoir — Pro ============ -->
       <article class="tile" style="--i:5">
         <div class="frame">
           <div class="chrome"><i></i><i></i><i></i><span>lecomptoir-esch.lu</span></div>
-          <div class="site live" style="--a1:#B32B26;--a2:#E0A32E;--bg:#15100D;--fg:#F4EADB;--ln:#312720;--cd:#1E1712">
+          <div class="site live" style="--a1:#B32B26;--a2:#E0A32E;--bg:#FFF8EE;--fg:#2A1712;--ln:#EBDCC8;--cd:#FFFFFF">
             <div class="s-bar">
               <div class="s-logo"><span class="s-mark">LC</span>
                 <span class="s-id"><span class="s-name">Le Comptoir</span><span class="s-sub">Cuisine du marché</span></span></div>
@@ -1005,7 +1131,7 @@ html.anim .tile.in{opacity:1;transform:none}
             <div class="s-foot"><span>5 place de la Résistance</span><span>Mar – sam</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Le Comptoir</span><span class="tile-k">Carte du jour</span><span class="tile-p t2">890 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Le Comptoir</span><span class="tile-k">Carte du jour</span><span class="tile-p t2">Pro · 890 €</span></p>
       </article>
 
       <!-- ============ 7. Bois & Cie — Pro ============ -->
@@ -1036,7 +1162,7 @@ html.anim .tile.in{opacity:1;transform:none}
             <div class="s-foot"><span>Devis gratuit sous 72 h</span><span>20 ans de métier</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Bois &amp; Cie</span><span class="tile-k">Portfolio</span><span class="tile-p t2">890 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Bois &amp; Cie</span><span class="tile-k">Portfolio</span><span class="tile-p t2">Pro · 890 €</span></p>
       </article>
 
       <!-- ============ 8. Belle Époque — Pro ============ -->
@@ -1064,11 +1190,11 @@ html.anim .tile.in{opacity:1;transform:none}
             <div class="s-foot"><span>4,9/5 · 96 avis</span><span>Sur rendez-vous</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Belle Époque</span><span class="tile-k">Soins &amp; avis</span><span class="tile-p t2">890 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Belle Époque</span><span class="tile-k">Soins &amp; avis</span><span class="tile-p t2">Pro · 890 €</span></p>
       </article>
 
       <!-- ============ 9. Fleurs & Cie — Sur-mesure ============ -->
-      <article class="tile" style="--i:8">
+      <article class="tile top" style="--i:8">
         <div class="frame">
           <div class="chrome"><i></i><i></i><i></i><span>fleurs-et-cie.lu</span></div>
           <div class="site live" style="--a1:#4E7A50;--a2:#D96A8A;--bg:#FBFBF6;--fg:#1F2A1E;--ln:#DFE4D9;--cd:#fff">
@@ -1095,11 +1221,11 @@ html.anim .tile.in{opacity:1;transform:none}
             </div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Fleurs &amp; Cie</span><span class="tile-k">Panier · paiement</span><span class="tile-p t3">1 400 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Fleurs &amp; Cie</span><span class="tile-k">Panier · paiement</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
       </article>
 
       <!-- ============ 10. Le Comptoir Réservation — Sur-mesure ============ -->
-      <article class="tile" style="--i:9">
+      <article class="tile top" style="--i:9">
         <div class="frame">
           <div class="chrome"><i></i><i></i><i></i><span>lecomptoir-esch.lu/reserver</span></div>
           <div class="site live" style="--a1:#B32B26;--a2:#E0A32E;--bg:#15100D;--fg:#F4EADB;--ln:#312720;--cd:#1E1712">
@@ -1122,20 +1248,16 @@ html.anim .tile.in{opacity:1;transform:none}
               </div>
               <div class="s-sum"><span>Sa 15 · 19:30 · Tisch 6</span><b>4 Gäste</b></div>
               <p class="s-acts"><span class="s-btn glow">Reservierung bestätigen</span></p>
-              <div class="s-tbl">
-                <div class="s-tr"><span>Tisch 15 Minuten gehalten</span><b class="s-ok">inklusive</b></div>
-                <div class="s-tr"><span>Stornierung bis 4 Std. vorher</span><b class="s-ok">kostenlos</b></div>
-                <div class="s-tr"><span>Anzahlung ab 8 Gästen</span><b>20 €</b></div>
-              </div>
+              <div class="s-ph g6" style="--r:16/3.4;--p1:#B32B26;--p2:#5E1410"></div>
             </div>
             <div class="s-foot"><span>Bestätigung per E-Mail</span><span>FR · DE · EN · PT</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Le Comptoir</span><span class="tile-k">Réservation · 4 langues</span><span class="tile-p t3">1 400 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Le Comptoir</span><span class="tile-k">Réservation · 4 langues</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
       </article>
 
       <!-- ============ 11. Physio Sud — Sur-mesure ============ -->
-      <article class="tile" style="--i:10">
+      <article class="tile top" style="--i:10">
         <div class="frame">
           <div class="chrome"><i></i><i></i><i></i><span>physio-sud.lu</span></div>
           <div class="site live" style="--a1:#9A5B34;--a2:#6B7A4F;--bg:#FAF8F3;--fg:#221F19;--ln:#E3DFD2;--cd:#fff">
@@ -1158,24 +1280,22 @@ html.anim .tile.in{opacity:1;transform:none}
               </div>
               <div class="s-tbl">
                 <div class="s-tr"><span>Séance du 11 août</span><b class="s-ok">Réglée</b></div>
-                <div class="s-tr"><span>Ordonnance 2025-114</span><b class="s-ok">Reçue</b></div>
                 <div class="s-tr"><span>Bilan à télécharger</span><b class="s-wait">Prêt</b></div>
-                <div class="s-tr"><span>Prochaine séance · mar 18, 08:30</span><b class="s-ok">Confirmée</b></div>
                 <div class="s-tr"><span>Solde à régler</span><b>0,00 €</b></div>
               </div>
-              <p class="s-p">Rappel automatique par SMS 24 h avant chaque séance.</p>
+              <div class="s-ph g3" style="--r:16/3.1;--p1:#9A5B34;--p2:#6B7A4F"></div>
             </div>
             <div class="s-foot"><span>Conventionné CNS</span><span>Rappel SMS 24 h avant</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Physio Sud</span><span class="tile-k">Rendez-vous · espace patient</span><span class="tile-p t3">1 400 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Physio Sud</span><span class="tile-k">Rendez-vous · espace patient</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
       </article>
 
       <!-- ============ 12. Marché Lankelz — Sur-mesure ============ -->
-      <article class="tile" style="--i:11">
+      <article class="tile top" style="--i:11">
         <div class="frame">
           <div class="chrome"><i></i><i></i><i></i><span>marche-lankelz.lu/gestion</span></div>
-          <div class="site live" style="--a1:#B4462C;--a2:#D2A03A;--bg:#1A1512;--fg:#F3EADD;--ln:#362C24;--cd:#241C17">
+          <div class="site live" style="--a1:#B4462C;--a2:#D2A03A;--bg:#FFFCF5;--fg:#241A14;--ln:#EADFC9;--cd:#FFFFFF">
             <div class="s-bar">
               <div class="s-logo"><span class="s-mark">ML</span>
                 <span class="s-id"><span class="s-name">Marché Lankelz</span><span class="s-sub">Tableau de bord</span></span></div>
@@ -1195,14 +1315,20 @@ html.anim .tile.in{opacity:1;transform:none}
                 <div class="s-tr"><span>#1042 · Panier bio 5 kg</span><b>32,90 €</b><b class="s-ok">Payée</b></div>
                 <div class="s-tr"><span>#1043 · Fromages fermiers</span><b>18,40 €</b><b class="s-wait">À préparer</b></div>
                 <div class="s-tr"><span>#1044 · Livraison Belval</span><b>54,10 €</b><b class="s-ok">Payée</b></div>
-                <div class="s-tr"><span>#1045 · Panier découverte</span><b>24,50 €</b><b class="s-wait">À préparer</b></div>
-                <div class="s-tr"><span>#1046 · Œufs &amp; volaille</span><b>21,80 €</b><b class="s-ok">Payée</b></div>
+              </div>
+              <div class="s-cards" style="--c:3">
+                <div class="s-card"><div class="s-ph g2" style="--r:16/9;--p1:#B4462C;--p2:#7A2A18"></div>
+                  <div class="s-cb"><span class="s-t">Panier bio</span><span class="s-pr">32,90 €</span></div></div>
+                <div class="s-card"><div class="s-ph g5" style="--r:16/9;--p1:#D2A03A;--p2:#8A6318"></div>
+                  <div class="s-cb"><span class="s-t">Fromages</span><span class="s-pr">18,40 €</span></div></div>
+                <div class="s-card"><div class="s-ph g4" style="--r:16/9;--p1:#7A8A4A;--p2:#D2A03A"></div>
+                  <div class="s-cb"><span class="s-t">Légumes</span><span class="s-pr">12,60 €</span></div></div>
               </div>
             </div>
             <div class="s-foot"><span>Stock mis à jour en direct</span><span>Paiement sécurisé</span></div>
           </div>
         </div>
-        <p class="tile-cap"><span class="tile-n">Marché Lankelz</span><span class="tile-k">Boutique &amp; gestion</span><span class="tile-p t3">1 400 €</span></p>
+        <p class="tile-cap"><span class="tile-n">Marché Lankelz</span><span class="tile-k">Boutique &amp; gestion</span><span class="tile-p t3">Sur-mesure · 1 400 €</span></p>
       </article>
 
     </div>
@@ -1286,7 +1412,7 @@ html.anim .tile.in{opacity:1;transform:none}
     <div class="proof rev" style="margin-top:clamp(1.2rem,2.6vw,2rem)">
       <div>
         <p class="proof-h">Le site — glissez la poignée</p>
-        <div class="ba" id="ba">
+        <div class="ba auto" id="ba">
           <div class="ba-l">
             <div class="ba-s ba-old">
               <div class="old">
@@ -1338,6 +1464,7 @@ html.anim .tile.in{opacity:1;transform:none}
             <input class="ba-r" id="ba-r" type="range" min="0" max="100" value="44" step="0.5"
                    aria-label="Comparer avant et après">
             <span class="ba-h" aria-hidden="true"></span>
+            <span class="ba-hint" aria-hidden="true">Glissez</span>
           </div>
         </div>
         <p class="mute" style="font-size:var(--f-xs);margin-top:.5rem">Le site « avant » est une reconstitution.</p>
@@ -1380,54 +1507,144 @@ html.anim .tile.in{opacity:1;transform:none}
     </p>
 
     <div class="plans rev" style="margin-top:clamp(1.4rem,3vw,2.4rem)">
-      <article class="plan">
-        <h3 class="plan-n">Vitrine</h3>
-        <div class="plan-p"><b>450 €</b><i>tout compris</i></div>
-        <ul class="plan-f">
-          <li>Une page, pensée téléphone d'abord</li>
-          <li>Horaires, contact, plan d'accès</li>
-          <li>Galerie de photos</li>
-          <li>Domaine + hébergement, 1 an inclus</li>
-          <li>Livré en 7 jours</li>
-        </ul>
-        <a class="btn btn-ghost" href="mailto:studio.marcus.web@gmail.com?subject=Formule%20Vitrine%20—%20450%20€">Je veux celle-là</a>
+
+      <article class="plan" style="--pa1:#C2571C">
+        <div class="plan-shot">
+          <div class="site" style="--a1:#C2571C;--a2:#D9A441;--bg:#FFFAF2;--fg:#2A1E12;--ln:#EADDC9;--cd:#FFFDF9">
+            <div class="s-bar">
+              <div class="s-logo"><span class="s-mark">BK</span>
+                <span class="s-id"><span class="s-name">Boulangerie Kremer</span><span class="s-sub">Levain — 1987</span></span></div>
+              <div class="s-nav"><span class="on">Accueil</span><span>Horaires</span></div>
+            </div>
+            <div class="s-body">
+              <div class="s-row w">
+                <div>
+                  <p class="s-h">Pétri <em>cette nuit</em>.</p>
+                  <p class="s-acts" style="margin-top:.45em"><span class="s-btn">Appeler</span></p>
+                </div>
+                <div class="s-ph g3 sheen" style="--r:4/3;--sd:.5s"></div>
+              </div>
+              <div class="s-list">
+                <div class="s-li"><b>Pain de campagne, 1 kg</b><i></i><em>4,20 €</em></div>
+                <div class="s-li"><b>Croissant pur beurre</b><i></i><em>1,30 €</em></div>
+              </div>
+              <ul class="s-hrs"><li><span>Lundi – vendredi</span><b>6 h – 18 h 30</b></li>
+                <li><span>Samedi</span><b>6 h – 17 h</b></li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="plan-in">
+          <div class="plan-top">
+            <div><h3 class="plan-n">Vitrine</h3>
+              <p class="plan-for">Être trouvé, joignable, crédible.</p></div>
+            <p class="plan-p"><b>450 €</b></p>
+          </div>
+          <ul class="plan-f">
+            <li>Une page, pensée téléphone d'abord</li>
+            <li>Horaires, contact, plan d'accès</li>
+            <li>Galerie de photos</li>
+            <li>Domaine + hébergement, 1 an inclus</li>
+            <li>En ligne en 7 jours</li>
+          </ul>
+          <a class="btn plan-cta" href="mailto:studio.marcus.web@gmail.com?subject=Formule%20Vitrine%20—%20450%20€">Je veux celle-là</a>
+        </div>
       </article>
 
-      <article class="plan best">
+      <article class="plan best" style="--pa1:#B4632F">
         <span class="plan-flag">Le plus demandé</span>
-        <h3 class="plan-n">Vitrine Pro</h3>
-        <div class="plan-p"><b>890 €</b><i>tout compris</i></div>
-        <ul class="plan-f">
-          <li>Jusqu'à 5 pages</li>
-          <li>Animations sur mesure</li>
-          <li>Catalogue produits ou prestations</li>
-          <li>Avis clients</li>
-          <li>Formulaire de contact</li>
-          <li>Deux langues</li>
-          <li>Référencement local + fiche Google</li>
-        </ul>
-        <a class="btn btn-solid" href="mailto:studio.marcus.web@gmail.com?subject=Formule%20Vitrine%20Pro%20—%20890%20€">Je veux celle-là</a>
+        <div class="plan-shot">
+          <div class="site live" style="--a1:#D28A6A;--a2:#7E5478;--bg:#FDF9F6;--fg:#2A2020;--ln:#EFE2DA;--cd:#fff">
+            <div class="s-bar">
+              <div class="s-logo"><span class="s-mark">BE</span>
+                <span class="s-id"><span class="s-name">Belle Époque</span><span class="s-sub">Institut de beauté</span></span></div>
+              <div class="s-nav"><span class="on">Soins</span><span>Avis</span><span>Contact</span></div>
+            </div>
+            <div class="s-body">
+              <div class="s-stats">
+                <div class="s-stat"><b>12</b><span>ans rue de l'Alzette</span></div>
+                <div class="s-stat"><b>4,9/5</b><span>96 avis</span></div>
+                <div class="s-stat"><b>3 200</b><span>clientes</span></div>
+              </div>
+              <div class="s-list">
+                <div class="s-li"><b>Soin visage éclat · 1 h</b><i></i><em>65 €</em></div>
+                <div class="s-li"><b>Massage dos · 30 min</b><i></i><em>45 €</em></div>
+                <div class="s-li"><b>Forfait mariée</b><i></i><em>dès 180 €</em></div>
+              </div>
+              <div style="border:1px solid var(--ln);border-radius:.4em;padding:.5em .6em;background:var(--cd)">
+                <p class="s-stars">★★★★★</p>
+                <p class="s-quote">« Le seul endroit où je ressors vraiment détendue. »</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="plan-in">
+          <div class="plan-top">
+            <div><h3 class="plan-n">Vitrine Pro</h3>
+              <p class="plan-for">Montrer ce que vous faites, pas seulement où vous êtes.</p></div>
+            <p class="plan-p"><b>890 €</b></p>
+          </div>
+          <ul class="plan-f">
+            <li>Jusqu'à 5 pages</li>
+            <li>Catalogue de produits ou de prestations</li>
+            <li>Avis clients et chiffres animés</li>
+            <li>Formulaire de contact</li>
+            <li>Deux langues</li>
+            <li>Référencement local + fiche Google</li>
+          </ul>
+          <a class="btn plan-cta" href="mailto:studio.marcus.web@gmail.com?subject=Formule%20Vitrine%20Pro%20—%20890%20€">Je veux celle-là</a>
+        </div>
       </article>
 
-      <article class="plan">
-        <h3 class="plan-n">Sur-mesure</h3>
-        <div class="plan-p"><b>1 400 €</b><i>à partir de</i></div>
-        <ul class="plan-f">
-          <li>Réservation ou rendez-vous en ligne</li>
-          <li>Catalogue que vous modifiez vous-même</li>
-          <li>Paiement sécurisé</li>
-          <li>Quatre langues</li>
-          <li>Une heure de formation chez vous</li>
-        </ul>
-        <a class="btn btn-ghost" href="mailto:studio.marcus.web@gmail.com?subject=Formule%20Sur-mesure%20—%20dès%201%20400%20€">Je veux celle-là</a>
+      <article class="plan topplan" style="--pa1:#3F6B44">
+        <span class="plan-flag alt">Le plus complet</span>
+        <div class="plan-shot">
+          <div class="site live" style="--a1:#4E7A50;--a2:#D96A8A;--bg:#FBFBF6;--fg:#1F2A1E;--ln:#DFE4D9;--cd:#fff">
+            <div class="s-bar">
+              <div class="s-logo"><span class="s-mark">FC</span>
+                <span class="s-id"><span class="s-name">Fleurs &amp; Cie</span><span class="s-sub">Boutique en ligne</span></span></div>
+              <div class="s-nav"><span class="on">Boutique</span><span>Panier</span><span>FR</span></div>
+            </div>
+            <div class="s-body">
+              <div class="s-chips"><span class="s-chip on">Tout</span><span class="s-chip">Bouquets</span><span class="s-chip">Plantes</span></div>
+              <div class="s-cards" style="--c:3">
+                <div class="s-card"><div class="s-ph g5" style="--r:4/3"></div>
+                  <div class="s-cb"><span class="s-t">Bouquet du jour</span><span class="s-pr">28 €</span></div></div>
+                <div class="s-card"><div class="s-ph g2" style="--r:4/3;--p1:#D96A8A;--p2:#8A3552"></div>
+                  <div class="s-cb"><span class="s-t">Roses anciennes</span><span class="s-pr">42 €</span></div></div>
+                <div class="s-card"><div class="s-ph g4" style="--r:4/3;--p1:#6E9A62;--p2:#D9C05A"></div>
+                  <div class="s-cb"><span class="s-t">Champêtre</span><span class="s-pr">35 €</span></div></div>
+              </div>
+              <div class="s-cart">
+                <div class="s-cl"><span>Bouquet du jour</span><i>2</i><b>56,00 €</b></div>
+                <div class="s-tot"><span>Total</span><b>64,00 €</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="plan-in">
+          <div class="plan-top">
+            <div><h3 class="plan-n">Sur-mesure</h3>
+              <p class="plan-for">Le site encaisse et réserve pendant que vous servez.</p></div>
+            <p class="plan-p"><b>1 400 €</b><i>à partir de</i></p>
+          </div>
+          <p class="plan-plus">Tout ce que fait la Pro, et en plus&nbsp;:</p>
+          <ul class="plan-f">
+            <li>Réservation ou rendez-vous en ligne</li>
+            <li>Catalogue que vous modifiez vous-même</li>
+            <li>Paiement sécurisé</li>
+            <li>Quatre langues</li>
+            <li>Une heure de formation chez vous</li>
+          </ul>
+          <a class="btn plan-cta" href="mailto:studio.marcus.web@gmail.com?subject=Formule%20Sur-mesure%20—%20dès%201%20400%20€">Je veux celle-là</a>
+        </div>
       </article>
     </div>
 
     <div class="launch rev">
-      <b class="n">3</b>
+      <b class="n">3<small>places</small></b>
       <p>
         <strong>Offre de lancement : −30 % sur les trois prochains projets.</strong>
-        En échange, un avis honnête et l'autorisation de montrer le site. C'est tout.
+        En échange, un avis honnête et l'autorisation de montrer le site.
         Ensuite, maintenance 29 €/mois sans engagement — ou rien du tout, le site reste le vôtre.
       </p>
       <a class="btn btn-solid" href="mailto:studio.marcus.web@gmail.com?subject=Offre%20de%20lancement%20—%20−30%20%25">Prendre une place</a>
@@ -1778,12 +1995,32 @@ mod('avant-apres', function(){
   if(!ba) return;
   var lane = $('.ba-l', ba), r = document.getElementById('ba-r');
   if(!lane || !r) return;
+  /* Le balayage automatique tourne en CSS. Au premier contact on le
+     coupe et le doigt (ou le clavier) prend le relais, en repartant de
+     la position réellement affichée pour qu'il n'y ait pas de saut. */
+  function stopAuto(){
+    if(!ba.classList.contains('auto')) return;
+    var shown = 44;
+    try{
+      // clip-path calculé = inset(haut droite bas gauche) : c'est la
+      // 4e valeur qui donne la position du curseur.
+      var m = getComputedStyle($('.ba-new', ba)).clipPath.match(/-?[\d.]+px/g);
+      if(m && m.length >= 4){
+        shown = clamp(parseFloat(m[3]) / lane.getBoundingClientRect().width * 100, 0, 100);
+      }
+    }catch(e){}
+    ba.classList.remove('auto');
+    ba.classList.add('touched');
+    set(shown);
+  }
+
   function set(v){
     v = clamp(v,0,100);
     lane.style.setProperty('--x', v+'%');
     if(r.value != v) r.value = v;
   }
-  on(r,'input',function(){ set(parseFloat(r.value)); });
+  on(r,'input',function(){ var v = parseFloat(r.value); stopAuto(); set(v); });
+  on(r,'pointerdown',stopAuto);
   set(44);
 
   var drag = false;
@@ -1792,6 +2029,7 @@ mod('avant-apres', function(){
     return ((e.clientX - box.left) / Math.max(1, box.width)) * 100;
   }
   on(lane,'pointerdown',function(e){
+    stopAuto();
     if(e.target === r) return;
     drag = true;
     try{ lane.setPointerCapture(e.pointerId); }catch(err){}
