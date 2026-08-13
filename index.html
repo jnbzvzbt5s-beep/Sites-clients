@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#17140F">
 
 <!-- Partage : Open Graph + Twitter Card.
-     ATTENTION — WhatsApp, Facebook et LinkedIn ne lisent pas les images
-     en data-URI : ils exigent une adresse http(s). Le fichier
+     ATTENTION — les messageries et les réseaux sociaux ne lisent pas
+     les images en data-URI : ils exigent une adresse http(s). Le fichier
      apercu-partage.svg est fourni à côté ; déposez-le sur Netlify avec
      index.html, puis remplacez les deux data: par
      https://studio-marcus.netlify.app/apercu-partage.svg -->
@@ -43,7 +43,6 @@
   "url": "https://studio-marcus.netlify.app/",
   "image": "https://studio-marcus.netlify.app/apercu-partage.svg",
   "email": "studio.marcus.web@gmail.com",
-  "telephone": "+352XXXXXXXX",
   "priceRange": "450 € – 1400 €",
   "currenciesAccepted": "EUR",
   "paymentAccepted": "Virement bancaire",
@@ -99,6 +98,9 @@
 (function(){
   try{
     var d = document.documentElement;
+    // « js » signale simplement que les scripts tournent : quelques
+    // finitions (l'invite au glissé) ne s'affichent que dans ce cas.
+    d.className += ' js';
     // mouvement réduit : on n'arme même pas les animations, donc rien
     // n'est jamais masqué et il n'y a aucun filet à poser.
     var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -606,49 +608,21 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
 .stack .k2 .site{aspect-ratio:3/4}
 
 /* ============================================================
-   6. VOTRE COMMERCE ICI
+   7. PREUVES — le volet avant/après et la fiche Google
    ============================================================ */
-.build{display:grid;gap:clamp(1rem,2.4vw,2rem);grid-template-columns:1fr;align-items:start}
-@media (min-width:900px){.build{grid-template-columns:minmax(0,.78fr) minmax(0,1fr)}}
-.fld{display:grid;gap:.35rem;margin-bottom:.8rem}
-.fld label{font-size:var(--f-micro);letter-spacing:.15em;text-transform:uppercase;font-weight:800;color:var(--mute)}
-.fld input,.fld select{width:100%;padding:.7em .85em;border:1px solid var(--line);border-radius:9px;
-  background:#fff;font-size:var(--f-sm);transition:border-color .2s,box-shadow .2s}
-.fld input:focus,.fld select:focus{outline:none;border-color:var(--accent);
-  box-shadow:0 0 0 3px rgb(var(--ar) var(--ag) var(--ab) / .16)}
-.fld select{appearance:none;-webkit-appearance:none;padding-right:2.2em;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%236B6055' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right .85em center}
-.build .frame{border-color:var(--line)}
-.build .site{aspect-ratio:16/10}
-@media (max-width:619px){.build .site{aspect-ratio:4/3}}
-
-/* ============================================================
-   7. PREUVES — avant/après + fiche Google, côte à côte
-   ============================================================ */
-.proof{display:grid;gap:clamp(1rem,2.2vw,1.8rem);grid-template-columns:1fr}
-@media (min-width:1000px){.proof{grid-template-columns:1fr 1fr}}
 .proof-h{font-size:var(--f-micro);letter-spacing:.16em;text-transform:uppercase;font-weight:800;
   color:var(--mute);margin-bottom:.6rem}
 
-.ba{position:relative;border-radius:11px;overflow:hidden;border:1px solid var(--line);
+.ba{--x:44%;position:relative;border-radius:11px;overflow:hidden;border:1px solid var(--line);
   background:#fff;user-select:none;-webkit-user-select:none}
 .ba-l{position:relative;aspect-ratio:4/3;touch-action:pan-y;container-type:inline-size}
 .ba-s{position:absolute;inset:0;overflow:hidden}
 .ba-new{clip-path:inset(0 0 0 var(--x,50%))}
 .ba-old{clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
 
-/* Balayage automatique en CSS pur : les trois calques partagent la même
-   durée, donc restent synchronisés sans aucun JavaScript. C'est ce qui
-   fait « vivre » la comparaison dans un aperçu où les scripts sont
-   coupés. Dès qu'on touche le curseur, le JS retire la classe et rend
-   la main au doigt. */
-@media (prefers-reduced-motion:no-preference){
-  .ba.auto .ba-new{animation:sweepNew 9s var(--ease-io) 1.2s infinite}
-  .ba.auto .ba-old{animation:sweepOld 9s var(--ease-io) 1.2s infinite}
-  .ba.auto .ba-h  {animation:sweepBar 9s var(--ease-io) 1.2s infinite}
-  .ba.auto .ba-hint{animation:hintFade 9s linear 1.2s infinite}
-}
+/* Balayage automatique : les images clés sont partagées, la mise en
+   route est décidée par le bouton radio « Aller-retour » (voir plus
+   bas). Rien ici ne dépend du JavaScript. */
 @keyframes sweepNew{
   0%,4%   {clip-path:inset(0 0 0 82%)}
   44%,56% {clip-path:inset(0 0 0 16%)}
@@ -677,7 +651,6 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
 .ba-hint::before,.ba-hint::after{content:"";width:0;height:0;border:4px solid transparent}
 .ba-hint::before{border-right-color:currentColor}
 .ba-hint::after{border-left-color:currentColor}
-.ba.touched .ba-hint{opacity:0;transition:opacity .3s}
 .ba-tag{position:absolute;top:8px;z-index:4;white-space:nowrap;pointer-events:none;
   font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;
   padding:.4em .7em;border-radius:999px;color:#fff}
@@ -689,9 +662,6 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
   border-radius:50%;background:#fff;box-shadow:0 3px 12px rgba(23,20,15,.3);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='11'%3E%3Cpath d='M7 1L2.5 5.5 7 10M13 1l4.5 4.5L13 10' stroke='%2317140F' stroke-width='1.7' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:center}
-.ba-r{position:absolute;inset:auto 0 0;width:100%;z-index:6;margin:0;opacity:0;height:44px;
-  cursor:ew-resize;touch-action:none}
-.ba-r:focus-visible+.ba-h::after{box-shadow:0 0 0 3px var(--accent),0 3px 12px rgba(23,20,15,.3)}
 
 /* le vieux site */
 .old{background:#fff;color:#222;font-family:"Times New Roman",Times,serif;height:100%;
@@ -718,7 +688,6 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
 .goo-u{display:flex;align-items:center;gap:.4rem;font-size:12px;color:#4d5156;margin-bottom:2px}
 .goo-fv{width:16px;height:16px;border-radius:50%;background:var(--iv-3);flex:0 0 auto;display:grid;
   place-items:center;font-size:8.5px;font-weight:800;color:#8a8177}
-.goo-fv.on{background:linear-gradient(135deg,var(--accent),#CE7229);color:#fff}
 .goo-t{font-size:17px;line-height:1.28;color:#5f4b8b;margin:1px 0 3px}
 .goo-t.dim{color:#7a7a7a}
 .goo-m{display:flex;flex-wrap:wrap;gap:.15rem .5rem;font-size:12.4px;color:#4d5156;align-items:center}
@@ -856,45 +825,15 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
 
 
 /* ============================================================
-   13. CONTACT DIRECT — téléphone et WhatsApp en tête
+   13. CONTACT DIRECT — l'e-mail en tête
    ============================================================ */
-/* Teintes fixes et volontairement sombres : le blanc doit passer AA
-   dessus (4,5:1), ce que l'accent corail vif ne garantissait pas. */
-.btn-tel{background:#A8451C;color:#fff;border-color:transparent}
-.btn-wa{background:#1B6B3C;color:#fff;border-color:transparent}
-@media (hover:hover){
-  .btn-tel:hover{background:#8F3915}
-  .btn-wa:hover{background:#155630}
-}
-/* les boutons de contact gardent un focus très lisible */
-.btn-tel:focus-visible,.btn-wa:focus-visible{outline:3px solid #17140F;outline-offset:3px}
-.dark .btn-tel:focus-visible,.dark .btn-wa:focus-visible{outline-color:#F7F2E8}
-.actbar .btn:focus-visible{outline:3px solid #F7F2E8;outline-offset:-3px}
-.dark .btn-wa,.btn-wa{color:#fff}
+
 .btn ico{display:block;width:1.05em;height:1.05em;flex:0 0 auto;background:currentColor;
   -webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat}
 @supports not (mask:url("#a")){.btn ico{display:none}}
 .ic-tel{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11.4 11.4 0 003.6.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.4 11.4 0 00.57 3.6 1 1 0 01-.25 1z'/%3E%3C/svg%3E")}
 .ic-wa{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 00-8.6 15.05L2 22l5.1-1.33A10 10 0 1012 2zm5.6 14.2c-.24.67-1.4 1.28-1.93 1.32-.5.04-.97.22-3.27-.68-2.75-1.08-4.5-3.9-4.63-4.08-.14-.18-1.1-1.47-1.1-2.8 0-1.33.7-1.98.95-2.25.25-.27.54-.34.72-.34h.52c.17 0 .4-.06.62.48.23.55.78 1.9.85 2.04.07.14.11.3.02.48-.09.18-.14.3-.27.46l-.4.47c-.13.13-.27.28-.12.55.15.27.67 1.1 1.44 1.79.99.88 1.82 1.15 2.08 1.29.26.13.41.11.56-.07.15-.18.65-.76.82-1.02.17-.26.35-.22.58-.13.24.09 1.5.71 1.76.84.26.13.43.2.5.31.06.11.06.64-.18 1.31z'/%3E%3C/svg%3E")}
 .ic-mail{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 8.2L4.3 7.4v10.1h15.4V7.4z'/%3E%3C/svg%3E")}
-
-/* Barre d'action mobile. « position:sticky » suffit : placée juste
-   après le hero dans le flux, elle ne peut apparaître qu'une fois le
-   hero dépassé. Aucun JavaScript, aucun calcul de défilement. */
-.actbar{display:none}
-@media (max-width:719px){
-  .actbar{
-    display:flex;position:sticky;bottom:0;z-index:55;gap:.5rem;
-    padding:.55rem var(--pad) calc(.55rem + env(safe-area-inset-bottom));
-    background:rgba(23,20,15,.93);border-top:1px solid var(--ink-line);
-  }
-  @supports (backdrop-filter:blur(8px)){
-    .actbar{background:rgba(23,20,15,.82);backdrop-filter:blur(10px)}
-  }
-  .actbar .btn{flex:1;padding:.8em 1em;font-size:var(--f-xs)}
-  /* le pied ne doit jamais passer sous la barre */
-  .foot{padding-bottom:calc(4.6rem + env(safe-area-inset-bottom))}
-}
 
 /* CTA du simulateur : reprend la saisie en direct */
 .simcta{
@@ -957,7 +896,6 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
      identifie le niveau de formule, le reste est du remplissage vertical */
   .plan-shot .site{aspect-ratio:16/8.6}
   .plan.topplan .plan-shot .site,.plan.best .plan-shot .site{aspect-ratio:16/9.4}
-  .hero-cta:nth-of-type(2) .btn{padding:.7em 1.05em;font-size:var(--f-xs)}
   .facts{gap:.45rem;margin-top:1.2rem}
   .payline{gap:.3rem .9rem;padding:.7rem .9rem;font-size:var(--f-xs)}
   .simcta{padding:.85rem;gap:.6rem}
@@ -996,7 +934,7 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
     box-shadow:none !important;filter:none !important;
     -webkit-print-color-adjust:exact;print-color-adjust:exact}
   html,body{background:#fff !important;color:#000 !important;font-size:10pt;overflow:visible !important}
-  #intro,#grain,#halo,#rail,.veil,.skip,.ba-r,.ba-h,.gal-hint{display:none !important}
+  #intro,#grain,#halo,#rail,.veil,.skip,.ba-i,.ba-h,.gal-hint{display:none !important}
   .dark,.tint,.plan,.launch,.frame,.goo,.site,.s-card,.s-cart,.ba{background:#fff !important;color:#000 !important}
   .site.live::before,.site.live::after{display:none !important}
   .dark .lead,.mute,.ct-i p,.step span,.foot,.tile-k,.s-p,.goo-d,.goo-m,.goo-u,.launch p{color:#333 !important}
@@ -1022,9 +960,404 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
   .old{padding-top:.9em !important}
   .ba-new .s-bar{padding-top:.62em !important}
   .stack{display:none}
-  .proof,.build{display:block}
-  .proof>*,.build>*{margin-bottom:5mm}
+  .sim-out{display:block}
+  .sim-out>*{margin-bottom:5mm}
 }
+</style>
+<style>
+/* ============================================================
+   6 bis. LE SIMULATEUR — 100 % CSS
+   Chaque métier est un bouton radio. Le radio coché réécrit une
+   série de variables sur le bloc qui suit ; les textes de la
+   maquette et de la fiche Google sont rendus par « content ».
+   Aucun JavaScript n'est nécessaire pour que tout change.
+   ============================================================ */
+.sim{display:flex;flex-wrap:wrap;gap:.42rem;align-items:flex-start}
+.sim-lab{flex:1 0 100%;font-size:var(--f-micro);letter-spacing:.15em;text-transform:uppercase;
+  font-weight:800;color:var(--mute);margin-bottom:.1rem}
+.m-i{position:absolute;width:1px;height:1px;opacity:0;margin:0;pointer-events:none}
+.chip{
+  display:inline-flex;align-items:center;gap:.4em;cursor:pointer;
+  padding:.52em .9em;border-radius:999px;border:1px solid var(--line);
+  background:#fff;font-size:var(--f-xs);font-weight:700;line-height:1.1;
+  transition:background .22s var(--ease),color .22s var(--ease),
+             border-color .22s var(--ease),transform .22s var(--ease);
+}
+@media (hover:hover){.chip:hover{border-color:var(--accent);transform:translateY(-1px)}}
+.chip::before{content:"";width:1em;height:1em;flex:0 0 auto;background:currentColor;
+  -webkit-mask:var(--ck) center/contain no-repeat;mask:var(--ck) center/contain no-repeat;opacity:.7}
+.m-i:checked+.chip{background:var(--ink);color:var(--iv);border-color:var(--ink);box-shadow:0 6px 16px -8px rgba(35,28,20,.8)}
+.m-i:checked+.chip::before{opacity:1}
+.m-i:focus-visible+.chip{outline:2px solid var(--accent);outline-offset:2px}
+
+/* la sortie : maquette + fiche Google, pilotées par les variables */
+.sim-out{flex:1 0 100%;display:grid;gap:clamp(1rem,2.2vw,1.7rem);
+  grid-template-columns:1fr;align-items:start;margin-top:clamp(.9rem,2vw,1.4rem)}
+@media (min-width:1000px){.sim-out{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}}
+.fld-lab{display:block;font-size:var(--f-micro);letter-spacing:.15em;text-transform:uppercase;
+  font-weight:800;color:var(--mute);margin-bottom:.45rem}
+.fld-lab b{color:var(--accent-ink);font-weight:800}
+
+/* la maquette du simulateur respire : elle se règle sur son contenu */
+.sim-frame{border-color:var(--line)}
+.sim-site{aspect-ratio:auto;font-size:clamp(11.5px,3.5cqw,15px)}
+.sim-site .s-bar{flex-wrap:wrap}
+.sim-site .s-logo{flex:1 1 62%}
+.sim-site .s-id{flex:1 1 auto}
+.sim-site .s-mark{display:grid;place-items:center}
+.sim-site .s-mark::before{content:"";width:58%;height:58%;background:#fff;
+  -webkit-mask:var(--mk) center/contain no-repeat;mask:var(--mk) center/contain no-repeat}
+/* le champ EST l'enseigne : sans JavaScript, ce qu'on tape s'affiche
+   immédiatement là où le client le lira. 16 px minimum pour qu'iOS
+   ne zoome pas à la mise au point. */
+.s-name-in{
+  display:block;width:100%;font-family:var(--serif);font-size:max(16px,1.06em);
+  line-height:1.14;background:transparent;color:inherit;
+  border:0;border-bottom:1px dashed var(--a2);border-radius:0;
+  padding:0 0 .1em;-webkit-appearance:none;appearance:none;
+}
+.s-name-in::placeholder{color:currentColor;opacity:.38}
+.s-name-in:focus{outline:none;border-bottom-color:var(--a1);border-bottom-style:solid}
+.s-name-in:focus-visible{box-shadow:0 2px 0 0 var(--a1)}
+
+/* textes rendus depuis les variables */
+.v-k::before{content:var(--vk,"")}
+.v-t::before{content:var(--vt,"")}
+.v-h::before{content:var(--vh,"")}
+.v-x::before{content:var(--vx,"")}
+.v-c::before{content:var(--vc,"")}
+.v-c2::before{content:var(--vc2,"")}
+.v-n1::before{content:var(--n1,"")}
+.v-n2::before{content:var(--n2,"")}
+.v-n3::before{content:var(--n3,"")}
+.v-o1::before{content:var(--o1,"")}
+.v-o2::before{content:var(--o2,"")}
+.v-o3::before{content:var(--o3,"")}
+.v-q1::before{content:var(--q1,"")}
+.v-q2::before{content:var(--q2,"")}
+.v-q3::before{content:var(--q3,"")}
+.v-d1::before{content:var(--d1,"")}
+.v-e1::before{content:var(--e1,"")}
+.v-d2::before{content:var(--d2,"")}
+.v-e2::before{content:var(--e2,"")}
+.v-f::before{content:var(--vf,"")}
+.v-o::before{content:var(--vo,"")}
+.v-g::before{content:var(--vg,"")}
+.v-desc::before{content:var(--vd,"")}
+.v-k1::before{content:var(--k1,"")}
+.v-k2::before{content:var(--k2,"")}
+.v-k3::before{content:var(--k3,"")}
+.g-cat::before{content:" — " var(--vg,"") " à Esch-sur-Alzette"}
+.goo-fv.on{background:linear-gradient(135deg,var(--a1,#C2571C),var(--a2,#D9A441));
+  display:grid;place-items:center}
+.goo-fv.on::before{content:"";width:62%;height:62%;background:#fff;
+  -webkit-mask:var(--mk) center/contain no-repeat;mask:var(--mk) center/contain no-repeat}
+.g-nm{font-weight:inherit}
+
+/* le lien « on regarde le résultat » sous la maquette */
+.sim-note{font-size:var(--f-xs);color:var(--mute);line-height:1.45;margin-top:.55rem}
+
+.sim-out{
+  --a1:#C2571C;--a2:#D9A441;--bg:#FFFAF2;--fg:#2A1E12;--ln:#EADDC9;--cd:#FFFDF9;
+  --mk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22V9'/><path d='M12 9c0-2.1 1.7-3.8 3.8-3.8C15.8 7.3 14.1 9 12 9z'/><path d='M12 9C12 6.9 10.3 5.2 8.2 5.2 8.2 7.3 9.9 9 12 9z'/><path d='M12 15c0-2.1 1.7-3.8 3.8-3.8C15.8 13.3 14.1 15 12 15z'/><path d='M12 15c0-2.1-1.7-3.8-3.8-3.8C8.2 13.3 9.9 15 12 15z'/></svg>");
+  --vk:"Cuit sur place";
+  --vt:"Levain — Esch-sur-Alzette";
+  --vh:"Le levain tous les matins.";
+  --vx:"Farines du moulin voisin, cuisson au four à sole, fournée de 6 h encore tiède.";
+  --vc:"Voir les horaires";
+  --vc2:"Nous trouver";
+  --n1:"Accueil";
+  --n2:"Pains";
+  --n3:"Horaires";
+  --o1:"Pain de campagne, 1 kg";
+  --q1:"4,20 €";
+  --o2:"Croissant pur beurre";
+  --q2:"1,30 €";
+  --o3:"Tarte aux quetsches";
+  --q3:"18,50 €";
+  --d1:"Lundi – vendredi";--e1:"6 h – 18 h 30";
+  --d2:"Samedi";--e2:"6 h – 17 h";
+  --vf:"14 rue de l’Alzette · Esch";
+  --vg:"Boulangerie";
+  --vo:"Ouvert · ferme à 18 h 30";
+  --vd:"Pains au levain cuits sur place chaque matin, viennoiseries pur beurre et tartes de saison. Horaires, plan d’accès et commandes.";
+  --k1:"Nos pains";
+  --k2:"Horaires";
+  --k3:"Nous trouver";
+}
+#m1:checked ~ .sim-out{
+  --a1:#C2571C;--a2:#D9A441;--bg:#FFFAF2;--fg:#2A1E12;--ln:#EADDC9;--cd:#FFFDF9;
+  --mk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22V9'/><path d='M12 9c0-2.1 1.7-3.8 3.8-3.8C15.8 7.3 14.1 9 12 9z'/><path d='M12 9C12 6.9 10.3 5.2 8.2 5.2 8.2 7.3 9.9 9 12 9z'/><path d='M12 15c0-2.1 1.7-3.8 3.8-3.8C15.8 13.3 14.1 15 12 15z'/><path d='M12 15c0-2.1-1.7-3.8-3.8-3.8C8.2 13.3 9.9 15 12 15z'/></svg>");
+  --vk:"Cuit sur place";
+  --vt:"Levain — Esch-sur-Alzette";
+  --vh:"Le levain tous les matins.";
+  --vx:"Farines du moulin voisin, cuisson au four à sole, fournée de 6 h encore tiède.";
+  --vc:"Voir les horaires";
+  --vc2:"Nous trouver";
+  --n1:"Accueil";
+  --n2:"Pains";
+  --n3:"Horaires";
+  --o1:"Pain de campagne, 1 kg";
+  --q1:"4,20 €";
+  --o2:"Croissant pur beurre";
+  --q2:"1,30 €";
+  --o3:"Tarte aux quetsches";
+  --q3:"18,50 €";
+  --d1:"Lundi – vendredi";--e1:"6 h – 18 h 30";
+  --d2:"Samedi";--e2:"6 h – 17 h";
+  --vf:"14 rue de l’Alzette · Esch";
+  --vg:"Boulangerie";
+  --vo:"Ouvert · ferme à 18 h 30";
+  --vd:"Pains au levain cuits sur place chaque matin, viennoiseries pur beurre et tartes de saison. Horaires, plan d’accès et commandes.";
+  --k1:"Nos pains";
+  --k2:"Horaires";
+  --k3:"Nous trouver";
+}
+#m2:checked ~ .sim-out{
+  --a1:#B32B26;--a2:#E0A32E;--bg:#FFF9F0;--fg:#2A1712;--ln:#EEDDCB;--cd:#FFFFFF;
+  --mk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3v6a2.6 2.6 0 0 0 5.2 0V3'/><path d='M8.6 9v12'/><path d='M18.5 3c-1.8 1.4-2.7 3.5-2.7 5.8V14h4V3z'/><path d='M17.8 14v7'/></svg>");
+  --vk:"Carte du marché";
+  --vt:"Cuisine du marché — midi & soir";
+  --vh:"La carte change chaque semaine.";
+  --vx:"Vingt-huit couverts, une ardoise, et ce que les producteurs ont apporté le matin.";
+  --vc:"Réserver une table";
+  --vc2:"Voir la carte";
+  --n1:"La carte";
+  --n2:"Réserver";
+  --n3:"Contact";
+  --o1:"Menu du midi, 2 services";
+  --q1:"19 €";
+  --o2:"Judd mat Gaardebounen";
+  --q2:"26 €";
+  --o3:"Menu dégustation, 5 temps";
+  --q3:"58 €";
+  --d1:"Mardi – samedi";--e1:"12 h – 14 h · 19 h – 22 h";
+  --d2:"Dimanche";--e2:"12 h – 15 h";
+  --vf:"5 place de la Résistance · Esch";
+  --vg:"Restaurant";
+  --vo:"Ouvert · ferme à 22 h";
+  --vd:"Cuisine du marché, carte renouvelée chaque semaine. Réservation en ligne et salle privative jusqu’à 14 personnes.";
+  --k1:"La carte";
+  --k2:"Réserver";
+  --k3:"Menu du midi";
+}
+#m3:checked ~ .sim-out{
+  --a1:#C9707E;--a2:#8E6CA8;--bg:#FDF8F8;--fg:#2B1D24;--ln:#EFDFE3;--cd:#FFFFFF;
+  --mk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='6' cy='6.5' r='2.6'/><circle cx='6' cy='17.5' r='2.6'/><path d='M20.5 3.5L8.2 15.9'/><path d='M14.4 12.2l6.1 8.3'/><path d='M8.2 8.1l3.3 3.3'/></svg>");
+  --vk:"Sur rendez-vous";
+  --vt:"Coupe · couleur · soin";
+  --vh:"Une coupe qui tient.";
+  --vx:"Diagnostic du cheveu avant chaque couleur, produits sans ammoniaque.";
+  --vc:"Prendre rendez-vous";
+  --vc2:"Les prestations";
+  --n1:"Le salon";
+  --n2:"Prestations";
+  --n3:"Rendez-vous";
+  --o1:"Coupe & brushing";
+  --q1:"42 €";
+  --o2:"Balayage complet";
+  --q2:"95 €";
+  --o3:"Soin kératine";
+  --q3:"35 €";
+  --d1:"Mardi – vendredi";--e1:"9 h – 19 h";
+  --d2:"Samedi";--e2:"8 h 30 – 17 h";
+  --vf:"22 rue de Luxembourg · Esch";
+  --vg:"Salon de coiffure";
+  --vo:"Ouvert · ferme à 19 h";
+  --vd:"Coupe, couleur et soin sur rendez-vous. Réservation en ligne 24 h/24, annulation gratuite jusqu’à 12 h avant.";
+  --k1:"Prestations";
+  --k2:"Rendez-vous";
+  --k3:"L’équipe";
+}
+#m4:checked ~ .sim-out{
+  --a1:#E08A1E;--a2:#C33A22;--bg:#17130F;--fg:#F2E9DC;--ln:#332A22;--cd:#1F1913;
+  --mk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3.2'/><path d='M12 2.2v3M12 18.8v3M2.2 12h3M18.8 12h3'/><path d='M5.1 5.1l2.1 2.1M16.8 16.8l2.1 2.1M18.9 5.1L16.8 7.2M7.2 16.8l-2.1 2.1'/></svg>");
+  --vk:"Toutes marques";
+  --vt:"Entretien · carrosserie";
+  --vh:"Prêt pour le contrôle, du premier coup.";
+  --vx:"Devis annoncé avant l’intervention, véhicule de courtoisie sur demande.";
+  --vc:"Demander un devis";
+  --vc2:"Nos occasions";
+  --n1:"Accueil";
+  --n2:"Véhicules";
+  --n3:"Atelier";
+  --o1:"Vidange + filtres";
+  --q1:"dès 89 €";
+  --o2:"Préparation contrôle technique";
+  --q2:"45 €";
+  --o3:"Géométrie 4 roues";
+  --q3:"75 €";
+  --d1:"Lundi – vendredi";--e1:"7 h 30 – 18 h";
+  --d2:"Samedi";--e2:"8 h – 12 h";
+  --vf:"31 rue de l’Industrie · Esch";
+  --vg:"Garage automobile";
+  --vo:"Ouvert · ferme à 18 h";
+  --vd:"Entretien toutes marques, carrosserie et préparation au contrôle technique. Devis annoncé avant intervention.";
+  --k1:"Véhicules d’occasion";
+  --k2:"Tarifs atelier";
+  --k3:"Rendez-vous";
+}
+#m5:checked ~ .sim-out{
+  --a1:#A67C2E;--a2:#7B2233;--bg:#FCFAF6;--fg:#241C18;--ln:#E5DDCF;--cd:#FFFFFF;
+  --mk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3.2v18M7 21.2h10M4 8.2h16'/><path d='M12 4.6L4 8.2M12 4.6l8 3.6'/><path d='M4 8.2L1.6 14.4h4.8zM20 8.2l2.4 6.2h-4.8z'/></svg>");
+  --vk:"Premier entretien offert";
+  --vt:"Conseil et accompagnement";
+  --vh:"Un interlocuteur, du début à la fin.";
+  --vx:"Entretiens en français, allemand ou luxembourgeois. Honoraires annoncés d’emblée.";
+  --vc:"Demander un rendez-vous";
+  --vc2:"Nos domaines";
+  --n1:"Le cabinet";
+  --n2:"Domaines";
+  --n3:"Honoraires";
+  --o1:"Premier rendez-vous, 30 min";
+  --q1:"offert";
+  --o2:"Consultation";
+  --q2:"120 €";
+  --o3:"Création de société";
+  --q3:"dès 900 €";
+  --d1:"Lundi – jeudi";--e1:"8 h 30 – 18 h";
+  --d2:"Vendredi";--e2:"8 h 30 – 16 h";
+  --vf:"8 bd Prince Henri · Esch";
+  --vg:"Cabinet d’avocats";
+  --vo:"Ouvert · ferme à 18 h";
+  --vd:"Droit du travail, droit des sociétés et baux commerciaux. Premier entretien de 30 minutes offert.";
+  --k1:"Domaines";
+  --k2:"Honoraires";
+  --k3:"Rendez-vous";
+}
+#m6:checked ~ .sim-out{
+  --a1:#4E7A50;--a2:#D96A8A;--bg:#FBFBF6;--fg:#1F2A1E;--ln:#DFE4D9;--cd:#FFFFFF;
+  --mk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22v-6.4'/><circle cx='12' cy='6.4' r='2.4'/><circle cx='8.1' cy='9.4' r='2.4'/><circle cx='15.9' cy='9.4' r='2.4'/><circle cx='9.6' cy='14' r='2.4'/><circle cx='14.4' cy='14' r='2.4'/></svg>");
+  --vk:"Livraison le jour même";
+  --vt:"Bouquets, plantes, compositions";
+  --vh:"Composé le matin, livré le jour même.";
+  --vx:"Fleurs de saison, arrivage trois fois par semaine. Livraison avant 14 h.";
+  --vc:"Commander un bouquet";
+  --vc2:"La boutique";
+  --n1:"Boutique";
+  --n2:"Abonnements";
+  --n3:"Contact";
+  --o1:"Bouquet du moment";
+  --q1:"28 €";
+  --o2:"Abonnement mensuel";
+  --q2:"45 €";
+  --o3:"Composition mariage";
+  --q3:"dès 140 €";
+  --d1:"Lundi – samedi";--e1:"8 h – 18 h 30";
+  --d2:"Dimanche";--e2:"9 h – 12 h 30";
+  --vf:"3 rue J.-P. Michels · Esch";
+  --vg:"Fleuriste";
+  --vo:"Ouvert · ferme à 18 h 30";
+  --vd:"Bouquets de saison composés le matin, plantes d’intérieur et compositions de mariage. Livraison le jour même.";
+  --k1:"Boutique";
+  --k2:"Abonnements";
+  --k3:"Livraison";
+}
+#m7:checked ~ .sim-out{
+  --a1:#B5651D;--a2:#6B7A55;--bg:#FAF7F0;--fg:#241E16;--ln:#E6DDCD;--cd:#FFFFFF;
+  --mk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2.6' y='3.6' width='12' height='5' rx='1.2'/><path d='M14.6 6.1h4.6a1.6 1.6 0 0 1 1.6 1.6v2.6a1.6 1.6 0 0 1-1.6 1.6H12v2.4'/><rect x='10' y='14.6' width='4' height='6.6' rx='1.2'/></svg>");
+  --vk:"Devis sous 72 h";
+  --vt:"Rénovation · peinture · carrelage";
+  --vh:"Chantier propre, délai tenu, prix annoncé.";
+  --vx:"Vingt ans de chantiers dans le sud du pays. Photos avant/après de chaque réalisation.";
+  --vc:"Demander un devis";
+  --vc2:"Nos réalisations";
+  --n1:"Accueil";
+  --n2:"Réalisations";
+  --n3:"Devis";
+  --o1:"Visite et devis";
+  --q1:"offert";
+  --o2:"Peinture intérieure";
+  --q2:"dès 22 €/m²";
+  --o3:"Salle de bain clé en main";
+  --q3:"dès 6 500 €";
+  --d1:"Lundi – vendredi";--e1:"7 h – 17 h";
+  --d2:"Samedi";--e2:"sur rendez-vous";
+  --vf:"Zone Lankelz · Esch";
+  --vg:"Entreprise de rénovation";
+  --vo:"Ouvert · ferme à 17 h";
+  --vd:"Rénovation intérieure, peinture et carrelage dans le sud du Luxembourg. Devis gratuit sous 72 h.";
+  --k1:"Réalisations";
+  --k2:"Devis gratuit";
+  --k3:"Contact";
+}
+#m8:checked ~ .sim-out{
+  --a1:#B4462C;--a2:#D2A03A;--bg:#FFFBF3;--fg:#241A14;--ln:#EADFC9;--cd:#FFFFFF;
+  --mk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2.8 8.4h18.4l-2.1 11.8H4.9z'/><path d='M8.2 8.4l2.6-5.2M15.8 8.4l-2.6-5.2'/><path d='M9.2 12.4v4M14.8 12.4v4'/></svg>");
+  --vk:"Producteurs de la Minette";
+  --vt:"Produits frais et locaux";
+  --vh:"Le marché, livré chez vous.";
+  --vx:"Producteurs de la Minette, paniers hebdomadaires, livraison à vélo dans Esch.";
+  --vc:"Composer mon panier";
+  --vc2:"Les producteurs";
+  --n1:"Boutique";
+  --n2:"Paniers";
+  --n3:"Livraison";
+  --o1:"Panier bio, 5 kg";
+  --q1:"32,90 €";
+  --o2:"Fromages fermiers";
+  --q2:"18,40 €";
+  --o3:"Livraison Esch";
+  --q3:"4 €";
+  --d1:"Mardi – samedi";--e1:"8 h – 19 h";
+  --d2:"Dimanche";--e2:"8 h – 12 h";
+  --vf:"12 rue du Commerce · Esch";
+  --vg:"Épicerie fine";
+  --vo:"Ouvert · ferme à 19 h";
+  --vd:"Produits frais des producteurs de la Minette, paniers hebdomadaires et livraison à vélo dans Esch-sur-Alzette.";
+  --k1:"Nos paniers";
+  --k2:"Livraison";
+  --k3:"Producteurs";
+}
+.chip[for="m1"]{--ck:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22V9'/><path d='M12 9c0-2.1 1.7-3.8 3.8-3.8C15.8 7.3 14.1 9 12 9z'/><path d='M12 9C12 6.9 10.3 5.2 8.2 5.2 8.2 7.3 9.9 9 12 9z'/><path d='M12 15c0-2.1 1.7-3.8 3.8-3.8C15.8 13.3 14.1 15 12 15z'/><path d='M12 15c0-2.1-1.7-3.8-3.8-3.8C8.2 13.3 9.9 15 12 15z'/></svg>")}
+.chip[for="m2"]{--ck:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3v6a2.6 2.6 0 0 0 5.2 0V3'/><path d='M8.6 9v12'/><path d='M18.5 3c-1.8 1.4-2.7 3.5-2.7 5.8V14h4V3z'/><path d='M17.8 14v7'/></svg>")}
+.chip[for="m3"]{--ck:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='6' cy='6.5' r='2.6'/><circle cx='6' cy='17.5' r='2.6'/><path d='M20.5 3.5L8.2 15.9'/><path d='M14.4 12.2l6.1 8.3'/><path d='M8.2 8.1l3.3 3.3'/></svg>")}
+.chip[for="m4"]{--ck:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3.2'/><path d='M12 2.2v3M12 18.8v3M2.2 12h3M18.8 12h3'/><path d='M5.1 5.1l2.1 2.1M16.8 16.8l2.1 2.1M18.9 5.1L16.8 7.2M7.2 16.8l-2.1 2.1'/></svg>")}
+.chip[for="m5"]{--ck:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3.2v18M7 21.2h10M4 8.2h16'/><path d='M12 4.6L4 8.2M12 4.6l8 3.6'/><path d='M4 8.2L1.6 14.4h4.8zM20 8.2l2.4 6.2h-4.8z'/></svg>")}
+.chip[for="m6"]{--ck:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22v-6.4'/><circle cx='12' cy='6.4' r='2.4'/><circle cx='8.1' cy='9.4' r='2.4'/><circle cx='15.9' cy='9.4' r='2.4'/><circle cx='9.6' cy='14' r='2.4'/><circle cx='14.4' cy='14' r='2.4'/></svg>")}
+.chip[for="m7"]{--ck:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2.6' y='3.6' width='12' height='5' rx='1.2'/><path d='M14.6 6.1h4.6a1.6 1.6 0 0 1 1.6 1.6v2.6a1.6 1.6 0 0 1-1.6 1.6H12v2.4'/><rect x='10' y='14.6' width='4' height='6.6' rx='1.2'/></svg>")}
+.chip[for="m8"]{--ck:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2.8 8.4h18.4l-2.1 11.8H4.9z'/><path d='M8.2 8.4l2.6-5.2M15.8 8.4l-2.6-5.2'/><path d='M9.2 12.4v4M14.8 12.4v4'/></svg>")}
+
+/* ============================================================
+   7 bis. AVANT / APRÈS — 100 % CSS
+   Quatre boutons radio règlent la position du volet. « Aller-retour »
+   est coché au départ : la comparaison s'anime toute seule, même
+   dans un aperçu où les scripts sont coupés. Le JavaScript n'ajoute
+   que le glissé au doigt.
+   ============================================================ */
+.bawrap{position:relative}
+.ba-i{position:absolute;width:1px;height:1px;opacity:0;margin:0;pointer-events:none}
+.ba-tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.6rem}
+.ba-t{cursor:pointer;padding:.45em .85em;border-radius:999px;border:1px solid var(--line);
+  background:#fff;font-size:var(--f-micro);font-weight:800;letter-spacing:.05em;
+  text-transform:uppercase;line-height:1.1;
+  transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease)}
+@media (hover:hover){.ba-t:hover{border-color:var(--accent)}}
+
+#ba-auto:checked ~ .ba-tabs .ba-t[for="ba-auto"]{background:var(--ink);color:var(--iv);border-color:var(--ink)}
+#ba-auto:focus-visible ~ .ba-tabs .ba-t[for="ba-auto"]{outline:2px solid var(--accent);outline-offset:2px}
+#ba-old:checked ~ .ba-tabs .ba-t[for="ba-old"]{background:var(--ink);color:var(--iv);border-color:var(--ink)}
+#ba-old:focus-visible ~ .ba-tabs .ba-t[for="ba-old"]{outline:2px solid var(--accent);outline-offset:2px}
+#ba-mid:checked ~ .ba-tabs .ba-t[for="ba-mid"]{background:var(--ink);color:var(--iv);border-color:var(--ink)}
+#ba-mid:focus-visible ~ .ba-tabs .ba-t[for="ba-mid"]{outline:2px solid var(--accent);outline-offset:2px}
+#ba-new:checked ~ .ba-tabs .ba-t[for="ba-new"]{background:var(--ink);color:var(--iv);border-color:var(--ink)}
+#ba-new:focus-visible ~ .ba-tabs .ba-t[for="ba-new"]{outline:2px solid var(--accent);outline-offset:2px}
+#ba-old:checked ~ .ba{--x:100%}
+#ba-mid:checked ~ .ba{--x:50%}
+#ba-new:checked ~ .ba{--x:0%}
+#ba-man:checked ~ .ba{--x:44%}
+@media (prefers-reduced-motion:no-preference){
+  #ba-auto:checked ~ .ba .ba-new{animation:sweepNew 9s var(--ease-io) 1s infinite}
+  #ba-auto:checked ~ .ba .ba-old{animation:sweepOld 9s var(--ease-io) 1s infinite}
+  #ba-auto:checked ~ .ba .ba-h  {animation:sweepBar 9s var(--ease-io) 1s infinite}
+}
+/* l'invite au glissé ne s'affiche que si les scripts tournent */
+.ba-hint{display:none}
+.js .ba-hint{display:flex}
+.js.anim #ba-auto:checked ~ .ba .ba-hint{animation:hintFade 9s linear 1s infinite}
+.ba.touched .ba-hint{opacity:0;transition:opacity .3s}
+.js .ba-l{cursor:ew-resize}
+@media print{.ba-tabs{display:none}}
 </style>
 </head>
 <body>
@@ -1070,17 +1403,9 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
         <div class="fact"><b>0 €</b><span>avant la mise en ligne</span></div>
       </div>
 
-      <!-- PLACEHOLDER À REMPLACER : 352XXXXXXXX → votre numéro réel,
-           au format international sans espace ni « + » pour wa.me,
-           avec le « + » pour tel:. Les cinq occurrences de la page
-           sont signalées par ce même commentaire. -->
       <p class="hero-cta hero-late">
-        <a class="btn btn-tel" href="tel:+352XXXXXXXX"><ico class="ic-tel" aria-hidden="true"></ico>Appeler Marcus</a>
-        <a class="btn btn-wa" href="https://wa.me/352XXXXXXXX?text=Bonjour%20Marcus%2C%20j%27ai%20vu%20votre%20page%20de%20d%C3%A9monstration%20et%20je%20voudrais%20un%20site%20pour%20mon%20commerce." target="_blank" rel="noopener"><ico class="ic-wa" aria-hidden="true"></ico>WhatsApp</a>
-      </p>
-      <p class="hero-cta hero-late" style="--d:120ms;margin-top:.65rem">
+        <a class="btn btn-solid" href="mailto:studio.marcus.web@gmail.com?subject=Un%20site%20pour%20mon%20commerce"><ico class="ic-mail" aria-hidden="true"></ico>Écrire à Marcus</a>
         <a class="btn btn-ghost" href="#galerie">Voir les 12 sites</a>
-        <a class="btn btn-ghost" href="mailto:studio.marcus.web@gmail.com?subject=Un%20site%20pour%20mon%20commerce"><ico class="ic-mail" aria-hidden="true"></ico>Par e-mail</a>
       </p>
     </div>
 
@@ -1555,78 +1880,131 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
   </div>
 </section>
 
-<!-- =================== VOTRE COMMERCE ICI ================== -->
+<!-- =================== VOTRE COMMERCE ICI ==================
+     Tout ce bloc fonctionne sans JavaScript : les huit métiers sont
+     des boutons radio qui réécrivent les couleurs et les textes de la
+     maquette et de la fiche Google. Le champ du nom EST l'enseigne
+     affichée : ce qu'on tape apparaît là où le client le lira.
+     Le JavaScript n'ajoute que l'adresse du site et le message
+     pré-rempli. -->
 <section id="votre-commerce" class="sect tint">
   <div class="wrap">
     <p class="eyebrow rev">Essayez, c'est instantané</p>
     <h2 class="rev" style="max-width:16ch">Mettez votre nom dessus.</h2>
+    <p class="lead rev" style="max-width:52ch">Choisissez votre métier, tapez votre enseigne&nbsp;:
+      la maquette et la fiche Google se réécrivent sous vos yeux. Rien n'est enregistré.</p>
 
-    <div class="build rev" style="margin-top:clamp(1.2rem,2.6vw,2rem)">
-      <div>
-        <div class="fld">
-          <label for="b-name">Le nom de votre commerce</label>
-          <input id="b-name" type="text" value="Boulangerie Kremer" maxlength="34"
-                 autocomplete="off" spellcheck="false" placeholder="Votre enseigne">
-        </div>
-        <div class="fld">
-          <label for="b-trade">Votre métier</label>
-          <select id="b-trade">
-            <option value="boulangerie" selected>Boulangerie · pâtisserie</option>
-            <option value="restaurant">Restaurant · café</option>
-            <option value="coiffure">Coiffure · beauté</option>
-            <option value="garage">Garage · mécanique</option>
-            <option value="cabinet">Cabinet · profession libérale</option>
-            <option value="fleuriste">Fleuriste</option>
-            <option value="batiment">Artisan du bâtiment</option>
-            <option value="epicerie">Épicerie · primeur</option>
-          </select>
-        </div>
-        <p class="mute" style="font-size:var(--f-xs);line-height:1.4">
-          La maquette se réécrit pendant que vous tapez : votre nom, les couleurs de votre secteur,
-          vos prestations. Rien n'est enregistré.
-        </p>
-      </div>
+    <div class="sim rev" role="group" aria-label="Votre métier" style="margin-top:clamp(1.2rem,2.6vw,2rem)">
+      <p class="sim-lab" aria-hidden="true">1 · Votre métier</p>
 
-      <div class="frame">
-        <div class="chrome"><i></i><i></i><i></i><span data-b="url">boulangerie-kremer.lu</span></div>
-        <div class="site" id="bmk" style="--a1:#C2571C;--a2:#D9A441;--bg:#FFFAF2;--fg:#2A1E12;--ln:#EADDC9;--cd:#FFFDF9">
-          <div class="s-bar">
-            <div class="s-logo"><span class="s-mark" data-b="mark">BK</span>
-              <span class="s-id"><span class="s-name" data-b="name">Boulangerie Kremer</span>
-                <span class="s-sub" data-b="tag">Levain — Esch-sur-Alzette</span></span></div>
-            <div class="s-nav" data-b="nav"><span class="on">Accueil</span><span>Pains</span><span>Horaires</span></div>
-          </div>
-          <div class="s-body">
-            <div class="s-row w">
-              <div>
-                <p class="s-h" data-b="hero">Le levain tous les matins.</p>
-                <p class="s-p" data-b="txt">Farines du moulin voisin, cuisson au four à sole, fournée de 6 h encore tiède.</p>
-                <p class="s-acts" style="margin-top:.5em"><span class="s-btn" data-b="cta">Voir les horaires</span></p>
+      <input class="m-i" type="radio" name="metier" id="m1" checked>
+      <label class="chip" for="m1">Boulangerie · pâtisserie</label>
+      <input class="m-i" type="radio" name="metier" id="m2">
+      <label class="chip" for="m2">Restaurant · café</label>
+      <input class="m-i" type="radio" name="metier" id="m3">
+      <label class="chip" for="m3">Coiffure · beauté</label>
+      <input class="m-i" type="radio" name="metier" id="m4">
+      <label class="chip" for="m4">Garage · mécanique</label>
+      <input class="m-i" type="radio" name="metier" id="m5">
+      <label class="chip" for="m5">Cabinet · profession libérale</label>
+      <input class="m-i" type="radio" name="metier" id="m6">
+      <label class="chip" for="m6">Fleuriste</label>
+      <input class="m-i" type="radio" name="metier" id="m7">
+      <label class="chip" for="m7">Artisan du bâtiment</label>
+      <input class="m-i" type="radio" name="metier" id="m8">
+      <label class="chip" for="m8">Épicerie · primeur</label>
+
+      <div class="sim-out">
+        <div>
+          <label class="fld-lab" for="b-name">2 · <b>Tapez le nom de votre commerce</b> — l'enseigne suit</label>
+          <div class="frame sim-frame">
+            <div class="chrome"><i></i><i></i><i></i><span data-b="url">votre-commerce.lu</span></div>
+            <div class="site sim-site" id="bmk">
+              <div class="s-bar">
+                <div class="s-logo">
+                  <span class="s-mark" aria-hidden="true"></span>
+                  <span class="s-id">
+                    <input class="s-name-in" id="b-name" type="text" value="Boulangerie Kremer"
+                           maxlength="32" autocomplete="off" spellcheck="false"
+                           enterkeyhint="done" placeholder="Votre enseigne"
+                           aria-label="Le nom de votre commerce">
+                    <span class="s-sub v-t"></span>
+                  </span>
+                </div>
+                <div class="s-nav"><span class="on v-n1"></span><span class="v-n2"></span><span class="v-n3"></span></div>
               </div>
-              <div class="s-ph g3 sheen" style="--r:1/1"></div>
-            </div>
-            <div class="s-list" data-b="offers">
-              <div class="s-li"><b>Pain de campagne, 1 kg</b><i></i><em>4,20 €</em></div>
-              <div class="s-li"><b>Croissant pur beurre</b><i></i><em>1,30 €</em></div>
-              <div class="s-li"><b>Tarte aux quetsches</b><i></i><em>18,50 €</em></div>
+
+              <div class="s-body">
+                <div class="s-row w">
+                  <div>
+                    <p class="s-k v-k"></p>
+                    <p class="s-h v-h" style="margin-top:.18em"></p>
+                    <p class="s-p v-x" style="margin-top:.3em"></p>
+                    <p class="s-acts" style="margin-top:.55em">
+                      <span class="s-btn v-c"></span><span class="s-btn s-btn2 v-c2"></span>
+                    </p>
+                  </div>
+                  <div class="s-ph g3 sheen" style="--r:4/5"></div>
+                </div>
+
+                <div class="s-list">
+                  <div class="s-li"><b class="v-o1"></b><i></i><em class="v-q1"></em></div>
+                  <div class="s-li"><b class="v-o2"></b><i></i><em class="v-q2"></em></div>
+                  <div class="s-li"><b class="v-o3"></b><i></i><em class="v-q3"></em></div>
+                </div>
+
+                <div class="s-row">
+                  <ul class="s-hrs">
+                    <li><span class="v-d1"></span><b class="v-e1"></b></li>
+                    <li><span class="v-d2"></span><b class="v-e2"></b></li>
+                  </ul>
+                  <div class="s-map" aria-hidden="true"></div>
+                </div>
+              </div>
+
+              <div class="s-foot"><span class="v-f"></span><span class="v-o"></span></div>
             </div>
           </div>
-          <div class="s-foot"><span data-b="foot">14 rue de l'Alzette · Esch</span><span>Plan · Contact</span></div>
+          <p class="sim-note">Les couleurs, les rubriques et les tarifs changent avec le métier choisi.
+            C'est une démonstration&nbsp;: votre vrai site partira de vos photos et de vos prix.</p>
+        </div>
+
+        <div>
+          <p class="proof-h">3 · Et sur Google</p>
+          <div class="goo">
+            <div class="goo-r">
+              <p class="goo-lab a">Aujourd'hui — sans site</p>
+              <div class="goo-u"><span class="goo-fv">?</span><span>Aucun site web renseigné</span></div>
+              <p class="goo-t dim"><span class="g-nm2">Votre commerce</span></p>
+              <p class="goo-m"><span class="goo-shut">Horaires non confirmés</span> · <span class="v-g"></span> · Esch-sur-Alzette</p>
+              <p class="goo-x">Pas d'avis, pas de photos, pas de tarifs. Le client passe au résultat suivant.</p>
+            </div>
+            <div class="goo-r">
+              <p class="goo-lab b">Après mise en ligne</p>
+              <div class="goo-u"><span class="goo-fv on" aria-hidden="true"></span><span data-g="url">votre-commerce.lu</span></div>
+              <p class="goo-t"><span class="g-nm">Votre commerce</span><span class="g-cat"></span></p>
+              <p class="goo-m"><span class="goo-st">★★★★★</span> <span>4,9 · 38 avis</span> ·
+                <span class="goo-open v-o"></span></p>
+              <p class="goo-d v-desc"></p>
+              <p class="goo-l"><span class="v-k1"></span><span class="v-k2"></span><span class="v-k3"></span></p>
+            </div>
+          </div>
+          <p class="sim-note">Les avis affichés sont un exemple de mise en page&nbsp;;
+            ils viendront de vos vrais clients.</p>
         </div>
       </div>
     </div>
 
-      <!-- CTA du simulateur. Sans JavaScript il reste debout avec un
-           message générique ; avec JavaScript, le nom et le métier
-           saisis sont injectés dans les trois liens. -->
-      <div class="simcta rev">
-        <p data-sim-txt>Cette maquette vous parle&nbsp;? Je vous l'envoie en vrai, sur votre nom,
-          sous 48&nbsp;h — et vous décidez ensuite.</p>
-        <p class="simcta-b">
-          <a class="btn btn-wa" data-sim-wa href="https://wa.me/352XXXXXXXX?text=Bonjour%20Marcus%2C%20envoyez-moi%20cette%20maquette%20pour%20mon%20commerce." target="_blank" rel="noopener"><ico class="ic-wa" aria-hidden="true"></ico>Envoyez-moi cette maquette</a>
-          <a class="btn btn-ghost" data-sim-mail href="mailto:studio.marcus.web@gmail.com?subject=Envoyez-moi%20cette%20maquette"><ico class="ic-mail" aria-hidden="true"></ico>Par e-mail</a>
-        </p>
-      </div>
+    <!-- CTA du simulateur. Sans JavaScript il reste debout avec un
+         message générique ; avec JavaScript, le nom et le métier
+         saisis sont injectés dans le lien. -->
+    <div class="simcta rev">
+      <p data-sim-txt>Cette maquette vous parle&nbsp;? Je vous l'envoie en vrai, sur votre nom,
+        sous 48&nbsp;h — et vous décidez ensuite.</p>
+      <p class="simcta-b">
+        <a class="btn btn-solid" data-sim-mail href="mailto:studio.marcus.web@gmail.com?subject=Envoyez-moi%20cette%20maquette"><ico class="ic-mail" aria-hidden="true"></ico>Recevoir ma maquette</a>
+      </p>
+    </div>
   </div>
 </section>
 
@@ -1636,22 +2014,36 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
     <p class="eyebrow rev">La différence, en deux images</p>
     <h2 class="rev" style="max-width:18ch">Ce que vos clients voient. Avant, après.</h2>
 
-    <div class="proof rev" style="margin-top:clamp(1.2rem,2.6vw,2rem)">
-      <div>
-        <p class="proof-h">Le site — glissez la poignée</p>
-        <div class="ba auto" id="ba">
+    <div class="rev" style="margin-top:clamp(1.2rem,2.6vw,2rem)">
+      <div class="bawrap">
+        <!-- Les quatre boutons radio pilotent le volet en CSS pur.
+             « Aller-retour » est coché : la comparaison s'anime seule. -->
+        <input class="ba-i" type="radio" name="ba" id="ba-auto" checked>
+        <input class="ba-i" type="radio" name="ba" id="ba-old">
+        <input class="ba-i" type="radio" name="ba" id="ba-mid">
+        <input class="ba-i" type="radio" name="ba" id="ba-new">
+        <input class="ba-i" type="radio" name="ba" id="ba-man" aria-label="Position choisie à la main">
+
+        <div class="ba-tabs" role="group" aria-label="Comparer le site avant et après">
+          <label class="ba-t" for="ba-auto">Aller-retour</label>
+          <label class="ba-t" for="ba-old">Avant</label>
+          <label class="ba-t" for="ba-mid">Les deux</label>
+          <label class="ba-t" for="ba-new">Après</label>
+        </div>
+
+        <div class="ba" id="ba">
           <div class="ba-l">
             <div class="ba-s ba-old">
               <div class="old">
                 <div class="old-h">BOULANGERIE KREMER</div>
                 <p class="old-n"><u>Accueil</u><u>Produits</u><u>Livre d'or</u><u>Contact</u></p>
                 <div class="old-b">
-                  <h4>Bienvenue sur notre site !</h4>
+                  <h4>Bienvenue sur notre site !</h4>
                   <div class="old-i">image_boutique_2.jpg</div>
-                  <p>Notre boulangerie vous accueille du lundi au samedi. <span class="old-r">NOUVEAU !</span>
+                  <p>Notre boulangerie vous accueille du lundi au samedi. <span class="old-r">NOUVEAU !</span>
                     Pensez à commander vos bûches à l'avance.</p>
                 </div>
-                <p>Tél : voir la rubrique contact.<br>Dernière mise à jour : 12/03/2019</p>
+                <p>Tél : voir la rubrique contact.<br>Dernière mise à jour : 12/03/2019</p>
                 <p class="old-f">Optimisé pour une résolution de 1024 × 768<br>Vous êtes le 8 421<sup>e</sup> visiteur</p>
               </div>
               <span class="ba-tag l">Avant · 6,4 s</span>
@@ -1668,60 +2060,33 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
                   <div class="s-row w">
                     <div>
                       <p class="s-h">Le pain d'aujourd'hui, <em>pétri cette nuit</em>.</p>
-                      <p class="s-acts" style="margin-top:.5em"><span class="s-btn">Appeler</span><span class="s-btn s-btn2">Le plan</span></p>
+                      <p class="s-acts" style="margin-top:.5em"><span class="s-btn">Commander</span><span class="s-btn s-btn2">Le plan</span></p>
                     </div>
                     <div class="s-ph g3 sheen" style="--r:16/11"></div>
                   </div>
                   <div class="s-list">
-                    <div class="s-li"><b>Pain de campagne au levain, 1 kg</b><i></i><em>4,20 €</em></div>
-                    <div class="s-li"><b>Croissant pur beurre</b><i></i><em>1,30 €</em></div>
-                    <div class="s-li"><b>Tarte aux quetsches, 8 parts</b><i></i><em>18,50 €</em></div>
+                    <div class="s-li"><b>Pain de campagne au levain, 1 kg</b><i></i><em>4,20 €</em></div>
+                    <div class="s-li"><b>Croissant pur beurre</b><i></i><em>1,30 €</em></div>
+                    <div class="s-li"><b>Tarte aux quetsches, 8 parts</b><i></i><em>18,50 €</em></div>
                   </div>
                   <ul class="s-hrs">
-                    <li><span>Lundi – vendredi</span><b>6 h – 18 h 30</b></li>
-                    <li><span>Samedi</span><b>6 h – 17 h</b></li>
-                    <li><span>Dimanche</span><b>7 h – 12 h</b></li>
+                    <li><span>Lundi – vendredi</span><b>6 h – 18 h 30</b></li>
+                    <li><span>Samedi</span><b>6 h – 17 h</b></li>
+                    <li><span>Dimanche</span><b>7 h – 12 h</b></li>
                   </ul>
                 </div>
-                <div class="s-foot"><span>14 rue de l'Alzette</span><span>Ouvert · ferme à 18 h 30</span></div>
+                <div class="s-foot"><span>14 rue de l'Alzette</span><span>Ouvert · ferme à 18 h 30</span></div>
               </div>
               <span class="ba-tag r">Après · 0,4 s</span>
             </div>
 
-            <input class="ba-r" id="ba-r" type="range" min="0" max="100" value="44" step="0.5"
-                   role="slider" aria-label="Comparer le site avant et après refonte"
-                   aria-valuemin="0" aria-valuemax="100" aria-valuenow="44"
-                   aria-valuetext="44 % du site refait visible">
             <span class="ba-h" aria-hidden="true"></span>
             <span class="ba-hint" aria-hidden="true">Glissez</span>
           </div>
         </div>
-        <p class="mute" style="font-size:var(--f-xs);margin-top:.5rem">Le site « avant » est une reconstitution.</p>
       </div>
-
-      <div>
-        <p class="proof-h">La fiche Google</p>
-        <div class="goo">
-          <div class="goo-r">
-            <p class="goo-lab a">Aujourd'hui — sans site</p>
-            <div class="goo-u"><span class="goo-fv">?</span><span>Aucun site web renseigné</span></div>
-            <p class="goo-t dim" data-g="title-now">Boulangerie Kremer</p>
-            <p class="goo-m"><span class="goo-shut">Horaires non confirmés</span> · <span data-g="cat-now">Boulangerie</span> · Esch-sur-Alzette</p>
-            <p class="goo-x">Pas d'avis, pas de photos, pas de tarifs. Le client passe au résultat suivant.</p>
-          </div>
-          <div class="goo-r">
-            <p class="goo-lab b">Après mise en ligne</p>
-            <div class="goo-u"><span class="goo-fv on" data-g="fav">B</span><span data-g="url">boulangerie-kremer.lu</span></div>
-            <p class="goo-t" data-g="title">Boulangerie Kremer — Pains au levain à Esch-sur-Alzette</p>
-            <p class="goo-m"><span class="goo-st">★★★★★</span> <span>4,9 · 38 avis</span> ·
-              <span class="goo-open" data-g="hours">Ouvert · ferme à 18 h 30</span></p>
-            <p class="goo-d" data-g="desc">Pains au levain cuits sur place chaque matin, viennoiseries pur beurre
-              et tartes de saison. Horaires, plan d'accès et commandes.</p>
-            <p class="goo-l" data-g="links"><span>Nos pains</span><span>Horaires</span><span>Nous trouver</span></p>
-          </div>
-        </div>
-        <p class="mute" style="font-size:var(--f-xs);margin-top:.5rem">La fiche suit le nom que vous tapez plus haut.</p>
-      </div>
+      <p class="mute" style="font-size:var(--f-xs);margin-top:.5rem">Le site « avant » est une reconstitution.
+        Les deux volets sont de vraies pages, à la même échelle.</p>
     </div>
   </div>
 </section>
@@ -1926,11 +2291,6 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
   </div>
 </section>
 
-<!-- PLACEHOLDER À REMPLACER : 352XXXXXXXX → votre numéro réel -->
-<div class="actbar">
-  <a class="btn btn-tel" href="tel:+352XXXXXXXX"><ico class="ic-tel" aria-hidden="true"></ico>Appeler</a>
-  <a class="btn btn-wa" href="https://wa.me/352XXXXXXXX?text=Bonjour%20Marcus%2C%20j%27ai%20vu%20votre%20page%20de%20d%C3%A9monstration%20et%20je%20voudrais%20un%20site%20pour%20mon%20commerce." target="_blank" rel="noopener"><ico class="ic-wa" aria-hidden="true"></ico>WhatsApp</a>
-</div>
 </div><!-- /.afterhero -->
 </main>
 
@@ -1958,7 +2318,6 @@ h1.hero-t em{font-style:italic;color:var(--accent)}
         <div>
           <h4>Contact &amp; TVA</h4>
           <p>
-            Téléphone&nbsp;: <span class="todo">[+352 XX XX XX XX]</span><br>
             E-mail&nbsp;: studio.marcus.web@gmail.com<br>
             N°&nbsp;TVA&nbsp;: <span class="todo">[LU XXXXXXXX]</span><br>
             <span class="todo">[Si franchise : « Régime de franchise de TVA — TVA non applicable, art. 57 de la loi TVA luxembourgeoise. »]</span>
@@ -2139,145 +2498,41 @@ mod('halo', function(){
   })();
 });
 
-/* --- 5. « votre commerce ici » + fiche Google --- */
+/* --- 5. « votre commerce ici » : le CSS fait tout le gros œuvre ---
+   Les couleurs et les textes sont pilotés par les boutons radio.
+   Il ne reste au script qu'à écrire ce que le CSS ne sait pas
+   calculer : l'adresse du site et le message pré-rempli. */
 mod('constructeur', function(){
-  var input = document.getElementById('b-name'),
-      sel = document.getElementById('b-trade'),
-      mk = document.getElementById('bmk');
-  if(!input || !sel || !mk) return;
-
-  var T = {
-    boulangerie:{p:['#C2571C','#D9A441','#FFFAF2','#2A1E12','#EADDC9','#FFFDF9'],
-      tag:'Levain — Esch-sur-Alzette', nav:['Accueil','Pains','Horaires'],
-      hero:'Le levain tous les matins.',
-      txt:'Farines du moulin voisin, cuisson au four à sole, fournée de 6 h encore tiède.',
-      cta:'Voir les horaires', foot:'14 rue de l’Alzette · Esch',
-      of:[['Pain de campagne, 1 kg','4,20 €'],['Croissant pur beurre','1,30 €'],['Tarte aux quetsches','18,50 €']],
-      cat:'Boulangerie', hrs:'Ouvert · ferme à 18 h 30',
-      desc:'Pains au levain cuits sur place chaque matin, viennoiseries pur beurre et tartes de saison. Horaires, plan d’accès et commandes.',
-      lk:['Nos pains','Horaires','Nous trouver']},
-    restaurant:{p:['#B32B26','#E0A32E','#FFF9F0','#2A1712','#EEDDCB','#FFFFFF'],
-      tag:'Cuisine du marché — midi & soir', nav:['La carte','Réserver','Contact'],
-      hero:'La carte change chaque semaine.',
-      txt:'Vingt-huit couverts, une ardoise, et ce que les producteurs ont apporté le matin.',
-      cta:'Réserver une table', foot:'5 place de la Résistance · Esch',
-      of:[['Menu du midi, 2 services','19 €'],['Judd mat Gaardebounen','26 €'],['Menu dégustation, 5 temps','58 €']],
-      cat:'Restaurant', hrs:'Ouvert · ferme à 22 h',
-      desc:'Cuisine du marché, carte renouvelée chaque semaine. Réservation en ligne et salle privative jusqu’à 14 personnes.',
-      lk:['La carte','Réserver','Menu du midi']},
-    coiffure:{p:['#C9707E','#8E6CA8','#FDF8F8','#2B1D24','#EFDFE3','#FFFFFF'],
-      tag:'Coupe · couleur · soin', nav:['Le salon','Prestations','Rendez-vous'],
-      hero:'Une coupe qui tient.',
-      txt:'Diagnostic du cheveu avant chaque couleur, produits sans ammoniaque.',
-      cta:'Prendre rendez-vous', foot:'22 rue de Luxembourg · Esch',
-      of:[['Coupe & brushing','42 €'],['Balayage complet','95 €'],['Soin kératine','35 €']],
-      cat:'Salon de coiffure', hrs:'Ouvert · ferme à 19 h',
-      desc:'Coupe, couleur et soin sur rendez-vous. Réservation en ligne 24 h/24, annulation gratuite jusqu’à 12 h avant.',
-      lk:['Prestations','Rendez-vous','L’équipe']},
-    garage:{p:['#E08A1E','#C33A22','#17130F','#F2E9DC','#332A22','#1F1913'],
-      tag:'Entretien · carrosserie', nav:['Accueil','Véhicules','Atelier'],
-      hero:'Prêt pour le contrôle, du premier coup.',
-      txt:'Devis annoncé avant l’intervention, véhicule de courtoisie sur demande.',
-      cta:'Demander un devis', foot:'31 rue de l’Industrie · Esch',
-      of:[['Vidange + filtres','dès 89 €'],['Préparation contrôle technique','45 €'],['Géométrie 4 roues','75 €']],
-      cat:'Garage automobile', hrs:'Ouvert · ferme à 18 h',
-      desc:'Entretien toutes marques, carrosserie et préparation au contrôle technique. Devis annoncé avant intervention.',
-      lk:['Véhicules d’occasion','Tarifs atelier','Rendez-vous']},
-    cabinet:{p:['#A67C2E','#7B2233','#FCFAF6','#241C18','#E5DDCF','#FFFFFF'],
-      tag:'Conseil et accompagnement', nav:['Le cabinet','Domaines','Honoraires'],
-      hero:'Un interlocuteur, du début à la fin.',
-      txt:'Entretiens en français, allemand ou luxembourgeois. Honoraires annoncés d’emblée.',
-      cta:'Demander un rendez-vous', foot:'8 bd Prince Henri · Esch',
-      of:[['Premier rendez-vous, 30 min','offert'],['Consultation','120 €'],['Création de société','dès 900 €']],
-      cat:'Cabinet d’avocats', hrs:'Ouvert · ferme à 18 h',
-      desc:'Droit du travail, droit des sociétés et baux commerciaux. Premier entretien de 30 minutes offert.',
-      lk:['Domaines','Honoraires','Rendez-vous']},
-    fleuriste:{p:['#4E7A50','#D96A8A','#FBFBF6','#1F2A1E','#DFE4D9','#FFFFFF'],
-      tag:'Bouquets, plantes, compositions', nav:['Boutique','Abonnements','Contact'],
-      hero:'Composé le matin, livré le jour même.',
-      txt:'Fleurs de saison, arrivage trois fois par semaine. Livraison avant 14 h.',
-      cta:'Commander un bouquet', foot:'3 rue J.-P. Michels · Esch',
-      of:[['Bouquet du moment','28 €'],['Abonnement mensuel','45 €'],['Composition mariage','dès 140 €']],
-      cat:'Fleuriste', hrs:'Ouvert · ferme à 18 h 30',
-      desc:'Bouquets de saison composés le matin, plantes d’intérieur et compositions de mariage. Livraison le jour même.',
-      lk:['Boutique','Abonnements','Livraison']},
-    batiment:{p:['#B5651D','#6B7A55','#FAF7F0','#241E16','#E6DDCD','#FFFFFF'],
-      tag:'Rénovation · peinture · carrelage', nav:['Accueil','Réalisations','Devis'],
-      hero:'Chantier propre, délai tenu, prix annoncé.',
-      txt:'Vingt ans de chantiers dans le sud du pays. Photos avant/après de chaque réalisation.',
-      cta:'Demander un devis', foot:'Zone Lankelz · Esch',
-      of:[['Visite et devis','offert'],['Peinture intérieure','dès 22 €/m²'],['Salle de bain clé en main','dès 6 500 €']],
-      cat:'Entreprise de rénovation', hrs:'Ouvert · ferme à 17 h',
-      desc:'Rénovation intérieure, peinture et carrelage dans le sud du Luxembourg. Devis gratuit sous 72 h.',
-      lk:['Réalisations','Devis gratuit','Contact']},
-    epicerie:{p:['#B4462C','#D2A03A','#FFFBF3','#241A14','#EADFC9','#FFFFFF'],
-      tag:'Produits frais et locaux', nav:['Boutique','Paniers','Livraison'],
-      hero:'Le marché, livré chez vous.',
-      txt:'Producteurs de la Minette, paniers hebdomadaires, livraison à vélo dans Esch.',
-      cta:'Composer mon panier', foot:'12 rue du Commerce · Esch',
-      of:[['Panier bio, 5 kg','32,90 €'],['Fromages fermiers','18,40 €'],['Livraison Esch','4 €']],
-      cat:'Épicerie fine', hrs:'Ouvert · ferme à 19 h',
-      desc:'Produits frais des producteurs de la Minette, paniers hebdomadaires et livraison à vélo dans Esch-sur-Alzette.',
-      lk:['Nos paniers','Livraison','Producteurs']}
-  };
-
-  var b = {};
-  ['mark','name','tag','nav','hero','txt','cta','offers','foot'].forEach(function(k){ b[k] = $('[data-b="'+k+'"]', mk); });
-  b.url = $('[data-b="url"]');
-  var g = {};
-  ['url','title','desc','fav','hours','links','title-now','cat-now'].forEach(function(k){ g[k] = $('[data-g="'+k+'"]'); });
+  var input = document.getElementById('b-name');
+  if(!input) return;
 
   function slug(s){
     var t = (s||'').toLowerCase();
     try{ t = t.normalize('NFD').replace(/[\u0300-\u036f]/g,''); }catch(e){}
-    return t.replace(/&/g,' et ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,34).replace(/-+$/,'') || 'votre-commerce';
+    return t.replace(/&/g,' et ').replace(/[^a-z0-9]+/g,'-')
+            .replace(/^-+|-+$/g,'').slice(0,34).replace(/-+$/,'') || 'votre-commerce';
   }
-  function ini(s){
-    var w = (s||'').split(/\s+/).filter(function(x){ return x.length>1; });
-    if(!w.length) return 'VC';
-    return (w[0][0] + (w[1] ? w[1][0] : (w[0][1]||''))).toUpperCase();
+  function trade(){
+    var r = $('.m-i:checked');
+    if(!r) return '';
+    var l = document.querySelector('label[for="' + r.id + '"]');
+    return l ? l.textContent.trim() : '';
   }
+
+  var bUrl = $('[data-b="url"]'), gUrl = $('[data-g="url"]'),
+      nm = $$('.g-nm, .g-nm2'),
+      mailEl = $('[data-sim-mail]'), simTxt = $('[data-sim-txt]');
 
   function paint(){
-    var name = (input.value||'').trim() || 'Votre Commerce';
-    var d = T[sel.value] || T.boulangerie;
-    ['--a1','--a2','--bg','--fg','--ln','--cd'].forEach(function(v,i){ mk.style.setProperty(v, d.p[i]); });
+    var name = (input.value||'').trim() || 'Votre commerce';
+    var host = slug(name) + '.lu';
+    if(bUrl) bUrl.textContent = host;
+    if(gUrl) gUrl.textContent = host;
+    nm.forEach(function(el){ el.textContent = name; });
 
-    if(b.mark) b.mark.textContent = ini(name);
-    if(b.name) b.name.textContent = name;
-    if(b.tag)  b.tag.textContent  = d.tag;
-    if(b.hero) b.hero.textContent = d.hero;
-    if(b.txt)  b.txt.textContent  = d.txt;
-    if(b.cta)  b.cta.textContent  = d.cta;
-    if(b.foot) b.foot.textContent = d.foot;
-
-    if(b.nav){
-      b.nav.innerHTML = '';
-      d.nav.forEach(function(l,i){
-        var s = document.createElement('span');
-        if(i===0) s.className = 'on';
-        s.textContent = l; b.nav.appendChild(s);
-      });
-    }
-    if(b.offers){
-      b.offers.innerHTML = '';
-      d.of.forEach(function(o){
-        var r = document.createElement('div'); r.className = 's-li';
-        var n = document.createElement('b'); n.textContent = o[0];
-        var i = document.createElement('i');
-        var p = document.createElement('em'); p.textContent = o[1];
-        r.appendChild(n); r.appendChild(i); r.appendChild(p);
-        b.offers.appendChild(r);
-      });
-    }
-
-    /* Le CTA reprend la saisie et la pousse dans WhatsApp et le mail.
-       Sans JavaScript ces liens gardent leur message générique. */
-    var label = sel.options[sel.selectedIndex].text;
-    var txt = 'Bonjour Marcus, je suis ' + name + ' (' + label +
-              '), à Esch-sur-Alzette. Envoyez-moi cette maquette.';
-    var waEl = $('[data-sim-wa]'), mailEl = $('[data-sim-mail]'), simTxt = $('[data-sim-txt]');
-    if(waEl) waEl.href = 'https://wa.me/352XXXXXXXX?text=' + encodeURIComponent(txt);
+    var label = trade();
+    var txt = 'Bonjour Marcus, je suis ' + name + (label ? ' (' + label + ')' : '') +
+              ', à Esch-sur-Alzette. Envoyez-moi cette maquette.';
     if(mailEl) mailEl.href = 'mailto:studio.marcus.web@gmail.com'
         + '?subject=' + encodeURIComponent('Maquette pour ' + name)
         + '&body=' + encodeURIComponent(txt + '\n\n');
@@ -2289,63 +2544,51 @@ mod('constructeur', function(){
       simTxt.appendChild(document.createTextNode(' vous parle\u00A0? Je vous l\u2019envoie en vrai, '
         + 'avec vos horaires et vos tarifs, sous 48\u00A0h — et vous décidez ensuite.'));
     }
-
-    var host = slug(name) + '.lu';
-    if(b.url) b.url.textContent = host;
-    if(g.url) g.url.textContent = host;
-    if(g.title) g.title.textContent = name + ' — ' + d.cat + ' à Esch-sur-Alzette';
-    if(g['title-now']) g['title-now'].textContent = name;
-    if(g['cat-now']) g['cat-now'].textContent = d.cat;
-    if(g.desc) g.desc.textContent = d.desc;
-    if(g.hours) g.hours.textContent = d.hrs;
-    if(g.fav){ g.fav.textContent = ini(name).charAt(0);
-      g.fav.style.background = 'linear-gradient(135deg,'+d.p[0]+','+d.p[1]+')'; }
-    if(g.links){
-      g.links.innerHTML = '';
-      d.lk.forEach(function(l){ var s = document.createElement('span'); s.textContent = l; g.links.appendChild(s); });
-    }
   }
   on(input,'input',paint);
-  on(sel,'change',paint);
+  $$('.m-i').forEach(function(r){ on(r,'change',paint); });
   paint();
 });
 
-/* --- 6. curseur avant / après --- */
+/* --- 6. avant / après : le glissé au doigt, en supplément ---
+   Les quatre boutons radio suffisent déjà, sans script. Ici on ajoute
+   le confort : on attrape la poignée, on coche le radio « libre »
+   (ce qui arrête le balayage automatique) et on écrit la position. */
 mod('avant-apres', function(){
   var ba = document.getElementById('ba');
   if(!ba) return;
-  var lane = $('.ba-l', ba), r = document.getElementById('ba-r');
-  if(!lane || !r) return;
-  /* Le balayage automatique tourne en CSS. Au premier contact on le
-     coupe et le doigt (ou le clavier) prend le relais, en repartant de
-     la position réellement affichée pour qu'il n'y ait pas de saut. */
-  function stopAuto(){
-    if(!ba.classList.contains('auto')) return;
-    var shown = 44;
-    try{
-      // clip-path calculé = inset(haut droite bas gauche) : c'est la
-      // 4e valeur qui donne la position du curseur.
-      var m = getComputedStyle($('.ba-new', ba)).clipPath.match(/-?[\d.]+px/g);
-      if(m && m.length >= 4){
-        shown = clamp(parseFloat(m[3]) / lane.getBoundingClientRect().width * 100, 0, 100);
-      }
-    }catch(e){}
-    ba.classList.remove('auto');
-    ba.classList.add('touched');
-    set(shown);
-  }
+  var lane = $('.ba-l', ba), man = document.getElementById('ba-man');
+  if(!lane || !man) return;
 
   function set(v){
     v = clamp(v,0,100);
-    lane.style.setProperty('--x', v+'%');
-    if(r.value != v) r.value = v;
-    /* le lecteur d'écran annonce un pourcentage parlant, pas « 44 » */
-    r.setAttribute('aria-valuenow', Math.round(v));
-    r.setAttribute('aria-valuetext', Math.round(v) + '\u00A0% du site refait visible');
+    ba.style.setProperty('--x', v.toFixed(1)+'%');
   }
-  on(r,'input',function(){ var v = parseFloat(r.value); stopAuto(); set(v); });
-  on(r,'pointerdown',stopAuto);
-  set(44);
+  function grab(){
+    if(!man.checked){
+      /* on repart de la position réellement affichée : pas de saut */
+      var shown = 44;
+      try{
+        /* inset(haut droite bas gauche) : la 4e valeur donne la position.
+           Le navigateur la rend soit en pourcentage, soit en pixels. */
+        var m = getComputedStyle($('.ba-new', ba)).clipPath.match(/-?[\d.]+(?:px|%)/g);
+        if(m && m.length >= 4){
+          var v = parseFloat(m[3]);
+          if(m[3].charAt(m[3].length-1) !== '%'){
+            v = v / Math.max(1, lane.getBoundingClientRect().width) * 100;
+          }
+          shown = clamp(v, 0, 100);
+        }
+      }catch(e){}
+      man.checked = true;
+      ba.classList.add('touched');
+      set(shown);
+    }
+  }
+  /* un clic sur un des quatre onglets rend la main au CSS */
+  $$('.ba-i').forEach(function(r){
+    on(r,'change',function(){ if(r !== man) ba.style.removeProperty('--x'); });
+  });
 
   var drag = false;
   function pct(e){
@@ -2353,13 +2596,12 @@ mod('avant-apres', function(){
     return ((e.clientX - box.left) / Math.max(1, box.width)) * 100;
   }
   on(lane,'pointerdown',function(e){
-    stopAuto();
-    if(e.target === r) return;
-    drag = true;
+    grab(); drag = true;
     try{ lane.setPointerCapture(e.pointerId); }catch(err){}
     set(pct(e));
+    e.preventDefault();
   });
-  on(lane,'pointermove',function(e){ if(drag) set(pct(e)); });
+  on(lane,'pointermove',function(e){ if(drag){ set(pct(e)); e.preventDefault(); } });
   ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
     on(lane, ev, function(){ drag = false; });
   });
