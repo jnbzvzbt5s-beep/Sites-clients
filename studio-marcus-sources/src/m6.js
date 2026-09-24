@@ -17,11 +17,19 @@ SM.mq.fleurs={
     root.addEventListener('change',function(){self.coches()});this.coches();
     var mot=$('[data-mot]',root);
     mot.addEventListener('input',function(){self.mot=mot.value.slice(0,60);self.etiquette();self.annule()});
-    var red=SM.reduit;SM.reduit=function(){return true};
-    [['pivoine',6],['eucalyptus',2.5],['rose',4],['renoncule',3.5],['gypsophile',2]].forEach(function(x){self.ajouter(x[0],x[1])});
-    SM.reduit=red;this.maj(false);
+    this.initiales=$$('.f-tige',this.zone).map(function(el){return el.cloneNode(true)});
+    this.reprendre();this.maj(false);
   },
   coches:function(){$$('.f-radio,.f-coche',this.root).forEach(function(l){var i=$('input',l);l.classList.toggle('coche',!!(i&&i.checked))})},
+  reprendre:function(){
+    var self=this;this.tiges=[];
+    $$('.f-tige',this.zone).forEach(function(el){self.tiges.push({el:el,slot:+el.getAttribute('data-slot'),fleur:el.getAttribute('data-fleur'),prix:+el.getAttribute('data-prix')})});
+  },
+  preremplir:function(){
+    var self=this;this.recommencer();
+    this.initiales.forEach(function(el){self.zone.appendChild(el.cloneNode(true))});
+    this.reprendre();this.maj(false);
+  },
   total:function(){var t=this.embPrix+(this.livr?8:0);this.tiges.forEach(function(x){t+=x.prix});return Math.round(t*100)/100},
   libre:function(){var pris=this.tiges.map(function(x){return x.slot});for(var i=0;i<12;i++)if(pris.indexOf(i)<0)return i;return -1},
   ajouter:function(f,prix){

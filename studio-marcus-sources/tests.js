@@ -439,6 +439,41 @@ async function ouvrir(p, id) { await p.evaluate(id => { document.querySelector('
     await ctx.close();
   }
 
+  // retours du client
+  for (const js of [true, false]) for (const w of [320, 390, 834, 1440]) {
+    const p = await page({ w, h: 800, js, q: '?heure=23:58', attente: 400 });
+    const r = await p.evaluate(() => { const e = document.querySelector('.hero-heure'); const rg = document.createRange(); rg.selectNodeContents(e); return rg.getBoundingClientRect().right <= innerWidth - parseFloat(getComputedStyle(document.querySelector('.hero')).paddingRight) + 1; });
+    ok(`[client] Titre du hero entier à ${w}px ${js ? 'avec' : 'sans'} JS`, r); await fin(p, 'titre');
+  }
+  {
+    const p = await page({ js: false, attente: 300 });
+    const n = await p.evaluate(() => [...document.querySelectorAll('.mq-fleurs .f-tige')].filter(t => t.getBoundingClientRect().height > 50).length);
+    ok('[client] Bouquet de Fleurs & Cie garni sans JS', n === 5, n + ' tiges'); await fin(p, 'bouquet sans js');
+    const q = await page({ attente: 300 });
+    const lh = await q.evaluate(() => { const t = document.querySelector('.mq-schmit .s-titre'), cs = getComputedStyle(t); return parseFloat(cs.lineHeight) / parseFloat(cs.fontSize) });
+    const et = await q.evaluate(() => document.querySelectorAll('.etape')[2].textContent);
+    ok('[client] Garage : interligne ≥ 1,05 (accents dégagés)', lh >= 1.05, lh.toFixed(2));
+    ok('[client] Méthode : plus de « lien privé »', !/lien privé/.test(await q.evaluate(() => document.body.textContent)) && et.includes('soumets'), et);
+    // visites automatiques
+    await q.evaluate(() => document.querySelector('.vt[data-vt="schmit"]').scrollIntoView({ block: 'center', behavior: 'instant' }));
+    const pages = new Set();
+    for (let i = 0; i < 20; i++) { await q.waitForTimeout(600); pages.add(await q.evaluate(() => [...document.querySelectorAll('.mq-schmit [data-page]')].find(p => !p.hidden).dataset.page)); }
+    ok('[client] La vitrine du garage fait défiler ses pages seule', pages.size >= 3, [...pages].join(','));
+    await q.evaluate(() => document.querySelector('.vt[data-vt="kremer"]').scrollIntoView({ block: 'center', behavior: 'instant' }));
+    let pans = new Set(); for (let i = 0; i < 16; i++) { await q.waitForTimeout(600); pans.add(await q.evaluate(() => document.querySelector('.mq-kremer').style.getPropertyValue('--pan'))); }
+    ok('[client] La vitrine Kremer fait défiler sa page seule', pans.size >= 3, [...pans].join(','));
+    await q.evaluate(() => document.querySelector('.vt[data-vt="fleurs"]').scrollIntoView({ block: 'center', behavior: 'instant' }));
+    let tg = new Set(); for (let i = 0; i < 16; i++) { await q.waitForTimeout(600); tg.add(await q.evaluate(() => document.querySelectorAll('.mq-fleurs .f-tige').length)); }
+    await q.click('.vt[data-vt="fleurs"] .vt-cadre'); await q.waitForTimeout(700);
+    const apres = await q.evaluate(() => [document.querySelectorAll('[data-calque] .f-tige').length, document.querySelector('[data-calque] .mq-fleurs').style.getPropertyValue('--pan')]);
+    ok('[client] Fleurs : le bouquet se compose seul, puis se remet à zéro à l\'ouverture', tg.size >= 3 && apres[0] === 5 && apres[1] === '0px', [...tg].join(',') + ' → ' + apres.join(' '));
+    await fin(q, 'visites');
+    const rm = await page({ reduit: true });
+    await rm.evaluate(() => document.querySelector('.vt[data-vt="schmit"]').scrollIntoView({ block: 'center', behavior: 'instant' })); await rm.waitForTimeout(6000);
+    ok('[client] Pas de visite automatique en mouvement réduit', await rm.evaluate(() => [...document.querySelectorAll('.mq-schmit [data-page]')].find(p => !p.hidden).dataset.page === 'atelier'));
+    await fin(rm, 'visites réduit');
+  }
+
   // 21 : poids
   const ko = fs.statSync(FILE).size / 1024;
   ok('[21] Poids ≤ 900 Ko', ko <= 900, ko.toFixed(0) + ' Ko');

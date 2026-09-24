@@ -224,6 +224,15 @@ def prix_fr(p):
     return (f'{p:.2f}'.replace('.', ',') if p % 1 else f'{p:.0f}') + ' €'
 def palette():
     return '\n'.join(f'<li><button type="button" class="f-choix" data-fleur="{k}" data-prix="{p}" aria-label="Ajouter au bouquet : {n}, {prix_fr(p)}">{fsvg(k)}<span class="f-choix-nom">{n}</span><span class="f-choix-prix">{prix_fr(p)}</span></button></li>' for k, n, p in FLN)
+SLOTS6 = [[0,270],[-11,250],[11,252],[-22,228],[22,226],[-5,205],[6,200],[-31,200],[31,198],[-16,178],[16,176],[0,160]]
+PREMIERES = [('pivoine',6),('eucalyptus',2.5),('rose',4),('renoncule',3.5),('gypsophile',2)]
+def tiges():
+    noms = dict((k, n) for k, n, p in FLN)
+    o = []
+    for i, (f, p) in enumerate(PREMIERES):
+        a, h = SLOTS6[i]
+        o.append(f'<div class="f-tige" data-fleur="{f}" data-prix="{p}" data-slot="{i}" style="--a:{a}deg;--h:calc({h}px * var(--sc,1));z-index:{20-i}"><span class="f-tige-trait"></span><span class="f-tige-feuille"></span><button type="button" class="f-tige-fleur" aria-label="Retirer du bouquet : {noms[f]}">{fsvg(f)}</button></div>')
+    return ''.join(o)
 def compositions():
     C = [('Le Marché', 'Renoncules, tulipes et gypsophile', 32, ['tulipe','renoncule','gypsophile','renoncule','tulipe']),
          ('Pivoines et eucalyptus', 'Le bouquet signature de l\'atelier', 45, ['eucalyptus','pivoine','pivoine','eucalyptus','pivoine']),
@@ -236,7 +245,7 @@ def compositions():
     return '\n'.join(o)
 
 def mockup(i):
-    h = lire(NUM[i] + '.html').replace('{{JAUGE}}', jauge()).replace('{{OCCASIONS}}', occasions()).replace('{{GALERIE}}', galerie()).replace('{{EQUIPE}}', equipe()).replace('{{TABLES}}', tables()).replace('{{PLATS}}', plats()).replace('{{PALETTE}}', palette()).replace('{{COMPOS}}', compositions())
+    h = lire(NUM[i] + '.html').replace('{{JAUGE}}', jauge()).replace('{{OCCASIONS}}', occasions()).replace('{{GALERIE}}', galerie()).replace('{{EQUIPE}}', equipe()).replace('{{TABLES}}', tables()).replace('{{PLATS}}', plats()).replace('{{PALETTE}}', palette()).replace('{{COMPOS}}', compositions()).replace('{{TIGES}}', tiges())
     return h if h else f'<div class="mq" data-mq="{i}"><p style="padding:40px">{i}</p></div>'
 
 def build(out=OUT):
@@ -248,7 +257,7 @@ def build(out=OUT):
     css = '\n'.join(lire(n) for n in ['ecrin.css', 'mq.css', 'm1.css', 'm2.css', 'm3.css', 'm4.css', 'm5.css', 'm6.css', 'cameleon.css', 'vieux.css', 'print.css'])
     css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
     css = re.sub(r'\n\s*', '\n', css)
-    js = '\n'.join(lire(n) for n in ['app.js', 'm3.js', 'm4.js', 'm5.js', 'm6.js', 'conf.js', 'fin.js'])
+    js = '\n'.join(lire(n) for n in ['app.js', 'm3.js', 'm4.js', 'm5.js', 'm6.js', 'conf.js', 'visite.js', 'fin.js'])
     head = typo_html(lire('head.html'))
     html = f'''<!doctype html>
 <html lang="fr">

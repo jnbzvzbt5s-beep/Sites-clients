@@ -213,11 +213,12 @@ SM.module('calque',function(){
     menE.textContent=perso?'Démonstration préparée pour '+SM.p.nom:'Commerce imaginaire, démonstration';
     c.setAttribute('aria-label',(perso?SM.p.nom:i[0])+' : boutique en plein écran, démonstration');
   }
-  function rendre(){if(SM.calqueMq&&hote){hote.appendChild(SM.calqueMq)}SM.calqueMq=null;hote=null}
+  function rendre(){if(SM.calqueMq&&hote){hote.appendChild(SM.calqueMq);if(SM.visiteReset)SM.visiteReset(SM.calqueMq)}SM.calqueMq=null;hote=null}
   function monter(id){
     var mq=mqDe(id);if(!mq)return;
     rendre();
     courant=id;hote=mq.parentNode;SM.calqueMq=mq;
+    if(SM.visiteReset)SM.visiteReset(mq);
     etiquette(id);placer();SM.actifs();SM.rejouer(mq);
   }
   function verrou(on){
@@ -253,7 +254,7 @@ SM.module('calque',function(){
   }
   function voisin(d){if(!courant)return;var i=(ordre.indexOf(courant)+d+ordre.length)%ordre.length;monter(ordre[i])}
   SM.ouvrir=ouvrir;SM.fermer=fermer;
-  D.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('[data-ouvrir]');if(t&&!c.contains(t)){e.preventDefault();ouvrir(t.getAttribute('data-ouvrir'),t)}});
+  D.addEventListener('click',function(e){if(!e.isTrusted&&e.target.closest&&e.target.closest('.mq-hote'))return;var t=e.target.closest&&e.target.closest('[data-ouvrir]');if(t&&!c.contains(t)){e.preventDefault();ouvrir(t.getAttribute('data-ouvrir'),t)}});
   $$('.vt-cadre[data-ouvrir]').forEach(function(v){v.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();ouvrir(v.getAttribute('data-ouvrir'),v)}})});
   $('[data-sortir]',c).addEventListener('click',fermer);
   $('[data-prec]',c).addEventListener('click',function(){voisin(-1)});

@@ -18,7 +18,7 @@ html.js .mq-schmit .s-c{opacity:0}
 html.js .mq-schmit .s-page.vu .s-c{animation:mq-pose .55s cubic-bezier(.2,.7,.2,1) calc(var(--i,0) * 90ms + 60ms) both}
 .s-hero{display:grid;grid-template-columns:1fr 1.05fr;gap:30px;align-items:center}
 .s-sur{color:var(--ambre);font-weight:600;font-size:15px}
-.s-titre{font-size:84px;line-height:.9;text-transform:uppercase;letter-spacing:.005em;margin:12px 0 20px}
+.s-titre{font-size:84px;line-height:1.06;text-transform:uppercase;letter-spacing:.01em;word-spacing:.14em;margin:12px 0 20px}
 .s-intro{color:#B9BEC4;max-width:30em;font-size:17px}
 .s-actions{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
 .s-btn{padding:13px 22px;border-radius:6px;background:var(--ambre);color:#16110A;font-weight:700;font-size:15px}
@@ -54,14 +54,14 @@ html.js .mq-schmit.joue .s-page.vu .s-aiguille{animation:s-aiguille 2.2s cubic-b
 .s-defile span{padding:0 26px;font-size:15px;text-transform:uppercase;letter-spacing:.14em;color:#8F969E;white-space:nowrap}
 .s-defile span::after{content:"";display:inline-block;width:6px;height:6px;margin-left:52px;background:var(--ambre);transform:translateY(-3px) rotate(45deg)}
 @keyframes s-defile{to{transform:translateX(-50%)}}
-.s-h2{font-size:58px;line-height:.95;text-transform:uppercase;max-width:14ch;margin-bottom:30px}
+.s-h2{font-size:58px;line-height:1.08;word-spacing:.12em;text-transform:uppercase;max-width:14ch;margin-bottom:30px}
 .s-services{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .s-services li{background:var(--acier);border-radius:10px;padding:26px 22px;display:flex;flex-direction:column;gap:10px}
 .s-services svg{width:46px;height:46px;fill:none;stroke:var(--ambre);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .s-ico{stroke-dasharray:1;stroke-dashoffset:0}
 html.js .mq-schmit .s-page.vu .s-ico{animation:s-ico 1.2s ease-out calc(var(--i,0) * 120ms + 200ms) both}
 @keyframes s-ico{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
-.s-services h3{font-size:26px;line-height:1;text-transform:uppercase}
+.s-services h3{font-size:26px;line-height:1.1;word-spacing:.1em;text-transform:uppercase}
 .s-services p{color:#B9BEC4;font-size:15px;flex:1}
 .s-services b{color:var(--ambre);font-size:18px}
 .s-garantie{display:inline-block;margin:-14px 0 26px;padding:6px 12px;border:1px solid rgba(242,163,58,.5);border-radius:4px;color:var(--ambre);font-weight:600;font-size:14px}
