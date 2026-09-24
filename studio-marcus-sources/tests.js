@@ -419,6 +419,26 @@ async function ouvrir(p, id) { await p.evaluate(id => { document.querySelector('
     await fin(p, 'couleurs');
   }
 
+  // tactile : iPad et iPhone émulés
+  for (const dev of ['iPad Pro 11', 'iPad Pro 11 landscape', 'iPhone 13']) {
+    const ctx = await browser.newContext({ ...require('playwright').devices[dev] });
+    const p = await ctx.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
+    await p.goto(URL); await p.waitForTimeout(2000);
+    await p.evaluate(() => document.querySelector('.vt[data-vt="comptoir"]').scrollIntoView({ block: 'center', behavior: 'instant' })); await p.waitForTimeout(300);
+    await p.locator('.vt[data-vt="comptoir"] .vt-cadre').tap(); await p.waitForTimeout(900);
+    const t = p.locator('[data-calque] [data-table="7"]'); await t.scrollIntoViewIfNeeded(); await t.tap(); await p.waitForTimeout(300);
+    const tab = await p.evaluate(() => document.querySelector('[data-calque] [data-r="table"]').textContent.replace(/\u00a0/g, ' '));
+    const rates = [];
+    await p.evaluate(() => document.querySelector('[data-calque] [data-scene-salle]').scrollIntoView({ block: 'center', behavior: 'instant' })); await p.waitForTimeout(200);
+    for (const a of [-30, 0, 60, 135, 210]) {
+      await p.evaluate(a => { SM.mq.comptoir.s.angle = a; SM.mq.comptoir.tourne() }, a); await p.waitForTimeout(700);
+      rates.push(...await p.evaluate(() => [...document.querySelectorAll('[data-calque] .c-plateau')].filter(pl => { const r = pl.getBoundingClientRect(); const e = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2); const c = document.querySelector('[data-calque-cadre]').getBoundingClientRect(); return r.top >= c.top && r.bottom <= c.bottom && !(e && e.closest('[data-table]') === pl.parentNode) }).map(pl => pl.parentNode.dataset.table)));
+    }
+    await p.locator('[data-sortir]').tap(); await p.waitForTimeout(300);
+    ok(`[tactile] ${dev} : ouverture au toucher, table touchée, tables atteignables à tout angle`, tab === 'Table 7, 4 places' && rates.length === 0 && await p.evaluate(() => document.querySelector('[data-calque]').hidden) && !errs.length, tab + ' / ratées : ' + rates.join(','));
+    await ctx.close();
+  }
+
   // 21 : poids
   const ko = fs.statSync(FILE).size / 1024;
   ok('[21] Poids ≤ 900 Ko', ko <= 900, ko.toFixed(0) + ' Ko');

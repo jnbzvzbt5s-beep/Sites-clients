@@ -39,7 +39,7 @@
 .c-plan{position:relative;width:min(500px,80cqw);aspect-ratio:640/460;transform-style:preserve-3d;transform:rotateX(55deg) rotateZ(var(--angle,-30deg));transition:transform .6s cubic-bezier(.2,.7,.2,1);border-radius:10px;background:repeating-linear-gradient(90deg,#3A2520 0 22px,#34211C 22px 44px),#3A2520;box-shadow:0 0 0 8px #24161A,0 0 0 9px rgba(176,141,87,.5),0 40px 60px rgba(0,0,0,.6)}
 .c-scene.glisse .c-plan{transition:none}
 .c-bar{position:absolute;left:26.5%;top:3.5%;width:47%;height:7%;border-radius:4px;background:linear-gradient(#B08D57,#8E6F3F);display:grid;place-items:center;font-size:clamp(9px,1.1cqw,13px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#24161A;transform:translateZ(10px)}
-.c-table{position:absolute;transform-style:preserve-3d;transition:transform .35s cubic-bezier(.2,.7,.2,1);cursor:pointer}
+.c-table{position:absolute;transform-style:preserve-3d;transform:translateZ(2px);transition:transform .35s cubic-bezier(.2,.7,.2,1);cursor:pointer}
 .c-plateau{position:absolute;inset:0;display:grid;place-items:center;background:#E9DCCF;color:#3A2520;font-weight:700;font-size:clamp(10px,1.2cqw,15px);box-shadow:0 5px 0 #A99684,0 10px 14px rgba(0,0,0,.45);transition:background-color .3s,color .3s,box-shadow .3s}
 .c-table--rond .c-plateau{border-radius:50%}
 .c-table--carre .c-plateau{border-radius:6px}
