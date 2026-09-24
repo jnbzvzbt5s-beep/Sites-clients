@@ -1,0 +1,96 @@
+<div class="mq mq-schmit" data-mq="schmit" data-actif="false">
+  <header class="s-nav">
+    <span class="s-logo"><span class="s-logo-barre" aria-hidden="true"></span><span data-nom-commerce>Garage Schmit</span></span>
+    <div class="s-onglets" role="tablist" aria-label="Pages du site">
+      <button type="button" role="tab" aria-selected="true" data-onglet="atelier">Atelier</button>
+      <button type="button" role="tab" aria-selected="false" data-onglet="services">Services</button>
+      <button type="button" role="tab" aria-selected="false" data-onglet="occasions">Occasions</button>
+      <button type="button" role="tab" aria-selected="false" data-onglet="avis">Avis</button>
+    </div>
+    <button type="button" class="s-appel" data-demo="appel">Appeler</button>
+  </header>
+  <div class="s-scene">
+    <span class="s-volet" aria-hidden="true"></span>
+
+    <section class="s-page" data-page="atelier" role="tabpanel">
+      <div class="s-hero">
+        <div class="s-hero-txt">
+          <p class="s-sur s-c" style="--i:0">Atelier toutes marques, Differdange</p>
+          <h1 class="s-titre s-c" style="--i:1">Réparé juste. Rendu à l'heure.</h1>
+          <p class="s-intro s-c" style="--i:2">Diagnostic, entretien et carrosserie. Le devis est signé avant le premier boulon, et le prix annoncé est le prix payé.</p>
+          <div class="s-actions s-c" style="--i:3"><button type="button" class="s-btn" data-demo="rdv">Demander un devis</button><button type="button" class="s-btn s-btn--trait" data-onglet-lien="occasions">Voir les occasions</button></div>
+        </div>
+        <div class="s-voiture" aria-hidden="true">
+          <svg viewBox="0 0 600 260">
+            <defs><clipPath id="s-carrosserie"><path d="M40 196V176q2-16 30-20l98-10q46-42 122-48h90q50 2 94 44l66 10q32 6 34 28v16z"/></clipPath></defs>
+            <ellipse class="s-phare-halo" cx="610" cy="168" rx="50" ry="20" fill="#F2A33A"/>
+            <g class="s-reflet-g" clip-path="url(#s-carrosserie)"><rect class="s-reflet" x="-120" y="80" width="60" height="140" fill="#fff" transform="skewX(-20)"/></g>
+            <g fill="none" stroke="#EEF0F2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path class="s-trait" pathLength="1" d="M40 196V176q2-16 30-20l98-10q46-42 122-48h90q50 2 94 44l66 10q32 6 34 28v16"/>
+              <path class="s-trait" pathLength="1" style="--t:.3s" d="M190 146q36-32 100-36h82q40 2 74 34z"/>
+              <path class="s-trait" pathLength="1" style="--t:.5s" d="M318 110l-3 36M200 152v36M446 150v38"/>
+              <path class="s-trait" pathLength="1" style="--t:.7s" d="M226 166h16M354 166h16"/>
+              <circle class="s-trait" pathLength="1" style="--t:.9s" cx="150" cy="196" r="34"/><circle class="s-trait" pathLength="1" style="--t:1s" cx="462" cy="196" r="34"/>
+              <circle class="s-trait" pathLength="1" style="--t:1.2s" cx="150" cy="196" r="14"/><circle class="s-trait" pathLength="1" style="--t:1.3s" cx="462" cy="196" r="14"/>
+              <path class="s-trait" pathLength="1" style="--t:1.5s" d="M10 232h580" stroke-opacity=".3"/>
+            </g>
+            <path class="s-phare" d="M550 160l22 4v9l-22-2z" fill="#F2A33A"/>
+            <path class="s-feu" d="M40 172h10v12H40z" fill="#E0492F"/>
+          </svg>
+        </div>
+      </div>
+      <div class="s-tableau">
+        <div class="s-jauge s-c" style="--i:2">
+          <svg viewBox="0 0 300 250" aria-hidden="true">{{JAUGE}}</svg>
+          <p class="s-jauge-leg"><b>52</b> ans d'atelier à Differdange</p>
+        </div>
+        <div class="s-chiffre s-c" style="--i:3"><b class="s-compte" data-compte="9">9</b><span>mécaniciens diplômés</span></div>
+        <div class="s-chiffre s-c" style="--i:4"><b><span class="s-compte" data-compte="24">24</span> h</b><span>pour recevoir votre devis</span></div>
+      </div>
+      <div class="s-bandeau" aria-hidden="true"><div class="s-defile"><span>Vidange</span><span>Freins</span><span>Pneus été et hiver</span><span>Climatisation</span><span>Diagnostic</span><span>Carrosserie</span><span>Contrôle technique</span><span>Distribution</span><span>Vidange</span><span>Freins</span><span>Pneus été et hiver</span><span>Climatisation</span><span>Diagnostic</span><span>Carrosserie</span><span>Contrôle technique</span><span>Distribution</span></div></div>
+      <p class="sr">Vidange, freins, pneus été et hiver, climatisation, diagnostic, carrosserie, contrôle technique, distribution.</p>
+    </section>
+
+    <section class="s-page" data-page="services" role="tabpanel" hidden>
+      <h2 class="s-h2 s-c" style="--i:0">Ce qu'on fait, et ce que ça coûte.</h2>
+      <ul class="s-services">
+        <li class="s-c" style="--i:1"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="s-ico" pathLength="1" d="M30 6a10 10 0 0 0-9 14L7 34a4 4 0 0 0 6 6l14-14a10 10 0 0 0 14-9l-6 6-6-2-2-6z"/></svg><h3>Entretien toutes marques</h3><p>Vidange, filtres, révision constructeur. La garantie de votre voiture est conservée.</p><b>dès 129 €</b></li>
+        <li class="s-c" style="--i:2"><svg viewBox="0 0 48 48" aria-hidden="true"><circle class="s-ico" pathLength="1" cx="24" cy="24" r="17"/><circle class="s-ico" pathLength="1" cx="24" cy="24" r="6"/><path class="s-ico" pathLength="1" d="M24 7v11M24 30v11M7 24h11M30 24h11"/></svg><h3>Pneus et géométrie</h3><p>Montage, équilibrage, parallélisme, gardiennage de vos pneus d'hiver.</p><b>dès 49 €</b></li>
+        <li class="s-c" style="--i:3"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="s-ico" pathLength="1" d="M6 34l6-16h24l6 16zM6 34v6h36v-6M14 18l4-8h12l4 8"/></svg><h3>Carrosserie</h3><p>Rayures, bosses, pare-brise. Nous traitons directement avec votre assurance.</p><b>sur devis</b></li>
+        <li class="s-c" style="--i:4"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="s-ico" pathLength="1" d="M26 4L10 28h12l-2 16 16-24H24z"/></svg><h3>Diagnostic électronique</h3><p>Voyant allumé ? Lecture complète des calculateurs et explication en clair.</p><b>59 €</b></li>
+      </ul>
+    </section>
+
+    <section class="s-page" data-page="occasions" role="tabpanel" hidden>
+      <h2 class="s-h2 s-c" style="--i:0">Occasions révisées à l'atelier.</h2>
+      <p class="s-garantie s-c" style="--i:1">Garantie 12 mois sur chaque véhicule</p>
+      <ul class="s-occasions">
+        {{OCCASIONS}}
+      </ul>
+    </section>
+
+    <section class="s-page" data-page="avis" role="tabpanel" hidden>
+      <div class="s-avis">
+        <div class="s-note s-c" style="--i:0">
+          <b>4,9</b>
+          <span class="s-etoiles" aria-label="4,9 sur 5"><span class="s-etoiles-fond">★★★★★</span><span class="s-etoiles-plein" aria-hidden="true">★★★★★</span></span>
+          <p>Sur 212 avis clients</p>
+        </div>
+        <div class="s-barres s-c" style="--i:1">
+          <div><span>Devis respecté</span><i style="--v:.98"></i><b>98 %</b></div>
+          <div><span>Délais tenus</span><i style="--v:.94"></i><b>94 %</b></div>
+          <div><span>Accueil</span><i style="--v:.97"></i><b>97 %</b></div>
+        </div>
+      </div>
+      <div class="s-temoins s-c" style="--i:2" aria-live="polite">
+        <blockquote class="s-temoin actif"><p>Devis envoyé le soir même, voiture prête le lendemain à 17 h comme promis. Pas un euro de plus que prévu.</p><footer>Nadia, Differdange</footer></blockquote>
+        <blockquote class="s-temoin"><p>Ils m'ont expliqué ce qui pouvait attendre et ce qui ne pouvait pas. On se sent respecté, pas pressé.</p><footer>Tom, Pétange</footer></blockquote>
+        <blockquote class="s-temoin"><p>Mon utilitaire est passé au contrôle technique sans une remarque. Je leur confie toute la flotte.</p><footer>Carlos, Esch-sur-Alzette</footer></blockquote>
+      </div>
+    </section>
+  </div>
+  <footer class="s-pied">
+    <p><b data-nom-commerce>Garage Schmit</b>Rue Émile Mark, Differdange</p>
+    <p><b>Atelier</b>Lundi au vendredi, 7 h 30 à 18 h. Samedi, 8 h à 12 h</p>
+  </footer>
+</div>

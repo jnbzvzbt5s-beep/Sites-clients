@@ -1,0 +1,31 @@
+/* ===== Impression ===== */
+@page{margin:14mm}
+@media print{
+  :root{--nuit:#fff;--nuit-2:#fff;--ivoire:#1a1511;--cendre:#3d352c;--cendre-2:#5a5046}
+  html,body{background:#fff!important;color:#1a1511!important}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rideau,.halo,.grain,.fil,.pastille,.entete,.calque,.evitement,.hero-actions,.needs-js,.vt-reflet,.vt-nuit,.vt-trottoir,.rue-silhouette,.aa,.bulle-demo{display:none!important}
+  .bloc,.hero{padding:28px 0!important;min-height:0!important;background:#fff!important}
+  .rue{background:#fff!important}
+  .titre,.manifeste-phrase,.hero-heure,.hero-suite,.plaque-nom,.tarif-nom,.etape-t,.faq-b{color:#1a1511!important}
+  .chapeau,.texte,.vt-desc,.vt-lieu,.plaque-texte,.inclus p,.reperes li,.tarif-liste li,.vt-essai,.vt-formule,.hero-intro{color:#2b241d!important}
+  .manifeste-phrase{font-size:2.6rem}
+  .hero-heure{font-size:3.2rem}
+  .vt{break-inside:avoid;page-break-inside:avoid;display:block!important;margin-bottom:32px}
+  .ens{display:none!important}
+  .vt-cadre{background:none!important;box-shadow:none!important;padding:0!important;transform:none!important}
+  .vt-ecran{height:auto!important;max-height:520px;overflow:hidden;border:1px solid #ccc}
+  html.js .vt-ecran .mq{position:relative!important;transform:none!important;width:100%!important}
+  .mq .ch,.mq .s-c,.mq .n-c,.mq .n-l{opacity:1!important}
+  .mq .s-trait{stroke-dashoffset:0!important}
+  .mq .s-phare,.mq .s-feu{opacity:1!important}
+  .faq-r,html.js .faq-r{grid-template-rows:1fr!important}
+  .tarif{box-shadow:inset 0 0 0 1px #bbb!important;background:#fff!important;transform:none!important;break-inside:avoid}
+  .tarif-demande{background:#eee!important;color:#000!important}
+  .pancarte-carton{transform:rotateY(180deg)!important}
+  .etape-n{background:#fff!important;color:#000!important}
+  .neon-lum{text-shadow:none!important;color:#1a1511!important}
+  .pied{border:0;color:#333}
+  .contact-mail{color:#1a1511!important}
+  .vt-nom{color:#1a1511!important}
+}

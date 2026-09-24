@@ -1,0 +1,71 @@
+<div class="mq mq-comptoir" data-mq="comptoir" data-actif="false" lang="fr">
+  <header class="c-nav">
+    <span class="c-logo"><span data-nom-commerce>Le Comptoir</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1l2.6 6.2L19 8l-5 4.3 1.6 6.7L10 15.4 4.4 19 6 12.3 1 8l6.4-.8z"/></svg></span>
+    <nav class="c-liens"><button type="button" data-aller="salle" data-t="nav_salle">La salle</button><button type="button" data-aller="salle" data-t="nav_reserver">Réserver</button><button type="button" data-aller="soir" data-t="nav_soir">Ce soir</button></nav>
+    <div class="c-langues" role="group" aria-label="Langue" data-ta="langue"><button type="button" aria-pressed="true" data-langue="fr">FR</button><button type="button" aria-pressed="false" data-langue="de">DE</button><button type="button" aria-pressed="false" data-langue="en">EN</button><button type="button" aria-pressed="false" data-langue="pt">PT</button></div>
+    <button type="button" class="c-appel" data-demo="appel" data-t="appeler">Appeler</button>
+  </header>
+
+  <section class="c-hero">
+    <div class="c-bougies" aria-hidden="true">
+      <span class="c-halo c-halo--1"></span><span class="c-halo c-halo--2"></span><span class="c-halo c-halo--3"></span>
+      <svg class="c-bougie c-bougie--1" viewBox="0 0 40 140"><path class="c-flamme" d="M20 4c6 10 8 16 8 22a8 8 0 0 1-16 0c0-6 2-12 8-22z" fill="#F8C66A"/><path d="M20 16c3 5 4 8 4 11a4 4 0 0 1-8 0c0-3 1-6 4-11z" fill="#FFF3D0"/><path d="M20 34v6" stroke="#2A1A12" stroke-width="2"/><rect x="11" y="40" width="18" height="100" rx="2" fill="#F4E8DF"/><rect x="11" y="40" width="6" height="100" fill="#fff" opacity=".35"/></svg>
+      <svg class="c-bougie c-bougie--2" viewBox="0 0 40 140"><path class="c-flamme" d="M20 4c6 10 8 16 8 22a8 8 0 0 1-16 0c0-6 2-12 8-22z" fill="#F8C66A"/><path d="M20 16c3 5 4 8 4 11a4 4 0 0 1-8 0c0-3 1-6 4-11z" fill="#FFF3D0"/><path d="M20 34v6" stroke="#2A1A12" stroke-width="2"/><rect x="11" y="40" width="18" height="100" rx="2" fill="#F4E8DF"/><rect x="11" y="40" width="6" height="100" fill="#fff" opacity=".35"/></svg>
+      <svg class="c-bougie c-bougie--3" viewBox="0 0 40 140"><path class="c-flamme" d="M20 4c6 10 8 16 8 22a8 8 0 0 1-16 0c0-6 2-12 8-22z" fill="#F8C66A"/><path d="M20 16c3 5 4 8 4 11a4 4 0 0 1-8 0c0-3 1-6 4-11z" fill="#FFF3D0"/><path d="M20 34v6" stroke="#2A1A12" stroke-width="2"/><rect x="11" y="40" width="18" height="100" rx="2" fill="#F4E8DF"/><rect x="11" y="40" width="6" height="100" fill="#fff" opacity=".35"/></svg>
+    </div>
+    <p class="c-sur ch" data-t="hero_sur">Bistrot de marché, Esch-sur-Alzette</p>
+    <h1 class="c-titre ch" style="--d:80ms" data-t="hero_titre">Votre table vous attend.</h1>
+    <p class="c-intro ch" style="--d:160ms" data-t="hero_sous">Cuisine de marché, vins du Luxembourg et du Portugal. Rue Zénon Bernard, à deux pas de la place de l'Hôtel de Ville.</p>
+    <div class="ch" style="--d:240ms"><button type="button" class="c-btn" data-aller="salle" data-t="hero_btn">Réserver une table</button></div>
+  </section>
+
+  <section class="c-resa" data-section="salle">
+    <div class="c-salle-bloc">
+      <h2 class="c-h2" data-t="salle_titre">Choisissez votre table.</h2>
+      <p class="c-aide" data-t="salle_aide">Faites pivoter la salle du doigt, puis touchez une table.</p>
+      <div class="c-scene" data-scene-salle data-pas-fleches>
+        <div class="c-plan" data-plan>
+          <span class="c-bar"><span data-t="bar">Bar</span></span>
+          {{TABLES}}
+        </div>
+      </div>
+      <div class="c-outils">
+        <button type="button" class="c-rond" data-tourner="-30" aria-label="Tourner à gauche" data-ta="tourner_g"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/></svg></button>
+        <button type="button" class="c-rond" data-tourner="30" aria-label="Tourner à droite" data-ta="tourner_d"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4"/></svg></button>
+        <button type="button" class="c-face" data-face data-t="vue_face">Vue de face</button>
+        <p class="c-etat" data-table-etat aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="c-panneau">
+      <h2 class="c-h3" data-t="res_titre">Votre réservation</h2>
+      <p class="c-lib" data-t="jour">Jour</p>
+      <div class="c-jours" data-jours></div>
+      <p class="c-lib" data-t="heure">Heure</p>
+      <div class="c-creneaux" data-creneaux></div>
+      <p class="c-lib" data-t="couverts">Couverts</p>
+      <div class="c-couverts"><button type="button" class="c-rond" data-cv="-1" aria-label="Un couvert de moins" data-ta="moins">−</button><output class="c-cv" data-cv-val aria-live="polite">2</output><button type="button" class="c-rond" data-cv="1" aria-label="Un couvert de plus" data-ta="plus">+</button></div>
+      <p class="c-proposition" data-proposition aria-live="polite"></p>
+      <dl class="c-recap">
+        <div><dt data-t="jour">Jour</dt><dd data-r="jour"></dd></div>
+        <div><dt data-t="heure">Heure</dt><dd data-r="heure"></dd></div>
+        <div><dt data-t="couverts">Couverts</dt><dd data-r="couverts"></dd></div>
+        <div><dt data-t="table">Table</dt><dd data-r="table"></dd></div>
+      </dl>
+      <p class="c-manque" data-manque aria-live="assertive"></p>
+      <button type="button" class="c-confirmer" data-confirmer><svg class="c-coche" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M4 12.5l5 5L20 6.5"/></svg><span data-t="confirmer">Confirmer</span></button>
+    </div>
+  </section>
+
+  <section class="c-soir" data-section="soir">
+    <h2 class="c-h2" data-t="soir_titre">Ce soir en cuisine</h2>
+    <ul class="c-plats">
+      {{PLATS}}
+    </ul>
+  </section>
+
+  <footer class="c-pied">
+    <p><b data-nom-commerce>Le Comptoir</b><span>Rue Zénon Bernard, Esch-sur-Alzette</span></p>
+    <p data-t="horaires">Du mardi au samedi, de 12 h à 14 h et de 19 h à 22 h 30</p>
+  </footer>
+</div>

@@ -1,0 +1,96 @@
+/* ===== M4 NOVA : le fluide ===== */
+.mq-nova{--lait:#FFF7F8;--rose:#D47F95;--mauve:#8E6BB0;--prune:#3A2231;--abricot:#F4C6AE;background:var(--lait);color:var(--prune);font-family:var(--sans);font-size:16px;line-height:1.6}
+.mq-nova .n-titre,.mq-nova .n-h2,.mq-nova .n-logo,.mq-nova .n-equipe h3{font-family:var(--serif);font-style:italic;font-weight:400}
+.n-nav{display:flex;align-items:center;gap:28px;padding:22px 52px;position:relative;z-index:3}
+.n-logo{font-size:30px;line-height:1;margin-right:auto}
+.n-onglets{display:flex;gap:26px}
+.n-onglets button{position:relative;padding:6px 0;font-size:15px;color:#6E5264}
+.n-onglets button::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--rose);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.n-onglets button[aria-selected="true"]{color:var(--prune);font-weight:600}
+.n-onglets button[aria-selected="true"]::after{transform:scaleX(1)}
+.n-rdv{position:relative;overflow:hidden;padding:15px 30px;border-radius:999px;background:var(--prune);color:var(--lait);font-weight:600;font-size:16px}
+.n-rdv::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.35),rgba(255,255,255,0));transform:translateX(0) skewX(-18deg)}
+.mq-nova.joue .n-rdv::after{animation:n-reflet 4.5s ease-in-out 1.8s infinite}
+@keyframes n-reflet{0%{transform:translateX(0) skewX(-18deg)}35%,100%{transform:translateX(420%) skewX(-18deg)}}
+.n-rdv--petit{padding:10px 20px;font-size:14px}
+.n-page{transition:opacity .22s,transform .22s}
+.mq-nova.n-sort .n-page{opacity:0;transform:translateY(10px)}
+html.js .mq-nova .n-c{opacity:0}
+html.js .mq-nova .n-page.vu .n-c{animation:mq-pose .7s cubic-bezier(.2,.7,.2,1) calc(var(--i,0) * 80ms + 80ms) both}
+.n-hero{position:relative;min-height:560px;padding:70px 52px 60px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;overflow:hidden}
+.n-soie{position:absolute;inset:0;z-index:0;pointer-events:none}
+.n-nappe{position:absolute;display:block;border-radius:46% 54% 60% 40%/50% 42% 58% 50%;will-change:transform}
+.n-nappe--a{width:720px;height:620px;right:-80px;top:-160px;background:radial-gradient(closest-side,rgba(212,127,149,.75),rgba(212,127,149,0));animation:n-nappe-a 18s ease-in-out infinite alternate}
+.n-nappe--b{width:640px;height:560px;right:260px;top:120px;background:radial-gradient(closest-side,rgba(142,107,176,.55),rgba(142,107,176,0));animation:n-nappe-b 18s ease-in-out -6s infinite alternate}
+.n-nappe--c{width:560px;height:520px;right:-40px;top:230px;background:radial-gradient(closest-side,rgba(244,198,174,.95),rgba(244,198,174,0));animation:n-nappe-c 18s ease-in-out -11s infinite alternate}
+@keyframes n-nappe-a{0%{transform:translate(0,0) rotate(0) scale(1);border-radius:46% 54% 60% 40%/50% 42% 58% 50%}50%{transform:translate(-120px,60px) rotate(40deg) scale(1.12);border-radius:60% 40% 38% 62%/44% 60% 40% 56%}100%{transform:translate(-40px,120px) rotate(80deg) scale(.94);border-radius:40% 60% 52% 48%/58% 38% 62% 42%}}
+@keyframes n-nappe-b{0%{transform:translate(0,0) rotate(0);border-radius:52% 48% 40% 60%/48% 56% 44% 52%}50%{transform:translate(140px,-80px) rotate(-50deg) scale(1.15);border-radius:38% 62% 60% 40%/60% 40% 60% 40%}100%{transform:translate(60px,-150px) rotate(-90deg) scale(1.02);border-radius:58% 42% 44% 56%/42% 58% 42% 58%}}
+@keyframes n-nappe-c{0%{transform:translate(0,0) scale(1);border-radius:44% 56% 50% 50%/52% 44% 56% 48%}50%{transform:translate(-180px,-60px) scale(1.18) rotate(30deg);border-radius:62% 38% 46% 54%/40% 62% 38% 60%}100%{transform:translate(-90px,-140px) scale(.96) rotate(60deg);border-radius:48% 52% 60% 40%/56% 46% 54% 44%}}
+.n-hero > *:not(.n-soie){position:relative;z-index:1}
+.n-sur{font-size:15px;color:#6E5264}
+.n-titre{font-size:124px;line-height:.95;letter-spacing:-.02em;margin:14px 0 26px;max-width:9ch}
+.n-titre .n-l{display:inline-block;white-space:pre}
+.n-titre .n-mot{display:inline-block;white-space:nowrap}
+html.js .mq-nova .n-titre .n-l{opacity:0}
+html.js .mq-nova .n-page.vu .n-titre .n-l{animation:n-lettre .8s cubic-bezier(.2,.7,.2,1) calc(var(--l) * 38ms + 150ms) both}
+@keyframes n-lettre{from{opacity:0;transform:translateY(.35em) rotate(4deg)}to{opacity:1;transform:none}}
+.n-intro{max-width:30em;font-size:18px;color:#5A3F50;margin-bottom:30px}
+.n-infos{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(58,34,49,.12)}
+.n-infos li{padding:24px 52px;font-size:15px;color:#5A3F50}
+.n-infos li + li{border-left:1px solid rgba(58,34,49,.12)}
+.n-infos b{display:block;color:var(--prune);font-weight:600;margin-bottom:2px}
+.n-page[data-page="prestations"],.n-page[data-page="galerie"],.n-page[data-page="equipe"]{padding:50px 52px 70px}
+.n-h2{font-size:84px;line-height:1;letter-spacing:-.02em}
+.n-sous{color:#6E5264;margin:10px 0 30px}
+.n-tarifs{max-width:780px}
+.n-tarifs li{position:relative;display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:18px 0;border-bottom:1px solid rgba(58,34,49,.12);font-size:20px}
+.n-tarifs li::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--rose);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.n-tarifs b{font-family:var(--serif);font-style:italic;font-weight:400;font-size:26px;white-space:nowrap}
+@media (hover:hover) and (pointer:fine){.n-tarifs li:hover::after{transform:scaleX(1)}.n-onglets button:hover{color:var(--prune)}}
+.n-gal-tete{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:26px}
+.n-fleches{display:flex;gap:10px}
+.n-fleches button{width:52px;height:52px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--prune);display:grid;place-items:center}
+.n-fleches svg{width:22px;height:22px;fill:none;stroke:var(--prune);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.n-ruban{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:12px;margin:0 -52px;padding-inline:52px;scroll-padding-inline:52px;scrollbar-width:thin;scrollbar-color:var(--rose) transparent;overscroll-behavior-x:contain}
+.n-vis{position:relative;flex:none;width:320px;scroll-snap-align:start}
+.n-vis-in{position:relative;height:420px;border-radius:180px 180px 16px 16px;overflow:hidden}
+.n-vis-in svg{position:absolute;top:0;left:-10%;width:120%;height:100%}
+@supports (animation-timeline:view(inline)){
+  .n-vis-in svg{animation:n-parallaxe linear both;animation-timeline:view(inline)}
+  @keyframes n-parallaxe{from{transform:translateX(8%)}to{transform:translateX(-8%)}}
+}
+.n-vis figcaption{margin-top:12px;font-family:var(--serif);font-style:italic;font-size:24px}
+.n-vis .note-photo{top:14px;bottom:auto;right:50%;transform:translateX(50%)}
+.n-equipe{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;margin-top:34px}
+.n-portrait{width:100%;height:auto;max-width:220px}
+.n-equipe h3{font-size:34px;margin-top:14px;line-height:1.1}
+.n-equipe p{color:#6E5264}
+.n-pied{display:flex;align-items:center;gap:30px;padding:30px 52px;background:var(--prune);color:#F2DCE3}
+.n-pied .n-logo{font-size:26px;margin-right:auto}
+.n-lien{text-decoration:underline;text-underline-offset:4px}
+@container (max-width:700px){
+  .n-nav{flex-wrap:wrap;gap:12px;padding:16px 18px}
+  .n-logo{font-size:26px}
+  .n-onglets{order:3;width:100%;justify-content:space-between;gap:8px}
+  .n-onglets button{font-size:14px}
+  .n-hero{min-height:500px;padding:40px 20px 40px}
+  .n-nappe--a{width:420px;height:380px;right:-160px;top:-80px}
+  .n-nappe--b{width:380px;height:340px;right:40px;top:220px}
+  .n-nappe--c{width:360px;height:320px;right:-140px;top:300px}
+  .n-titre{font-size:68px}
+  .n-intro{font-size:16px}
+  .n-infos{grid-template-columns:1fr}
+  .n-infos li{padding:16px 20px}
+  .n-infos li + li{border-left:0;border-top:1px solid rgba(58,34,49,.12)}
+  .n-page[data-page="prestations"],.n-page[data-page="galerie"],.n-page[data-page="equipe"]{padding:34px 20px 50px}
+  .n-h2{font-size:54px}
+  .n-tarifs li{font-size:16px;padding:14px 0}
+  .n-tarifs b{font-size:21px}
+  .n-ruban{margin:0 -20px;padding-inline:20px;scroll-padding-inline:20px}
+  .n-vis{width:250px}
+  .n-vis-in{height:330px}
+  .n-fleches button{width:44px;height:44px}
+  .n-equipe{grid-template-columns:1fr 1fr;gap:20px}
+  .n-equipe h3{font-size:26px}
+  .n-pied{flex-direction:column;align-items:flex-start;gap:8px;padding:26px 20px}
+}

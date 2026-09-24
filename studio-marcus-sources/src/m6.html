@@ -1,0 +1,63 @@
+<div class="mq mq-fleurs" data-mq="fleurs" data-actif="false">
+  <header class="f-nav">
+    <span class="f-logo"><svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="29" fill="#3F6B4A"/><g fill="#FBFBF6"><ellipse cx="30" cy="19" rx="6" ry="9"/><ellipse cx="30" cy="41" rx="6" ry="9"/><ellipse cx="19" cy="30" rx="9" ry="6"/><ellipse cx="41" cy="30" rx="9" ry="6"/></g><circle cx="30" cy="30" r="5" fill="#F2D48A"/></svg><span data-nom-commerce>Fleurs &amp; Cie</span></span>
+    <nav class="f-liens"><button type="button" data-aller="composer">Composer</button><button type="button" data-aller="compos">Compositions du jour</button></nav>
+    <button type="button" class="f-appel" data-demo="appel">Appeler</button>
+  </header>
+  <section class="f-hero">
+    <h1 class="f-titre ch">Composez-le. On le livre aujourd'hui.</h1>
+    <p class="f-intro ch" style="--d:100ms">Atelier floral à Dudelange, avenue Grande-Duchesse Charlotte. Commandé avant 15 h, livré le jour même dans toute la ville.</p>
+  </section>
+
+  <section class="f-atelier ch" style="--d:180ms" data-section="composer">
+    <div class="f-gauche">
+      <h2 class="f-h2">Choisissez vos fleurs</h2>
+      <p class="f-aide">Chaque toucher ajoute une tige. Touchez une fleur du bouquet pour la retirer.</p>
+      <ul class="f-palette">
+        {{PALETTE}}
+      </ul>
+      <fieldset class="f-groupe">
+        <legend class="f-lib">Emballage</legend>
+        <label class="f-radio"><input type="radio" name="emballage" value="kraft" data-emb="0" checked><span>Papier kraft</span><small>inclus</small></label>
+        <label class="f-radio"><input type="radio" name="emballage" value="lin" data-emb="3"><span>Toile de lin</span><small>+3 €</small></label>
+        <label class="f-radio"><input type="radio" name="emballage" value="vase" data-emb="12"><span>Vase en verre</span><small>+12 €</small></label>
+      </fieldset>
+      <label class="f-champ"><span class="f-lib">Un mot doux</span><input type="text" maxlength="60" data-mot placeholder="Joyeux anniversaire, maman" autocomplete="off"><small data-mot-reste>60 caractères</small></label>
+      <label class="f-coche"><input type="checkbox" data-livraison><span>Livraison aujourd'hui à Dudelange</span><small>+8 €</small></label>
+    </div>
+
+    <div class="f-droite">
+      <div class="f-scene" data-scene-bouquet data-emballage="kraft">
+        <div class="f-tiges" data-tiges></div>
+        <svg class="f-emb f-emb--kraft" viewBox="0 0 300 260" aria-hidden="true"><path d="M58 20l92 230 92-230q-46 30-92 22-46 8-92-22z" fill="#C9A27C"/><path d="M58 20q46 30 92 22l-10 208z" fill="#B88F67"/><path d="M150 42l-2 60M120 80l18 50M180 70l-16 60" stroke="#A67E57" stroke-width="1" opacity=".6"/></svg>
+        <svg class="f-emb f-emb--lin" viewBox="0 0 300 260" aria-hidden="true"><path d="M64 26q20 10 30 0 20 12 30 2 14 10 26 0 12 10 26 0 12 10 28 0 18 8 32-2l-72 220h-40z" fill="#EDE6D4"/><path d="M64 26l72 220h28" fill="none" stroke="#D5CBB2" stroke-width="2"/><g stroke="#DCD2BA" stroke-width="1"><path d="M90 60h120M98 90h104M108 120h84M118 150h64M126 180h48"/></g></svg>
+        <svg class="f-emb f-emb--vase" viewBox="0 0 300 260" aria-hidden="true"><path d="M96 40h108l-10 200q-2 16-18 16h-52q-16 0-18-16z" fill="#E8F0E4" fill-opacity=".55" stroke="#B9C9B4" stroke-width="2"/><path d="M100 110h100l-6 128q-2 12-14 12h-60q-12 0-14-12z" fill="#CFE0C6" fill-opacity=".6"/><path d="M110 50l-6 180" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".7"/></svg>
+        <svg class="f-ruban" viewBox="0 0 300 260" aria-hidden="true"><path pathLength="1" d="M104 64q46 22 92 0M150 68q-30 20-40 50M150 68q30 20 40 50" fill="none" stroke="#D96C86" stroke-width="7" stroke-linecap="round"/></svg>
+        <div class="f-etiquette" data-etiquette hidden><span class="f-fil" aria-hidden="true"></span><span class="f-etiq-carte" data-etiq-txt></span></div>
+        <p class="f-complet" data-complet aria-live="polite"></p>
+      </div>
+      <div class="f-caisse">
+        <p class="f-compte" data-compte-tiges>Aucune tige pour l'instant</p>
+        <p class="f-total"><span>Total</span><b data-total>0 €</b></p>
+        <button type="button" class="f-commander" data-commander>Commander</button>
+        <p class="f-msg" data-f-msg aria-live="polite"></p>
+        <div class="f-recap" data-recap hidden>
+          <p class="f-recap-t">Votre bouquet est commandé.</p>
+          <p data-recap-txt></p>
+          <button type="button" class="f-recommencer" data-recommencer>Recommencer</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="f-compos" data-section="compos">
+    <h2 class="f-h2">Les compositions du jour</h2>
+    <ul class="f-compos-l">
+      {{COMPOS}}
+    </ul>
+  </section>
+  <footer class="f-pied">
+    <p><b data-nom-commerce>Fleurs &amp; Cie</b>Avenue Grande-Duchesse Charlotte, Dudelange</p>
+    <p>Du mardi au samedi, 9 h à 18 h 30. Dimanche, 9 h à 12 h</p>
+  </footer>
+</div>

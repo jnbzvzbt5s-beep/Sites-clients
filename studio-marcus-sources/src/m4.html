@@ -1,0 +1,64 @@
+<div class="mq mq-nova" data-mq="nova" data-actif="false">
+  <header class="n-nav">
+    <span class="n-logo" data-nom-commerce>Studio Nova</span>
+    <div class="n-onglets" role="tablist" aria-label="Pages du site">
+      <button type="button" role="tab" aria-selected="true" data-onglet="salon">Salon</button>
+      <button type="button" role="tab" aria-selected="false" data-onglet="prestations">Prestations</button>
+      <button type="button" role="tab" aria-selected="false" data-onglet="galerie">Galerie</button>
+      <button type="button" role="tab" aria-selected="false" data-onglet="equipe">Équipe</button>
+    </div>
+    <button type="button" class="n-rdv n-rdv--petit" data-demo="rdv">Rendez-vous</button>
+  </header>
+
+  <section class="n-page" data-page="salon" role="tabpanel">
+    <div class="n-hero">
+      <div class="n-soie" aria-hidden="true"><i class="n-nappe n-nappe--a"></i><i class="n-nappe n-nappe--b"></i><i class="n-nappe n-nappe--c"></i></div>
+      <p class="n-sur n-c" style="--i:0">Salon de coiffure, rue du Brill, Esch-sur-Alzette</p>
+      <h1 class="n-titre" data-lettres>Votre coupe, pas la nôtre.</h1>
+      <p class="n-intro n-c" style="--i:6">On commence par vous écouter. Ensuite seulement, les ciseaux. Coupe, couleur et soins, dans un salon lumineux où l'on prend son temps.</p>
+      <div class="n-c" style="--i:8"><button type="button" class="n-rdv" data-demo="rdv">Prendre rendez-vous</button></div>
+    </div>
+    <ul class="n-infos n-c" style="--i:9">
+      <li><b>Horaires</b>Mardi au samedi, 9 h à 19 h</li>
+      <li><b>Sans rendez-vous</b>Le mercredi matin</li>
+      <li><b>Adresse</b>Rue du Brill, Esch-sur-Alzette</li>
+    </ul>
+  </section>
+
+  <section class="n-page" data-page="prestations" role="tabpanel" hidden>
+    <h2 class="n-h2 n-c" style="--i:0">Prestations</h2>
+    <p class="n-sous n-c" style="--i:1">Tous nos prix incluent le diagnostic et le shampooing.</p>
+    <ul class="n-tarifs">
+      <li class="n-c" style="--i:2"><span>Coupe et brushing, cheveux courts</span><b>48 €</b></li>
+      <li class="n-c" style="--i:3"><span>Coupe et brushing, cheveux longs</span><b>62 €</b></li>
+      <li class="n-c" style="--i:4"><span>Coupe homme</span><b>32 €</b></li>
+      <li class="n-c" style="--i:5"><span>Coloration végétale</span><b>dès 65 €</b></li>
+      <li class="n-c" style="--i:6"><span>Balayage lumière</span><b>dès 110 €</b></li>
+      <li class="n-c" style="--i:7"><span>Soin profond à la kératine</span><b>35 €</b></li>
+      <li class="n-c" style="--i:8"><span>Chignon de mariée, essai compris</span><b>dès 120 €</b></li>
+    </ul>
+  </section>
+
+  <section class="n-page" data-page="galerie" role="tabpanel" hidden>
+    <div class="n-gal-tete n-c" style="--i:0">
+      <h2 class="n-h2">Galerie</h2>
+      <div class="n-fleches"><button type="button" data-gal="-1" aria-label="Visuel précédent"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-gal="1" aria-label="Visuel suivant"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
+    </div>
+    <div class="n-ruban n-c" style="--i:1" data-pas-fleches>
+      {{GALERIE}}
+    </div>
+  </section>
+
+  <section class="n-page" data-page="equipe" role="tabpanel" hidden>
+    <h2 class="n-h2 n-c" style="--i:0">L'équipe</h2>
+    <ul class="n-equipe">
+      {{EQUIPE}}
+    </ul>
+  </section>
+
+  <footer class="n-pied">
+    <span class="n-logo" data-nom-commerce>Studio Nova</span>
+    <p>Rue du Brill, Esch-sur-Alzette</p>
+    <button type="button" class="n-lien" data-demo="appel">Appeler</button>
+  </footer>
+</div>

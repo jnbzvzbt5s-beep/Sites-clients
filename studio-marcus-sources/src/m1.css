@@ -1,0 +1,66 @@
+/* ===== M1 KREMER : l'affiche du matin ===== */
+.mq-kremer{--farine:#F8F0E3;--croute:#B4541F;--ble:#D9A441;--encre:#2B1A0F;--kraft:#E7D3B3;background:var(--farine);color:var(--encre);font-family:var(--sans);font-size:17px;line-height:1.55}
+.mq-kremer .k-titre,.mq-kremer .k-h2,.mq-kremer .k-logo,.mq-kremer .k-annee,.mq-kremer .k-pied-nom{font-family:var(--fraunces);font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:800}
+.k-nav{display:flex;align-items:center;gap:36px;padding:26px 56px;position:relative;z-index:2}
+.k-logo{font-size:26px;letter-spacing:-.01em;margin-right:auto;color:var(--croute)}
+.k-liens{display:flex;gap:30px;font-size:15px;font-weight:500}
+.k-appel{background:var(--encre);color:var(--farine);padding:11px 22px;border-radius:999px;font-weight:600;font-size:15px}
+.k-hero{position:relative;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:20px;padding:30px 56px 70px;min-height:650px}
+.k-annee{position:absolute;left:30px;top:-40px;font-size:430px;line-height:1;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:2px var(--kraft);z-index:0;user-select:none}
+.k-hero-txt{position:relative;z-index:1}
+.k-titre{font-size:118px;line-height:.92;letter-spacing:-.035em;color:var(--encre);max-width:8.4ch}
+.k-sous{margin-top:30px;font-size:19px;max-width:30em;color:#5A4232}
+.k-ouvert{display:inline-flex;align-items:center;gap:10px;margin-top:26px;padding:9px 16px;border:1.5px solid var(--encre);border-radius:999px;font-weight:600;font-size:15px}
+.k-point{width:9px;height:9px;border-radius:50%;background:var(--croute)}
+.k-miche{position:relative;z-index:1;width:100%;max-width:460px;justify-self:end}
+.k-pains{display:grid;grid-template-columns:1.2fr .8fr;gap:34px;padding:40px 56px 60px}
+.k-ardoise{background:var(--kraft);border-radius:4px;padding:46px 50px;box-shadow:inset 0 0 0 1px rgba(43,26,15,.08);background-image:radial-gradient(rgba(43,26,15,.06) 1px,transparent 1.2px);background-size:7px 7px}
+.k-h2{font-size:48px;line-height:1;letter-spacing:-.02em;color:var(--croute)}
+.k-ardoise-note{margin:8px 0 26px;color:#6B4E36;font-size:15px}
+.k-prix li{display:flex;align-items:baseline;gap:10px;padding:9px 0;font-size:19px}
+.k-prix i{flex:1;border-bottom:2px dotted rgba(43,26,15,.45);transform:translateY(-5px)}
+.k-prix b{font-weight:600;font-variant-numeric:tabular-nums}
+.k-photos{display:grid;grid-template-rows:1fr 1fr;gap:18px}
+.k-photo{position:relative;border-radius:4px;overflow:hidden;min-height:180px}
+.k-photo svg{position:absolute;inset:0;width:100%;height:100%}
+.k-infos{display:grid;grid-template-columns:.8fr 1.2fr;gap:34px;padding:10px 56px 70px;align-items:start}
+.k-ticket{position:relative;background:#FFFDF8;padding:38px 36px 30px;filter:drop-shadow(0 10px 18px rgba(43,26,15,.12));
+  -webkit-mask:radial-gradient(circle 7px at 50% 0,transparent 98%,#000) 0 0/22px 51% repeat-x,radial-gradient(circle 7px at 50% 100%,transparent 98%,#000) 0 100%/22px 51% repeat-x;
+  mask:radial-gradient(circle 7px at 50% 0,transparent 98%,#000) 0 0/22px 51% repeat-x,radial-gradient(circle 7px at 50% 100%,transparent 98%,#000) 0 100%/22px 51% repeat-x}
+.k-heures{margin-top:22px;border-top:1.5px dashed rgba(43,26,15,.3)}
+.k-heures div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1.5px dashed rgba(43,26,15,.3);font-size:17px}
+.k-heures dd{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.k-ferme dt{color:var(--croute);font-weight:700}
+.k-ticket-pied{margin-top:16px;font-size:14px;color:#6B4E36}
+.k-trouver{display:grid;gap:14px;align-content:start}
+.k-plan{width:100%;height:auto;border-radius:6px}
+.k-adresse{font-weight:600;font-size:19px}
+.k-acces{color:#6B4E36;font-size:15px;max-width:40em}
+.k-boutons{display:flex;gap:10px;margin-top:4px}
+.k-btn{background:var(--croute);color:#FFF7EA;padding:12px 22px;border-radius:999px;font-weight:600;font-size:15px}
+.k-btn--trait{background:transparent;color:var(--encre);box-shadow:inset 0 0 0 1.5px var(--encre)}
+.k-pied{display:flex;align-items:center;gap:34px;padding:40px 56px 50px;background:var(--encre);color:#E9DCC8}
+.k-tampon{width:150px;height:150px;flex:none;transform:rotate(-8deg);background:var(--farine);border-radius:50%}
+.k-pied-nom{font-size:30px;color:var(--ble);margin-bottom:6px}
+.k-pied-txt p:last-child{font-size:15px;opacity:.85}
+@container (max-width:700px){
+  .k-nav{padding:18px 20px;gap:12px}
+  .k-liens{display:none}
+  .k-logo{font-size:21px}
+  .k-appel{padding:9px 16px;font-size:14px}
+  .k-hero{grid-template-columns:1fr;padding:10px 20px 40px;min-height:0;gap:0}
+  .k-annee{font-size:190px;left:6px;top:0}
+  .k-titre{font-size:62px;line-height:.94;margin-top:40px}
+  .k-sous{font-size:16px;margin-top:18px}
+  .k-ouvert{font-size:14px;margin-top:18px}
+  .k-miche{max-width:260px;justify-self:center;margin-top:10px}
+  .k-pains,.k-infos{grid-template-columns:1fr;padding:20px 20px 36px;gap:22px}
+  .k-ardoise{padding:30px 22px}
+  .k-h2{font-size:38px}
+  .k-prix li{font-size:16px}
+  .k-photos{grid-template-rows:none;grid-template-columns:1fr 1fr}
+  .k-photo{min-height:150px}
+  .k-ticket{padding:32px 22px 24px}
+  .k-pied{flex-direction:column;align-items:flex-start;padding:34px 20px 40px;gap:20px}
+  .k-tampon{width:120px;height:120px}
+}

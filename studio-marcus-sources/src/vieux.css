@@ -1,0 +1,24 @@
+/* ===== Le vieux site (avant) ===== */
+.vieux{background:#DCD6C4;height:800px;font-family:Verdana,Tahoma,Arial,sans-serif;color:#7E786A;text-align:left;overflow:hidden}
+.v-page{width:960px;margin:0 auto;background:#EAE5D6;border-collapse:collapse;border:1px solid #BDB49C;transform-origin:0 0}
+.v-bandeau{height:92px;background:linear-gradient(#D9C9A0,#B8A57A);border-bottom:3px double #8C7B55;padding:14px 20px;vertical-align:top}
+.v-titre{display:block;font-family:'Times New Roman',Times,serif;font-size:30px;font-style:italic;color:#6E4F2A;text-shadow:2px 2px 0 #E8DDC0}
+.v-sous{display:block;font-size:10px;color:#8C7B55;margin-top:4px}
+.v-menu{width:150px;vertical-align:top;background:#D8CFB6;border-right:1px solid #BDB49C;padding:10px 8px;font-size:11px}
+.v-menu-t{margin:0 0 6px;font-weight:bold;color:#8C7B55;font-size:10px}
+.v-menu a{display:block;color:#551A8B;text-decoration:underline;margin:0 0 6px;font-size:11px}
+.v-compteur{margin-top:28px;font-size:9px;color:#8C7B55}
+.v-compteur span{display:inline-block;width:11px;height:15px;margin:3px 1px 0 0;background:#2A2A26;color:#9BD15A;font-family:'Courier New',monospace;font-size:11px;text-align:center;line-height:15px}
+.v-corps{vertical-align:top;padding:12px 16px;font-size:10px;line-height:1.3}
+.v-h{margin:0 0 10px;font-weight:bold;font-size:12px;color:#8C7B55;border-bottom:1px dashed #BDB49C;padding-bottom:4px}
+.v-contenu{border-collapse:collapse;width:100%}
+.v-contenu td{vertical-align:top}
+.v-photo{width:200px;padding-right:12px}
+.v-pixels{display:grid;grid-template-columns:repeat(16,1fr);width:192px;height:132px;border:2px outset #CFC5A8;image-rendering:pixelated;filter:saturate(.6) contrast(.85)}
+.v-leg{margin:3px 0 0;font-size:9px;color:#A09880}
+.v-texte p{margin:0 0 8px;color:#8E887A}
+.v-texte a{color:#551A8B;text-decoration:underline}
+.v-maj{margin:40px 0 2px;font-size:9px;color:#A09880}
+.v-ie{margin:0;font-size:9px;color:#A09880}
+.aa-couche .vieux[data-tel="true"] .v-page{transform:scale(.406)}
+.aa-couche .vieux[data-tel="true"]{height:720px}

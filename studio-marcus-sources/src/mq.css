@@ -1,0 +1,13 @@
+/* ========== BASE COMMUNE DES MAQUETTES ========== */
+.mq{container-type:inline-size;position:relative;overflow-x:hidden;overflow-x:clip;text-align:left;-webkit-font-smoothing:antialiased;font-kerning:normal}
+.mq *,.mq *::before,.mq *::after{box-sizing:border-box}
+:where(.mq) :where(h1,h2,h3,h4,p,ul,ol,figure,blockquote,dl,dd){margin:0}
+:where(.mq) :where(ul,ol){padding:0;list-style:none}
+:where(.mq) button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;touch-action:manipulation;text-align:inherit}
+:where(.mq) :where(input,select,textarea){font-size:16px}
+.mq svg{display:block;max-width:none}
+.mq .note-photo{position:absolute;right:10px;bottom:8px;z-index:2;font:500 11px/1 var(--sans);padding:4px 7px;border-radius:4px;background:rgba(0,0,0,.28);color:rgba(255,255,255,.88);pointer-events:none}
+.mq[data-actif="false"] *,.mq[data-actif="false"] *::before,.mq[data-actif="false"] *::after,.mq[data-actif="false"]::before,.mq[data-actif="false"]::after{animation-play-state:paused!important}
+html.js .mq .ch{opacity:0}
+html.js .mq.joue .ch{animation:mq-pose .6s cubic-bezier(.2,.7,.2,1) var(--d,0ms) both}
+@keyframes mq-pose{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}

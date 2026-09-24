@@ -1,0 +1,58 @@
+/* ===== M2 REUTER : l'édition de luxe ===== */
+.mq-reuter{--velin:#FBF8F1;--encre:#15171A;--laiton:#A8844A;--bord:#6E2B34;--pierre:#8C8A84;background:var(--velin);color:var(--encre);font-family:ui-serif,Georgia,'Times New Roman',serif;font-size:17px;line-height:1.7}
+.mq-reuter .r-titre,.mq-reuter .r-titre2,.mq-reuter .r-h,.mq-reuter .r-offre-t,.mq-reuter .r-logo,.mq-reuter .r-pied-nom,.mq-reuter .r-nom{font-family:var(--fraunces);font-variation-settings:"opsz" 144,"SOFT" 0,"WONK" 0;font-weight:300}
+.r-sc{font-variant-caps:all-small-caps;letter-spacing:.09em;color:var(--pierre);font-size:17px}
+.r-nav{display:flex;align-items:center;gap:22px;padding:24px 64px;border-bottom:1px solid rgba(21,23,26,.12)}
+.r-mono{white-space:nowrap;flex:none;width:48px;height:48px;border-radius:50%;border:1px solid var(--laiton);display:flex;align-items:center;justify-content:center;font-family:var(--fraunces);font-weight:400;font-size:14px;color:var(--laiton);letter-spacing:0}
+.r-mono i{font-style:italic;color:var(--bord)}
+.r-logo{font-size:22px;margin-right:auto;letter-spacing:.01em}
+.r-liens{display:flex;gap:30px;font-variant-caps:all-small-caps;letter-spacing:.1em;font-size:17px}
+.r-rdv{padding:10px 20px;border:1px solid var(--laiton);color:var(--encre);font-variant-caps:all-small-caps;letter-spacing:.1em;font-size:16px}
+.r-hero{padding:92px 64px 40px;text-align:center}
+.r-titre{font-size:82px;line-height:1.04;letter-spacing:-.02em;max-width:15ch;margin:18px auto 0}
+.r-orne{width:300px;margin:44px auto 0}
+.r-corps{display:grid;grid-template-columns:1.1fr .9fr;gap:80px;padding:50px 64px 70px;border-bottom:1px solid rgba(21,23,26,.12)}
+.r-lettrine{font-size:19px;line-height:1.75;hyphens:auto}
+.r-lettrine::first-letter{float:left;font-family:var(--fraunces);font-variation-settings:"opsz" 144;font-weight:300;font-size:92px;line-height:.82;margin:8px 12px 0 0;color:var(--bord)}
+@supports ((initial-letter:3) or (-webkit-initial-letter:3)){
+  .r-lettrine::first-letter{float:none;font-size:inherit;line-height:inherit;margin:0 12px 0 0;-webkit-initial-letter:3;initial-letter:3}
+}
+.r-signe{margin-top:22px}
+.r-domaines li{display:grid;grid-template-columns:54px 1fr;gap:10px;padding:18px 0;border-top:1px solid rgba(168,132,74,.45)}
+.r-domaines li:last-child{border-bottom:1px solid rgba(168,132,74,.45)}
+.r-rom{font-family:var(--fraunces);font-variation-settings:"opsz" 144;font-weight:300;font-size:26px;color:var(--laiton);line-height:1.2}
+.r-h{font-size:25px;line-height:1.2;margin-bottom:4px}
+.r-domaines p{font-size:15.5px;color:#43464B;line-height:1.55}
+.r-offre{padding:70px 64px}
+.r-encadre{max-width:760px;margin:0 auto;text-align:center;padding:44px 50px;border:3px double var(--laiton);outline:1px solid rgba(168,132,74,.4);outline-offset:6px}
+.r-offre-t{font-size:40px;line-height:1.15;margin:6px 0 14px;color:var(--bord)}
+.r-encadre p:last-child{color:#43464B}
+.r-equipe{padding:20px 64px 80px;text-align:center}
+.r-titre2{font-size:44px;margin-bottom:40px}
+.r-membres{display:flex;justify-content:center;gap:70px}
+.r-medaillon{display:grid;place-items:center;width:124px;height:124px;margin:0 auto 16px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#FFFDF7,#F3EBDA);box-shadow:inset 0 0 0 1px var(--laiton),inset 0 0 0 7px var(--velin),inset 0 0 0 8px rgba(168,132,74,.6);font-family:var(--fraunces);font-variation-settings:"opsz" 144;font-weight:300;font-size:40px;color:var(--bord);letter-spacing:.04em}
+.r-nom{font-size:23px}
+.r-pied{display:grid;grid-template-columns:1.2fr 1fr auto;gap:40px;align-items:center;padding:44px 64px;background:var(--encre);color:#E9E4DA}
+.r-pied .r-sc{color:var(--laiton)}
+.r-pied-nom{font-size:26px}
+.r-pied-act{display:flex;gap:18px;align-items:center}
+.r-rdv--clair{color:#F5EFE3;border-color:var(--laiton)}
+.r-lien{text-decoration:underline;text-underline-offset:4px;color:#E9E4DA}
+@container (max-width:700px){
+  .r-nav{padding:16px 20px;gap:12px}
+  .r-liens,.r-nav .r-rdv{display:none}
+  .r-mono{width:38px;height:38px;font-size:13px}
+  .r-logo{font-size:19px}
+  .r-hero{padding:50px 20px 20px}
+  .r-titre{font-size:44px}
+  .r-orne{width:200px;margin-top:28px}
+  .r-corps{grid-template-columns:1fr;gap:36px;padding:30px 22px 44px}
+  .r-lettrine{font-size:17px}
+  .r-offre{padding:44px 20px}
+  .r-encadre{padding:30px 22px}
+  .r-offre-t{font-size:30px}
+  .r-equipe{padding:10px 20px 50px}
+  .r-titre2{font-size:34px}
+  .r-membres{flex-direction:column;gap:30px}
+  .r-pied{grid-template-columns:1fr;gap:22px;padding:36px 22px}
+}
