@@ -216,6 +216,16 @@ html:not(.js) .vt-nuit{display:none}
   .vt-cadre:hover{transform:translateY(-4px)}
   .vt.allumee .vt-devanture:hover .vt-trottoir{opacity:.55}
 }
+.vt-lien{position:absolute;inset:0;z-index:3;color:inherit}
+.vt-sortir{display:none}
+/* sans script : la boutique s'ouvre en plein écran par l'ancre */
+html:not(.js) .rue{z-index:5}
+html:not(.js) .vt:target .vt-cadre{transform:none}
+html:not(.js) .vt:target .vt-ecran{position:fixed;left:0;right:0;top:56px;bottom:0;z-index:140;max-height:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#0B0907}
+html:not(.js) .vt:target .vt-lien{display:none}
+html:not(.js) .vt:target .vt-sortir{display:flex;position:fixed;left:0;right:0;top:0;height:56px;z-index:141;margin:0;align-items:center;justify-content:space-between;gap:12px;padding:0 16px;background:#15110D;border-bottom:1px solid rgba(243,236,225,.12);color:var(--cendre);font-size:.9rem}
+.vt-sortir span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt-sortir a{flex:none;color:var(--nuit);background:var(--ivoire);padding:9px 18px;border-radius:999px;font-weight:600;text-decoration:none}
 .pastille{position:fixed;left:0;top:0;z-index:120;pointer-events:none;padding:8px 14px;border-radius:999px;background:var(--ivoire);color:var(--nuit);font-weight:600;font-size:.85rem;opacity:0;transform:translate3d(-100px,-100px,0);transition:opacity .2s}
 .pastille.on{opacity:1}
 

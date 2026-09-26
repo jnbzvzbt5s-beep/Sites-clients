@@ -217,6 +217,15 @@ html:not(.js) .vt-nuit{display:none}
 .vt-cadre:hover{transform:translateY(-4px)}
 .vt.allumee .vt-devanture:hover .vt-trottoir{opacity:.55}
 }
+.vt-lien{position:absolute;inset:0;z-index:3;color:inherit}
+.vt-sortir{display:none}
+html:not(.js) .rue{z-index:5}
+html:not(.js) .vt:target .vt-cadre{transform:none}
+html:not(.js) .vt:target .vt-ecran{position:fixed;left:0;right:0;top:56px;bottom:0;z-index:140;max-height:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#0B0907}
+html:not(.js) .vt:target .vt-lien{display:none}
+html:not(.js) .vt:target .vt-sortir{display:flex;position:fixed;left:0;right:0;top:0;height:56px;z-index:141;margin:0;align-items:center;justify-content:space-between;gap:12px;padding:0 16px;background:#15110D;border-bottom:1px solid rgba(243,236,225,.12);color:var(--cendre);font-size:.9rem}
+.vt-sortir span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt-sortir a{flex:none;color:var(--nuit);background:var(--ivoire);padding:9px 18px;border-radius:999px;font-weight:600;text-decoration:none}
 .pastille{position:fixed;left:0;top:0;z-index:120;pointer-events:none;padding:8px 14px;border-radius:999px;background:var(--ivoire);color:var(--nuit);font-weight:600;font-size:.85rem;opacity:0;transform:translate3d(-100px,-100px,0);transition:opacity .2s}
 .pastille.on{opacity:1}
 .vt-plaque{position:relative}
@@ -1036,7 +1045,7 @@ html.js .mq-nova .n-page.vu .n-titre .n-l{animation:n-lettre .8s cubic-bezier(.2
 :root{--nuit:#fff;--nuit-2:#fff;--ivoire:#1a1511;--cendre:#3d352c;--cendre-2:#5a5046}
 html,body{background:#fff!important;color:#1a1511!important}
 *,*::before,*::after{animation:none!important;transition:none!important}
-.rideau,.halo,.ambiance,.grain,.fil,.pastille,.entete,.calque,.evitement,.hero-actions,.needs-js,.vt-reflet,.vt-nuit,.vt-trottoir,.rue-silhouette,.aa,.bulle-demo{display:none!important}
+.rideau,.halo,.ambiance,.grain,.fil,.pastille,.entete,.calque,.evitement,.hero-actions,.needs-js,.vt-reflet,.vt-nuit,.vt-trottoir,.rue-silhouette,.aa,.bulle-demo,.vt-sortir,.vt-lien{display:none!important}
 .bloc,.hero{padding:28px 0!important;min-height:0!important;background:#fff!important}
 .rue{background:#fff!important}
 .titre,.manifeste-phrase,.hero-heure,.hero-suite,.plaque-nom,.tarif-nom,.etape-t,.faq-b{color:#1a1511!important}
@@ -1134,7 +1143,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
         <p class="plaque-texte">La beauté immobile. Une page où tout est à sa place : qui vous êtes, où vous trouver, quand venir.</p>
       </div>
     </div>
-    <article class="vt vt--g grille" data-vt="kremer" style="--lum:#E1A04B">
+    <article class="vt vt--g grille" id="voir-kremer" data-vt="kremer" style="--lum:#E1A04B">
   <div class="vt-devanture">
     <div class="ens ens--bois" aria-hidden="true"><span class="ens-t">Boulangerie Kremer</span><span class="ens-projo"></span></div>
     <div class="vt-cadre" role="button" tabindex="0" data-ouvrir="kremer" aria-label="Entrer dans la boutique Boulangerie Kremer, commerce imaginaire">
@@ -1224,9 +1233,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     </div>
   </footer>
 </div>
-</div></div><span class="vt-nuit"></span><span class="vt-reflet" aria-hidden="true"></span></div>
+</div></div><span class="vt-nuit"></span><a class="vt-lien" href="#voir-kremer" data-ouvrir="kremer" tabindex="-1" aria-hidden="true"></a><span class="vt-reflet" aria-hidden="true"></span></div>
     </div>
     <div class="vt-trottoir" aria-hidden="true"></div>
+    <p class="vt-sortir"><span>Boulangerie Kremer, commerce imaginaire</span><a href="#rue">Sortir</a></p>
   </div>
   <div class="vt-plaque">
     <h3 class="vt-nom f-kremer" data-vt-nom>Boulangerie Kremer</h3>
@@ -1234,10 +1244,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <p class="vt-formule"><span>Vitrine, 299 €</span><span class="ampoules" role="img" aria-label="Niveau 1 sur 3"><i class="on"></i><i></i><i></i></span></p>
     <p class="vt-desc">Une seule page, composée comme une affiche : les pains et leurs prix, les horaires, le plan. Tout se lit en dix secondes, sur un téléphone, avant d’aller chercher sa baguette.</p>
     <p class="vt-essai">Essayez : descendez jusqu’au ticket des horaires.</p>
-    <button type="button" class="btn btn--trait needs-js" data-ouvrir="kremer">Entrer dans la boutique</button>
+    <a class="btn btn--trait" href="#voir-kremer" data-ouvrir="kremer">Entrer dans la boutique</a>
   </div>
 </article>
-    <article class="vt vt--d grille" data-vt="reuter" style="--lum:#C9A566">
+    <article class="vt vt--d grille" id="voir-reuter" data-vt="reuter" style="--lum:#C9A566">
   <div class="vt-devanture">
     <div class="ens ens--laiton" aria-hidden="true"><span class="ens-t">Reuter &amp; Associés</span><span class="ens-projo"></span></div>
     <div class="vt-cadre" role="button" tabindex="0" data-ouvrir="reuter" aria-label="Entrer dans la boutique Reuter &amp; Associés, commerce imaginaire">
@@ -1286,9 +1296,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <div class="r-pied-act"><button type="button" class="r-rdv r-rdv--clair" data-demo="rdv">Prendre rendez-vous</button><button type="button" class="r-lien" data-demo="appel">Appeler</button></div>
   </footer>
 </div>
-</div></div><span class="vt-nuit"></span><span class="vt-reflet" aria-hidden="true"></span></div>
+</div></div><span class="vt-nuit"></span><a class="vt-lien" href="#voir-reuter" data-ouvrir="reuter" tabindex="-1" aria-hidden="true"></a><span class="vt-reflet" aria-hidden="true"></span></div>
     </div>
     <div class="vt-trottoir" aria-hidden="true"></div>
+    <p class="vt-sortir"><span>Reuter &amp; Associés, commerce imaginaire</span><a href="#rue">Sortir</a></p>
   </div>
   <div class="vt-plaque">
     <h3 class="vt-nom f-reuter" data-vt-nom>Reuter &amp; Associés</h3>
@@ -1296,7 +1307,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <p class="vt-formule"><span>Vitrine, 299 €</span><span class="ampoules" role="img" aria-label="Niveau 1 sur 3"><i class="on"></i><i></i><i></i></span></p>
     <p class="vt-desc">Une page sobre, mise en page comme un beau livre : les domaines d’intervention, l’équipe, le premier entretien. La confiance s’installe avant le premier appel.</p>
     <p class="vt-essai">Essayez : lisez l’ouverture et sa lettrine.</p>
-    <button type="button" class="btn btn--trait needs-js" data-ouvrir="reuter">Entrer dans la boutique</button>
+    <a class="btn btn--trait" href="#voir-reuter" data-ouvrir="reuter">Entrer dans la boutique</a>
   </div>
 </article>
 
@@ -1307,7 +1318,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
         <p class="plaque-texte">La beauté qui bouge. Plusieurs pages, vos chiffres, vos avis, et un site qui guide le regard.</p>
       </div>
     </div>
-    <article class="vt vt--g grille" data-vt="schmit" style="--lum:#F2A33A">
+    <article class="vt vt--g grille" id="voir-schmit" data-vt="schmit" style="--lum:#F2A33A">
   <div class="vt-devanture">
     <div class="ens ens--led" aria-hidden="true"><span class="ens-t">Garage Schmit</span><span class="ens-volet"></span><span class="ens-projo"></span></div>
     <div class="vt-cadre" role="button" tabindex="0" data-ouvrir="schmit" aria-label="Entrer dans la boutique Garage Schmit, commerce imaginaire">
@@ -1364,7 +1375,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
       <p class="sr">Vidange, freins, pneus été et hiver, climatisation, diagnostic, carrosserie, contrôle technique, distribution.</p>
     </section>
 
-    <section class="s-page" data-page="services" role="tabpanel" hidden>
+    <section class="s-page" data-page="services" role="tabpanel">
       <h2 class="s-h2 s-c" style="--i:0">Ce qu’on fait, et ce que ça coûte.</h2>
       <ul class="s-services">
         <li class="s-c" style="--i:1"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="s-ico" pathLength="1" d="M30 6a10 10 0 0 0-9 14L7 34a4 4 0 0 0 6 6l14-14a10 10 0 0 0 14-9l-6 6-6-2-2-6z"/></svg><h3>Entretien toutes marques</h3><p>Vidange, filtres, révision constructeur. La garantie de votre voiture est conservée.</p><b>dès 129 €</b></li>
@@ -1374,7 +1385,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
       </ul>
     </section>
 
-    <section class="s-page" data-page="occasions" role="tabpanel" hidden>
+    <section class="s-page" data-page="occasions" role="tabpanel">
       <h2 class="s-h2 s-c" style="--i:0">Occasions révisées à l’atelier.</h2>
       <p class="s-garantie s-c" style="--i:1">Garantie 12 mois sur chaque véhicule</p>
       <ul class="s-occasions">
@@ -1387,7 +1398,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
       </ul>
     </section>
 
-    <section class="s-page" data-page="avis" role="tabpanel" hidden>
+    <section class="s-page" data-page="avis" role="tabpanel">
       <div class="s-avis">
         <div class="s-note s-c" style="--i:0">
           <b>4,9</b>
@@ -1412,9 +1423,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <p><b>Atelier</b>Lundi au vendredi, 7 h 30 à 18 h. Samedi, 8 h à 12 h</p>
   </footer>
 </div>
-</div></div><span class="vt-nuit"></span><span class="vt-reflet" aria-hidden="true"></span></div>
+</div></div><span class="vt-nuit"></span><a class="vt-lien" href="#voir-schmit" data-ouvrir="schmit" tabindex="-1" aria-hidden="true"></a><span class="vt-reflet" aria-hidden="true"></span></div>
     </div>
     <div class="vt-trottoir" aria-hidden="true"></div>
+    <p class="vt-sortir"><span>Garage Schmit, commerce imaginaire</span><a href="#rue">Sortir</a></p>
   </div>
   <div class="vt-plaque">
     <h3 class="vt-nom f-schmit" data-vt-nom>Garage Schmit</h3>
@@ -1422,10 +1434,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <p class="vt-formule"><span>Vitrine Pro, 449 €</span><span class="ampoules" role="img" aria-label="Niveau 2 sur 3"><i class="on"></i><i class="on"></i><i></i></span></p>
     <p class="vt-desc">Quatre pages qui s’enchaînent : l’atelier, les services, les occasions, les avis. Les chiffres se comptent, l’aiguille monte, la voiture se dessine.</p>
     <p class="vt-essai">Essayez : passez d’une page à l’autre.</p>
-    <button type="button" class="btn btn--trait needs-js" data-ouvrir="schmit">Entrer dans la boutique</button>
+    <a class="btn btn--trait" href="#voir-schmit" data-ouvrir="schmit">Entrer dans la boutique</a>
   </div>
 </article>
-    <article class="vt vt--d grille" data-vt="nova" style="--lum:#D47F95">
+    <article class="vt vt--d grille" id="voir-nova" data-vt="nova" style="--lum:#D47F95">
   <div class="vt-devanture">
     <div class="ens ens--neon ens--rose" aria-hidden="true"><span class="neon ens-t"><span>Studio Nova</span><span class="neon-lum">Studio Nova</span></span></div>
     <div class="vt-cadre" role="button" tabindex="0" data-ouvrir="nova" aria-label="Entrer dans la boutique Studio Nova, commerce imaginaire">
@@ -1456,7 +1468,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     </ul>
   </section>
 
-  <section class="n-page" data-page="prestations" role="tabpanel" hidden>
+  <section class="n-page" data-page="prestations" role="tabpanel">
     <h2 class="n-h2 n-c" style="--i:0">Prestations</h2>
     <p class="n-sous n-c" style="--i:1">Tous nos prix incluent le diagnostic et le shampooing.</p>
     <ul class="n-tarifs">
@@ -1470,7 +1482,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     </ul>
   </section>
 
-  <section class="n-page" data-page="galerie" role="tabpanel" hidden>
+  <section class="n-page" data-page="galerie" role="tabpanel">
     <div class="n-gal-tete n-c" style="--i:0">
       <h2 class="n-h2">Galerie</h2>
       <div class="n-fleches"><button type="button" data-gal="-1" aria-label="Visuel précédent"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-gal="1" aria-label="Visuel suivant"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
@@ -1485,7 +1497,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     </div>
   </section>
 
-  <section class="n-page" data-page="equipe" role="tabpanel" hidden>
+  <section class="n-page" data-page="equipe" role="tabpanel">
     <h2 class="n-h2 n-c" style="--i:0">L’équipe</h2>
     <ul class="n-equipe">
       <li class="n-c" style="--i:1"><svg class="n-portrait" viewBox="0 0 220 220" aria-hidden="true"><circle cx="110" cy="110" r="108" fill="#D47F95"/><ellipse cx="110" cy="104" rx="38" ry="46" fill="#3A2231" opacity=".9"/><path d="M52 220q6-60 58-62 52 2 58 62z" fill="#3A2231" opacity=".9"/><path d="M60 92q0-48 50-50 52 2 50 50-6 30-8 70h-84q-2-40-8-70z" fill="#3A2231" opacity=".92"/></svg><h3>Léa</h3><p>Coloriste</p></li>
@@ -1501,9 +1513,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <button type="button" class="n-lien" data-demo="appel">Appeler</button>
   </footer>
 </div>
-</div></div><span class="vt-nuit"></span><span class="vt-reflet" aria-hidden="true"></span></div>
+</div></div><span class="vt-nuit"></span><a class="vt-lien" href="#voir-nova" data-ouvrir="nova" tabindex="-1" aria-hidden="true"></a><span class="vt-reflet" aria-hidden="true"></span></div>
     </div>
     <div class="vt-trottoir" aria-hidden="true"></div>
+    <p class="vt-sortir"><span>Studio Nova, commerce imaginaire</span><a href="#rue">Sortir</a></p>
   </div>
   <div class="vt-plaque">
     <h3 class="vt-nom f-nova" data-vt-nom>Studio Nova</h3>
@@ -1511,7 +1524,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <p class="vt-formule"><span>Vitrine Pro, 449 €</span><span class="ampoules" role="img" aria-label="Niveau 2 sur 3"><i class="on"></i><i class="on"></i><i></i></span></p>
     <p class="vt-desc">Un site qui ondule comme une chevelure : la couleur bouge derrière le titre, la galerie défile en profondeur, l’équipe se présente.</p>
     <p class="vt-essai">Essayez : faites défiler la galerie.</p>
-    <button type="button" class="btn btn--trait needs-js" data-ouvrir="nova">Entrer dans la boutique</button>
+    <a class="btn btn--trait" href="#voir-nova" data-ouvrir="nova">Entrer dans la boutique</a>
   </div>
 </article>
 
@@ -1522,7 +1535,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
         <p class="plaque-texte">La beauté qui répond. Le site prend les réservations et les commandes à votre place.</p>
       </div>
     </div>
-    <article class="vt vt--g grille" data-vt="comptoir" style="--lum:#D0503F">
+    <article class="vt vt--g grille" id="voir-comptoir" data-vt="comptoir" style="--lum:#D0503F">
   <div class="vt-devanture">
     <div class="ens ens--neon ens--rouge" aria-hidden="true"><span class="neon ens-t"><span>Le Comptoir</span><span class="neon-lum">Le Comptoir</span></span><svg class="ens-etoile" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.3 1.6 6.7L10 15.4 4.4 19 6 12.3 1 8l6.4-.8z"/></svg></div>
     <div class="vt-cadre" role="button" tabindex="0" data-ouvrir="comptoir" aria-label="Entrer dans la boutique Le Comptoir, commerce imaginaire">
@@ -1585,10 +1598,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
       <div class="c-couverts"><button type="button" class="c-rond" data-cv="-1" aria-label="Un couvert de moins" data-ta="moins">−</button><output class="c-cv" data-cv-val aria-live="polite">2</output><button type="button" class="c-rond" data-cv="1" aria-label="Un couvert de plus" data-ta="plus">+</button></div>
       <p class="c-proposition" data-proposition aria-live="polite"></p>
       <dl class="c-recap">
-        <div><dt data-t="jour">Jour</dt><dd data-r="jour"></dd></div>
-        <div><dt data-t="heure">Heure</dt><dd data-r="heure"></dd></div>
-        <div><dt data-t="couverts">Couverts</dt><dd data-r="couverts"></dd></div>
-        <div><dt data-t="table">Table</dt><dd data-r="table"></dd></div>
+        <div><dt data-t="jour">Jour</dt><dd data-r="jour">Ce soir</dd></div>
+        <div><dt data-t="heure">Heure</dt><dd data-r="heure">À choisir</dd></div>
+        <div><dt data-t="couverts">Couverts</dt><dd data-r="couverts">2 couverts</dd></div>
+        <div><dt data-t="table">Table</dt><dd data-r="table">Attribuée à l’arrivée</dd></div>
       </dl>
       <p class="c-manque" data-manque aria-live="assertive"></p>
       <button type="button" class="c-confirmer" data-confirmer><svg class="c-coche" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M4 12.5l5 5L20 6.5"/></svg><span data-t="confirmer">Confirmer</span></button>
@@ -1609,9 +1622,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <p data-t="horaires">Du mardi au samedi, de 12 h à 14 h et de 19 h à 22 h 30</p>
   </footer>
 </div>
-</div></div><span class="vt-nuit"></span><span class="vt-reflet" aria-hidden="true"></span></div>
+</div></div><span class="vt-nuit"></span><a class="vt-lien" href="#voir-comptoir" data-ouvrir="comptoir" tabindex="-1" aria-hidden="true"></a><span class="vt-reflet" aria-hidden="true"></span></div>
     </div>
     <div class="vt-trottoir" aria-hidden="true"></div>
+    <p class="vt-sortir"><span>Le Comptoir, commerce imaginaire</span><a href="#rue">Sortir</a></p>
   </div>
   <div class="vt-plaque">
     <h3 class="vt-nom f-comptoir" data-vt-nom>Le Comptoir</h3>
@@ -1619,10 +1633,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <p class="vt-formule"><span>Sur-mesure, 599 €</span><span class="ampoules" role="img" aria-label="Niveau 3 sur 3"><i class="on"></i><i class="on"></i><i class="on"></i></span></p>
     <p class="vt-desc">La salle en trois dimensions, reliée à la réservation : on choisit le jour, l’heure, puis sa table. En français, en allemand, en anglais et en portugais.</p>
     <p class="vt-essai">Essayez : choisissez une table.</p>
-    <button type="button" class="btn btn--trait needs-js" data-ouvrir="comptoir">Entrer dans la boutique</button>
+    <a class="btn btn--trait" href="#voir-comptoir" data-ouvrir="comptoir">Entrer dans la boutique</a>
   </div>
 </article>
-    <article class="vt vt--d grille" data-vt="fleurs" style="--lum:#6E9A5B">
+    <article class="vt vt--d grille" id="voir-fleurs" data-vt="fleurs" style="--lum:#6E9A5B">
   <div class="vt-devanture">
     <div class="ens ens--email" aria-hidden="true"><span class="ens-t">Fleurs &amp; Cie</span><span class="ens-projo"></span></div>
     <div class="vt-cadre" role="button" tabindex="0" data-ouvrir="fleurs" aria-label="Entrer dans la boutique Fleurs &amp; Cie, commerce imaginaire">
@@ -1696,9 +1710,10 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <p>Du mardi au samedi, 9 h à 18 h 30. Dimanche, 9 h à 12 h</p>
   </footer>
 </div>
-</div></div><span class="vt-nuit"></span><span class="vt-reflet" aria-hidden="true"></span></div>
+</div></div><span class="vt-nuit"></span><a class="vt-lien" href="#voir-fleurs" data-ouvrir="fleurs" tabindex="-1" aria-hidden="true"></a><span class="vt-reflet" aria-hidden="true"></span></div>
     </div>
     <div class="vt-trottoir" aria-hidden="true"></div>
+    <p class="vt-sortir"><span>Fleurs &amp; Cie, commerce imaginaire</span><a href="#rue">Sortir</a></p>
   </div>
   <div class="vt-plaque">
     <h3 class="vt-nom f-fleurs" data-vt-nom>Fleurs &amp; Cie</h3>
@@ -1706,7 +1721,7 @@ html.js .vt-ecran .mq{position:relative!important;transform:none!important;width
     <p class="vt-formule"><span>Sur-mesure, 599 €</span><span class="ampoules" role="img" aria-label="Niveau 3 sur 3"><i class="on"></i><i class="on"></i><i class="on"></i></span></p>
     <p class="vt-desc">Le client compose son bouquet tige par tige, choisit l’emballage, écrit un mot et voit le prix en direct. La commande arrive prête à livrer.</p>
     <p class="vt-essai">Essayez : composez un bouquet.</p>
-    <button type="button" class="btn btn--trait needs-js" data-ouvrir="fleurs">Entrer dans la boutique</button>
+    <a class="btn btn--trait" href="#voir-fleurs" data-ouvrir="fleurs">Entrer dans la boutique</a>
   </div>
 </article>
   </div>
@@ -2158,7 +2173,7 @@ SM.module('calque',function(){
   }
   function voisin(d){if(!courant)return;var i=(ordre.indexOf(courant)+d+ordre.length)%ordre.length;monter(ordre[i])}
   SM.ouvrir=ouvrir;SM.fermer=fermer;
-  D.addEventListener('click',function(e){if(!e.isTrusted&&e.target.closest&&e.target.closest('.mq-hote'))return;var t=e.target.closest&&e.target.closest('[data-ouvrir]');if(t&&!c.contains(t)){e.preventDefault();ouvrir(t.getAttribute('data-ouvrir'),t)}});
+  D.addEventListener('click',function(e){if(!e.isTrusted&&e.target.closest&&e.target.closest('.mq-hote'))return;var t=e.target.closest&&e.target.closest('[data-ouvrir]');if(t&&!c.contains(t)){e.preventDefault();ouvrir(t.getAttribute('data-ouvrir'),t.classList.contains('vt-lien')?t.closest('.vt-cadre'):t)}});
   $$('.vt-cadre[data-ouvrir]').forEach(function(v){v.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();ouvrir(v.getAttribute('data-ouvrir'),v)}})});
   $('[data-sortir]',c).addEventListener('click',fermer);
   $('[data-prec]',c).addEventListener('click',function(){voisin(-1)});
@@ -2216,6 +2231,7 @@ SM.module('pancarte',function(){
 SM.onglets=function(root,o){
   o=o||{};
   var tabs=$$('[data-onglet]',root),pages=$$('[data-page]',root),volet=o.volet?$(o.volet,root):null,courant=pages[0]&&pages[0].getAttribute('data-page'),minuteur;
+  pages.forEach(function(p,i){p.hidden=i>0});
   function page(id){return $('[data-page="'+id+'"]',root)}
   function haut(){var sc=root.parentElement&&root.parentElement.closest('.calque-cadre,.telephone-ecran');if(sc&&sc.scrollTop>0)sc.scrollTop=0}
   function montrer(id,anim){

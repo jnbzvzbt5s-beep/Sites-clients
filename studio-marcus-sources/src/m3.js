@@ -2,6 +2,7 @@
 SM.onglets=function(root,o){
   o=o||{};
   var tabs=$$('[data-onglet]',root),pages=$$('[data-page]',root),volet=o.volet?$(o.volet,root):null,courant=pages[0]&&pages[0].getAttribute('data-page'),minuteur;
+  pages.forEach(function(p,i){p.hidden=i>0});
   function page(id){return $('[data-page="'+id+'"]',root)}
   function haut(){var sc=root.parentElement&&root.parentElement.closest('.calque-cadre,.telephone-ecran');if(sc&&sc.scrollTop>0)sc.scrollTop=0}
   function montrer(id,anim){

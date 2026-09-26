@@ -75,13 +75,14 @@ def enseigne(v):
 
 def vitrine(v, mq):
     amp = ''.join('<i class="on"></i>' if i < v['n'] else '<i></i>' for i in range(3))
-    return f'''<article class="vt vt--{v['cote']} grille" data-vt="{v['id']}" style="--lum:{v['lum']}">
+    return f'''<article class="vt vt--{v['cote']} grille" id="voir-{v['id']}" data-vt="{v['id']}" style="--lum:{v['lum']}">
   <div class="vt-devanture">
     {enseigne(v)}
     <div class="vt-cadre" role="button" tabindex="0" data-ouvrir="{v['id']}" aria-label="Entrer dans la boutique {esc(v['nom'])}, commerce imaginaire">
-      <div class="vt-vitre"><div class="vt-ecran" data-ecran><div class="mq-hote" inert>{mq}</div></div><span class="vt-nuit"></span><span class="vt-reflet" aria-hidden="true"></span></div>
+      <div class="vt-vitre"><div class="vt-ecran" data-ecran><div class="mq-hote" inert>{mq}</div></div><span class="vt-nuit"></span><a class="vt-lien" href="#voir-{v['id']}" data-ouvrir="{v['id']}" tabindex="-1" aria-hidden="true"></a><span class="vt-reflet" aria-hidden="true"></span></div>
     </div>
     <div class="vt-trottoir" aria-hidden="true"></div>
+    <p class="vt-sortir"><span>{esc(v['nom'])}, commerce imaginaire</span><a href="#rue">Sortir</a></p>
   </div>
   <div class="vt-plaque">
     <h3 class="vt-nom {v['f']}" data-vt-nom>{esc(v['nom'])}</h3>
@@ -89,7 +90,7 @@ def vitrine(v, mq):
     <p class="vt-formule"><span>{v['formule']}, {v['prix']}</span><span class="ampoules" role="img" aria-label="Niveau {v['n']} sur 3">{amp}</span></p>
     <p class="vt-desc">{v['desc']}</p>
     <p class="vt-essai">{v['essai']}</p>
-    <button type="button" class="btn btn--trait needs-js" data-ouvrir="{v['id']}">Entrer dans la boutique</button>
+    <a class="btn btn--trait" href="#voir-{v['id']}" data-ouvrir="{v['id']}">Entrer dans la boutique</a>
   </div>
 </article>'''
 

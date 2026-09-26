@@ -97,7 +97,7 @@ async function ouvrir(p, id) { await p.evaluate(id => { document.querySelector('
       await p.click('[data-sortir]'); await p.waitForTimeout(300);
       ok(`[6] ${id} : ouverture à la touche Entrée, bouton Sortir`, k && await p.evaluate(() => document.querySelector('[data-calque]').hidden));
     }
-    await p.click('.vt[data-vt="kremer"] .vt-plaque button[data-ouvrir]'); await p.waitForTimeout(600);
+    await p.click('.vt[data-vt="kremer"] .vt-plaque [data-ouvrir]'); await p.waitForTimeout(600);
     await p.click('[data-prec]'); await p.waitForTimeout(200);
     const a = await p.evaluate(() => document.querySelector('[data-calque-cadre] .mq').getAttribute('data-mq'));
     await p.click('[data-suiv]'); await p.waitForTimeout(200);
@@ -368,6 +368,21 @@ async function ouvrir(p, id) { await p.evaluate(id => { document.querySelector('
     await p.waitForTimeout(1000);
     ok('[17] Sans JS : le rideau se lève seul', await p.evaluate(() => getComputedStyle(document.querySelector('.rideau')).visibility === 'hidden'));
     await fin(p, 'sans js');
+  }
+
+  // sans script, sur téléphone : on entre dans chaque boutique par le lien
+  for (const id of ['kremer', 'reuter', 'schmit', 'nova', 'comptoir', 'fleurs']) {
+    const p = await page({ js: false, w: 390, h: 844, attente: 300 });
+    await p.evaluate(id => document.querySelector('.vt[data-vt="' + id + '"]').scrollIntoView({ block: 'center' }), id);
+    await p.click('.vt[data-vt="' + id + '"] .vt-plaque [data-ouvrir]'); await p.waitForTimeout(300);
+    const r = await p.evaluate(id => { const e = document.querySelector('.vt[data-vt="' + id + '"] .vt-ecran'), cs = getComputedStyle(e), m = e.querySelector('.mq'), rc = e.getBoundingClientRect(); return { pos: cs.position, w: Math.round(rc.width), haut: e.scrollHeight > e.clientHeight + 200, pages: m.querySelectorAll('[data-page]:not([hidden])').length, total: m.querySelectorAll('[data-page]').length, sortir: getComputedStyle(document.querySelector('.vt[data-vt="' + id + '"] .vt-sortir')).display }; }, id);
+    const avant = await p.evaluate(id => document.querySelector('.vt[data-vt="' + id + '"] .vt-ecran').scrollTop, id);
+    await p.mouse.wheel(0, 900); await p.waitForTimeout(300);
+    const apres = await p.evaluate(id => document.querySelector('.vt[data-vt="' + id + '"] .vt-ecran').scrollTop, id);
+    await p.click('.vt[data-vt="' + id + '"] .vt-sortir a'); await p.waitForTimeout(200);
+    const ferme = await p.evaluate(id => getComputedStyle(document.querySelector('.vt[data-vt="' + id + '"] .vt-ecran')).position !== 'fixed', id);
+    ok(`[client] Sans JS sur téléphone : ${id} s'ouvre en plein écran, défile, toutes ses pages, Sortir`, r.pos === 'fixed' && r.w === 390 && r.haut && apres > avant && r.pages === r.total && r.sortir === 'flex' && ferme, JSON.stringify(r) + ' défilement ' + avant + '→' + apres);
+    await fin(p, 'sans js boutique');
   }
 
   // 18 : sans View Transitions
