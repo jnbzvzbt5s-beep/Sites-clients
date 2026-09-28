@@ -1,6 +1,6 @@
-"""Logo : détoure le cercle de la capture reçue (fond hors cercle rendu transparent), sans retouche.
+"""Logo : cercle inscrit dans l’image source carrée (le cercle qu’affiche Instagram), coins rendus transparents.
 
-Usage : python3 tools/logo.py  (lit logo-src/logo-capture.jpg, écrit build/logo/)
+Usage : python3 tools/logo.py  (lit logo-src/logo-source.jpg, écrit build/logo/)
 Le contenu du cercle est gardé tel quel : ni recadrage de ses éléments, ni changement de couleur.
 """
 import io
@@ -9,12 +9,12 @@ import pathlib
 from PIL import Image, ImageDraw
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SRC = ROOT / "logo-src" / "logo-capture.jpg"
+SRC = ROOT / "logo-src" / "logo-source.jpg"
 OUT = ROOT / "build" / "logo"
 OUT.mkdir(parents=True, exist_ok=True)
 
-# Cercle mesuré sur la capture (bords à x = 116,5 / 966,5 et y = 118,5 / 968).
-CX, CY, R = 541.5, 543.3, 423  # rayon réduit de 2 px : aucune frange du fond sombre
+# Source carrée 900 × 900 : cercle inscrit, centré.
+CX, CY, R = 450, 450, 450
 AFFICHAGE = 48  # hauteur d’affichage en px ; export à deux fois cette taille
 SS = 4  # suréchantillonnage du masque pour un bord net
 
@@ -47,7 +47,7 @@ def main():
     logo.save(OUT / "logo-apercu.png")
 
     # Favicon : la partie la plus reconnaissable, le monogramme « RBS » au centre du cercle.
-    fav = disque(src, 555, 545, 340).resize((64, 64), Image.LANCZOS)
+    fav = disque(src, 464, 452, 360).resize((64, 64), Image.LANCZOS)
     buf = io.BytesIO()
     propre(fav).save(buf, "PNG", optimize=True)
     (OUT / "favicon.png").write_bytes(buf.getvalue())

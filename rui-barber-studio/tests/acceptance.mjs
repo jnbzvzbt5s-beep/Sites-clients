@@ -187,6 +187,7 @@ for (const [nomMoteur, type] of moteurs) {
     await page.click('.puce:has-text("L’après-midi")');
     await page.fill('#prenom', '');
     await page.type('#prenom', 'Maximilian-Alexander von Luxemburg');
+    await page.waitForTimeout(300); // fin de la transition de 200 ms de la puce
     const saisi = await page.evaluate(() => ({ v: document.getElementById('apercu').value, len: document.getElementById('prenom').value.length,
       fs: parseFloat(getComputedStyle(document.getElementById('prenom')).fontSize),
       sel: getComputedStyle(document.querySelector('#jours .puce:nth-child(4) span')).backgroundColor }));
