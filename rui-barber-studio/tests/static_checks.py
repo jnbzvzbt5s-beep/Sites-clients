@@ -87,33 +87,37 @@ def ratio(a, b):
 V = {k: v for k, v in re.findall(r"--([a-z-]+):\s*(#[0-9A-Fa-f]{6})", css)}
 paires = [
     # (texte, fond, seuil, usage)
-    ("encre", "fond", 4.5, "texte courant, haut de page"),
-    ("encre", "fond-rdv", 4.5, "texte courant, module"),
-    ("encre", "blanc", 4.5, "puces, champ, aperçu"),
+    ("encre", "blanc", 4.5, "texte courant"),
+    ("encre", "bleu-pale", 4.5, "module de rendez-vous"),
     ("encre", "bleu", 4.5, "puce choisie"),
-    ("gris", "fond", 4.5, "texte secondaire, haut"),
-    ("gris", "fond-rdv", 4.5, "texte secondaire, bas"),
-    ("gris", "blanc", 4.5, "détail des puces"),
-    ("bleu-fonce", "fond", 4.5, "« Moien ! », liens"),
-    ("bleu-fonce", "fond-rdv", 4.5, "liens du pied, numéros"),
-    ("bleu-fonce", "blanc", 3.0, "anneau de focus"),
-    ("blanc", "encre", 4.5, "boutons pleins, barre"),
+    ("gris", "blanc", 4.5, "texte secondaire"),
+    ("gris", "bleu-pale", 4.5, "notes du module"),
+    ("rouge", "blanc", 4.5, "« Moien ! », prix"),
+    ("bleu-fonce", "blanc", 4.5, "liens, boutons au trait, pseudo"),
+    ("bleu-fonce", "bleu-pale", 4.5, "boutons dans le module"),
+    ("blanc", "bleu-fonce", 4.5, "boutons pleins, barre d’action"),
+    ("blanc", "encre", 4.5, "pied de page"),
     ("gris", "blanc", 3.0, "bordure des puces et du champ"),
+    ("bleu-fonce", "blanc", 3.0, "anneau de focus"),
 ]
 for t, f, seuil, usage in paires:
     r = ratio(V[t], V[f])
     verifier(f"Contraste {t} sur {f} ≥ {seuil} ({usage})", r >= seuil, f"{r:.2f}:1")
-for t, f, seuil, usage in [("#8A2A1B", V["fond-rdv"], 4.5, "message d’échec de copie"),
+for t, f, seuil, usage in [("#8A2A1B", V["bleu-pale"], 4.5, "message d’échec de copie"),
+                           (V["bleu"], "#0E1115", 4.5, "compteur de la visionneuse"),
+                           ("#C9CDD2", V["encre"], 4.5, "texte du pied de page"),
                            ("#E6E8EA", "#141619", 4.5, "légende de la visionneuse"),
-                           ("#C9CDD1", "#141619", 4.5, "compteur de la visionneuse")]:
+]:
     r = ratio(t, f)
     verifier(f"Contraste {t} sur {f} ≥ {seuil} ({usage})", r >= seuil, f"{r:.2f}:1")
-verifier("Le bleu clair ne sert jamais de couleur de texte",
-         not re.search(r"(?<![-\w])color:\s*var\(--bleu\)", css))
+regles_bleu = [sel.strip() for sel, corps in re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+               if re.search(r"(?<![-\w])color:\s*var\(--bleu\)", corps)]
+verifier("Le bleu clair ne sert jamais de texte sur fond clair (seulement dans la visionneuse sombre)",
+         all("visionneuse" in r for r in regles_bleu), str(regles_bleu))
 
 # ---------- 12. Photos : texte alternatif, aucune métadonnée ----------
 imgs = re.findall(r"<img\s[^>]*>", PAGE)
-contenu = [i for i in imgs if 'src="data:image/webp' in i and "logo__img" not in i]
+contenu = [i for i in imgs if 'src="data:image/webp' in i and "logo__img" not in i and "heros__logo" not in i]
 logos = [i for i in imgs if "logo__img" in i]
 verifier("Logo : même composant en en-tête et pied de page, 48 px, image décorative à côté du nom",
          len(logos) == 2 and all('height="48"' in i and 'alt=""' in i for i in logos) and PAGE.count('class="logotype"') == 2)
@@ -122,8 +126,9 @@ verifier("Chaque photo a un texte alternatif précis", len(contenu) >= 7 and not
          f"{len(contenu)} photos")
 verifier("Chaque photo a width, height et decoding=async",
          all(re.search(r'width="\d+"', i) and re.search(r'height="\d+"', i) and 'decoding="async"' in i for i in contenu))
-verifier("Photos sous la ligne de flottaison en loading=lazy, héros en priorité",
-         'loading="lazy"' not in contenu[0] and all('loading="lazy"' in i for i in contenu[1:]))
+verifier("Photos des coupes (sous la ligne de flottaison) en loading=lazy",
+         all('loading="lazy"' in i for i in contenu))
+verifier("Aucune photo de coupe au premier plan du héros", "<img" not in PAGE[PAGE.index('class="bande heros-bande"'):PAGE.index('id="coupes"')])
 meta_trouvees = []
 poids = []
 for i in contenu:
@@ -141,10 +146,10 @@ for i in contenu:
     if b"EXIF" in chunks or b"XMP " in chunks or b"ICCP" in chunks or len(im.getexif()) or im.info.get("exif"):
         meta_trouvees.append(chunks)
 verifier("Aucune métadonnée EXIF, XMP ni ICC dans les photos", not meta_trouvees, f"{len(contenu)} photos lues")
-verifier("Héros ≤ 200 Ko, autres photos ≤ 100 Ko",
-         poids[0] <= 200 * 1024 and all(p <= 100 * 1024 for p in poids[1:]),
+verifier("Photos ≤ 100 Ko chacune",
+         all(p <= 100 * 1024 for p in poids),
          ", ".join(f"{p / 1024:.0f}" for p in poids) + " Ko")
-for p in [PHOTOS["hero"], PHOTOS["vedette"], *PHOTOS["grille"]]:
+for p in [PHOTOS["vedette"], *PHOTOS["grille"]]:
     verifier(f"Texte alternatif présent : {p['fichier']}", html.escape(p["alt"], quote=True) in PAGE)
 
 # ---------- Source de données unique : concordance ----------
@@ -181,8 +186,8 @@ desc = html.unescape(re.search(r'<meta name="description" content="([^"]+)"', PA
 verifier("Titre", titre == SITE["meta"]["titre"], titre)
 verifier("Meta description ≈ 150 caractères (Mersch, 15 €, Instagram)",
          135 <= len(desc) <= 160 and "Mersch" in desc and prix in desc and "Instagram" in desc, f"{len(desc)} caractères")
-verifier("lang=fr, theme-color = --fond, favicon en data URI",
-         '<html lang="fr">' in PAGE and f'name="theme-color" content="{V["fond"]}"' in PAGE
+verifier("lang=fr, theme-color = --blanc, favicon en data URI",
+         '<html lang="fr">' in PAGE and f'name="theme-color" content="{V["blanc"]}"' in PAGE
          and re.search(r'<link rel="icon" type="image/png" href="data:image/png', PAGE) is not None)
 verifier("Open Graph titre et description, pas d’og:image sans adresse définitive",
          'property="og:title"' in PAGE and 'property="og:description"' in PAGE

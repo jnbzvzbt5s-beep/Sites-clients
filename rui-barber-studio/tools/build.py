@@ -51,9 +51,9 @@ def sous_ensemble_police(texte):
     chars = sorted({c for c in texte if c.isprintable() or c in "  "})
     unicodes = ",".join(f"U+{ord(c):04X}" for c in chars)
     out = BUILD / "archivo-subset.woff2"
-    # Axes limités aux valeurs utilisées : graisse 400–700, largeur 100–112.
+    # Axes limités aux valeurs utilisées : graisse 400–900, largeur 100–125.
     borne = BUILD / "archivo-400-700.ttf"
-    f = instancer.instantiateVariableFont(TTFont(FONT_SRC), {"wght": (400, 700), "wdth": (100, 112)})
+    f = instancer.instantiateVariableFont(TTFont(FONT_SRC), {"wght": (400, 900), "wdth": (100, 125)})
     f.flavor = None
     f.save(borne)
     subprocess.run([
@@ -185,9 +185,10 @@ def main():
     js = js.replace("{{jsconfig}}", json.dumps(cfg, ensure_ascii=False))
 
     # 4. Images, galerie, favicon, JSON-LD, CSS et JS
-    h = photos["hero"]
-    page = page.replace("{{img:hero}}", balise_img(h["fichier"], h["alt"], h.get("focal"), manifest,
-                                                   lazy=False, prioritaire=True))
+    if "{{img:hero}}" in page:
+        h = photos["hero"]
+        page = page.replace("{{img:hero}}", balise_img(h["fichier"], h["alt"], h.get("focal"), manifest,
+                                                       lazy=False, prioritaire=True))
     page = page.replace("{{gallery}}", galerie(photos, manifest))
     page = page.replace("{{favicon}}", favicon())
     page = page.replace("{{jsonld}}", jsonld(site))

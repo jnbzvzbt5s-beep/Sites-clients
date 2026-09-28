@@ -34,15 +34,12 @@
 </header>
 
 <main id="contenu" tabindex="-1">
-<div class="degrade">
 
-  <section class="heros enveloppe" aria-labelledby="accroche">
-    <p class="heros__moien">Moien&nbsp;!</p>
-    <h1 class="heros__titre" id="accroche">Une coupe nette, sans vous presser.</h1>
-    <figure class="heros__photo">
-      {{img:hero}}
-    </figure>
-    <div class="heros__suite">
+  <section class="bande heros-bande" aria-labelledby="accroche">
+    <div class="heros-fond" aria-hidden="true"><div class="heros-fond__rayures"></div><div class="halo" id="halo"></div></div>
+    <div class="enveloppe heros">
+      <p class="heros__moien">Moien&nbsp;!</p>
+      <h1 class="heros__titre" id="accroche">Une coupe nette, sans vous presser.</h1>
       <p class="heros__intro">Je suis {{barbier}}, barbier à {{ville}} depuis {{depuis}}.</p>
       <p class="heros__prix"><span>{{prestation.nom}}&nbsp;:</span> <strong class="chiffres" data-prix>{{prestation.affichage}}</strong></p>
       <div class="boutons">
@@ -52,44 +49,45 @@
     </div>
   </section>
 
-  <div class="filet" aria-hidden="true"></div>
-
-  <section class="coupes enveloppe" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
-    <h2 id="coupes-titre">Les coupes</h2>
-    {{gallery}}
+  <section class="bande bande--blanc" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
+    <div class="enveloppe coupes">
+      <h2 id="coupes-titre">Les coupes</h2>
+      {{gallery}}
+    </div>
   </section>
 
-  <section class="prix enveloppe" id="prix" aria-labelledby="prix-titre" tabindex="-1">
-    <h2 id="prix-titre">Le prix</h2>
-    <p class="prix__ligne">
-      <span class="prix__nom">{{prestation.nom}}</span>
-      <strong class="prix__montant chiffres" data-prix>{{prestation.affichage}}</strong>
-    </p>
+  <section class="bande bande--blanc" id="prix" aria-labelledby="prix-titre" tabindex="-1">
+    <div class="enveloppe prix">
+      <h2 id="prix-titre">Le prix</h2>
+      <p class="prix__ligne">
+        <span class="prix__nom">{{prestation.nom}}</span>
+        <strong class="prix__montant chiffres" data-prix>{{prestation.affichage}}</strong>
+      </p>
+    </div>
   </section>
 
-  <section class="etapes enveloppe" aria-labelledby="etapes-titre">
-    <h2 id="etapes-titre">Comment ça marche</h2>
-    <ol class="etapes__liste">
-      <li>
-        <h3>Vous proposez un créneau.</h3>
-        <p>Choisissez le jour et le moment qui vous arrangent, puis envoyez-moi le message sur Instagram.</p>
-      </li>
-      <li>
-        <h3>Je vous confirme.</h3>
-        <p>Je réponds sur Instagram avec l’heure exacte et l’adresse du studio, ou je vous propose un autre moment.</p>
-      </li>
-      <li>
-        <h3>Vous passez au fauteuil.</h3>
-        <p>Je prends le temps qu’il faut pour une coupe nette.</p>
-      </li>
-    </ol>
+  <section class="bande bande--blanc" aria-labelledby="etapes-titre">
+    <div class="enveloppe etapes">
+      <h2 id="etapes-titre">Comment ça marche</h2>
+      <ol class="etapes__liste">
+        <li>
+          <h3>Vous proposez un créneau.</h3>
+          <p>Choisissez le jour et le moment qui vous arrangent, puis envoyez-moi le message sur Instagram.</p>
+        </li>
+        <li>
+          <h3>Je vous confirme.</h3>
+          <p>Je réponds sur Instagram avec l’heure exacte et l’adresse du studio, ou je vous propose un autre moment.</p>
+        </li>
+        <li>
+          <h3>Vous passez au fauteuil.</h3>
+          <p>Je prends le temps qu’il faut pour une coupe nette.</p>
+        </li>
+      </ol>
+    </div>
   </section>
 
-  <div class="filet" aria-hidden="true"></div>
-</div>
-
-<div class="apres">
-  <section class="rdv" id="rendez-vous" aria-labelledby="rdv-titre" tabindex="-1">
+  <section class="bande bande--bleu rdv" id="rendez-vous" aria-labelledby="rdv-titre" tabindex="-1">
+    <div class="rdv-fond" aria-hidden="true"></div>
     <div class="enveloppe">
       <h2 id="rdv-titre">Proposez un créneau, je vous confirme.</h2>
 
@@ -133,33 +131,36 @@
     </div>
   </section>
 
-  <section class="rui enveloppe" id="rui" aria-labelledby="rui-titre">
-    <h2 id="rui-titre">{{barbier}}</h2>
-    <div class="rui__texte">
-      <p>Je coupe les cheveux depuis {{depuis}}&nbsp;: {{coupes_realisees}} coupes à ce jour.</p>
-      <p>Je suis jeune et je progresse encore, alors chaque coupe compte pour moi.</p>
-      <p>Je prends le temps qu’il faut pour vos cheveux, sans vous presser. Et si vous avez une question, je vous réponds volontiers.</p>
+  <section class="bande bande--blanc" id="rui" aria-labelledby="rui-titre">
+    <div class="enveloppe rui">
+      <h2 id="rui-titre">{{barbier}}</h2>
+      <div class="rui__texte">
+        <p>Je coupe les cheveux depuis {{depuis}}&nbsp;: {{coupes_realisees}} coupes à ce jour.</p>
+        <p>Je suis jeune et je progresse encore, alors chaque coupe compte pour moi.</p>
+        <p>Je prends le temps qu’il faut pour vos cheveux, sans vous presser. Et si vous avez une question, je vous réponds volontiers.</p>
+      </div>
+      <ul class="rui__langues" aria-label="Les langues que je parle">
+        <li lang="lb">Ech schwätze Lëtzebuergesch.</li>
+        <li>Je parle français.</li>
+        <li lang="de">Ich spreche Deutsch.</li>
+        <li lang="en">I speak English.</li>
+        <li lang="pt">Falo português.</li>
+      </ul>
     </div>
-    <ul class="rui__langues" aria-label="Les langues que je parle">
-      <li lang="lb">Ech schwätze Lëtzebuergesch.</li>
-      <li>Je parle français.</li>
-      <li lang="de">Ich spreche Deutsch.</li>
-      <li lang="en">I speak English.</li>
-      <li lang="pt">Falo português.</li>
-    </ul>
   </section>
 
-  <section class="contact enveloppe" id="contact" aria-labelledby="contact-titre">
-    <h2 id="contact-titre">Contact</h2>
-    <p data-contact="seul_moyen">{{contact.seul_moyen}}</p>
-    <p class="contact__pseudo" translate="no">{{instagram.affichage}}</p>
-    <div class="boutons">
-      <a class="bouton bouton--plein" href="{{instagram.message}}" target="_blank" rel="noopener">M’écrire</a>
-      <a class="bouton bouton--trait" href="{{instagram.profil}}" target="_blank" rel="noopener">Voir mon profil</a>
+  <section class="bande bande--blanc" id="contact" aria-labelledby="contact-titre">
+    <div class="enveloppe contact">
+      <h2 id="contact-titre">Contact</h2>
+      <p data-contact="seul_moyen">{{contact.seul_moyen}}</p>
+      <p class="contact__pseudo" translate="no">{{instagram.affichage}}</p>
+      <div class="boutons">
+        <a class="bouton bouton--plein" href="{{instagram.message}}" target="_blank" rel="noopener">M’écrire</a>
+        <a class="bouton bouton--trait" href="{{instagram.profil}}" target="_blank" rel="noopener">Voir mon profil</a>
+      </div>
+      <p class="contact__lieu" data-contact="lieu">{{contact.lieu}}</p>
     </div>
-    <p class="contact__lieu" data-contact="lieu">{{contact.lieu}}</p>
   </section>
-</div>
 </main>
 
 <footer class="pied">

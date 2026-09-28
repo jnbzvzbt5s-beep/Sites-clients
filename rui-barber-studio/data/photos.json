@@ -1,18 +1,19 @@
 {
-  "hero": {
+  "vedette": {
     "fichier": "hero",
     "source": "p4.jpg",
     "alt": "Mid skin fade, dessus court, vu de dos de trois quarts",
+    "legende": "Mid skin fade, dessus court",
     "focal": "50% 40%"
   },
-  "vedette": {
-    "fichier": "coupe-1",
-    "source": "p1.jpg",
-    "alt": "Mid skin fade, dessus court et barbe taillée, vu de profil",
-    "legende": "Mid skin fade, dessus court",
-    "focal": "50% 45%"
-  },
   "grille": [
+    {
+      "fichier": "coupe-1",
+      "source": "p1.jpg",
+      "alt": "Mid skin fade, dessus court et barbe taillée, vu de profil",
+      "legende": "Mid skin fade, dessus court",
+      "focal": "50% 45%"
+    },
     {
       "fichier": "coupe-2",
       "source": "p2.jpg",
@@ -45,13 +46,6 @@
       "fichier": "coupe-6",
       "source": "p5.jpg",
       "alt": "Cheveux afro réguliers, vus de dos de trois quarts",
-      "legende": null,
-      "focal": "50% 40%"
-    },
-    {
-      "fichier": "coupe-7",
-      "source": "p3.jpg",
-      "alt": "Dessus long et épais, dégradé autour de l’oreille, vu de profil arrière",
       "legende": null,
       "focal": "50% 40%"
     }

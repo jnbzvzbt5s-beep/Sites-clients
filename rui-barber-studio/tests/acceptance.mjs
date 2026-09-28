@@ -100,7 +100,7 @@ for (const [nomMoteur, type] of moteurs) {
       const hors = [];
       document.querySelectorAll('body *').forEach(el => {
         const cs = getComputedStyle(el);
-        if (cs.display === 'none' || el.closest('dialog')) return;
+        if (cs.display === "none" || el.closest("dialog") || el.closest("[aria-hidden=true]")) return;
         const r = el.getBoundingClientRect();
         if (r.width && (r.right > W + 0.5 || r.left < -0.5)) hors.push(el.className || el.tagName);
       });
@@ -415,8 +415,7 @@ for (const [nomMoteur, type] of moteurs) {
     await page.locator('.vignette').first().click();
     const r = await page.evaluate(() => ({
       anims: document.getAnimations().length,
-      heros: getComputedStyle(document.querySelector('.heros__photo img')).animationName,
-      masque: getComputedStyle(document.querySelector('.heros__photo img')).webkitMaskImage || getComputedStyle(document.querySelector('.heros__photo img')).maskImage,
+      heros: getComputedStyle(document.querySelector('.heros__titre')).animationName,
       scroll: getComputedStyle(document.documentElement).scrollBehavior,
       trans: getComputedStyle(document.querySelector('.puce span')).transitionDuration,
     }));
@@ -430,8 +429,37 @@ for (const [nomMoteur, type] of moteurs) {
     await p2.waitForTimeout(1400);
     const apres = await p2.evaluate(() => document.getAnimations().filter(a => a.playState === 'running').length);
     const max = Math.max(...debut.map(d => d[1]));
-    verifier(M, 'Ouverture : logo, « Moien ! », titre, photo — 1,2 s au plus, puis plus rien ne bouge',
+    verifier(M, 'Ouverture : logo, « Moien ! », titre, rayures — 1,2 s au plus, puis plus rien ne bouge',
       debut.length === 4 && max <= 1200 && apres === 0, JSON.stringify(debut) + ` ; en cours après 1,4 s : ${apres}`);
+    await ctx2.close();
+  }
+
+  // Halo du héros : suit la souris sur ordinateur, s’arrête ensuite ; absent en mouvement réduit
+  {
+    const ctx = await navigateur.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await ctx.newPage();
+    await page.goto(BASE + '?date=2026-09-28');
+    const t0 = await page.$eval('#halo', h => h.style.transform);
+    await page.mouse.move(900, 300); await page.mouse.move(700, 500, { steps: 8 });
+    await page.waitForTimeout(900);
+    const r = await page.evaluate(() => {
+      const h = document.getElementById('halo'), z = h.closest('.heros-bande').getBoundingClientRect();
+      const m = /translate3d\(([-\d.]+)px,\s*([-\d.]+)px/.exec(h.style.transform) || [];
+      return { actif: h.classList.contains('est-actif'), x: +m[1], y: +m[2], zt: z.top };
+    });
+    const t1 = await page.$eval('#halo', h => h.style.transform);
+    await page.waitForTimeout(300);
+    const t2 = await page.$eval('#halo', h => h.style.transform);
+    verifier(M, 'Halo : suit la souris puis s’immobilise (aucune boucle continue)',
+      t0 === '' && r.actif && Math.abs(r.x - 700) < 3 && Math.abs(r.y - (500 - r.zt)) < 3 && t1 === t2, JSON.stringify(r));
+    await ctx.close();
+    const ctx2 = await navigateur.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+    const p2 = await ctx2.newPage();
+    await p2.goto(BASE);
+    await p2.mouse.move(700, 500, { steps: 5 });
+    await p2.waitForTimeout(300);
+    const h2 = await p2.$eval('#halo', h => [getComputedStyle(h).display, h.style.transform]);
+    verifier(M, 'Halo : absent en mouvement réduit', h2[0] === 'none' && h2[1] === '', JSON.stringify(h2));
     await ctx2.close();
   }
 
@@ -444,14 +472,14 @@ for (const [nomMoteur, type] of moteurs) {
     const lien = page.locator('.rdv__sansjs a');
     const lienOk = await lien.isVisible() && (await lien.getAttribute('href')) === IG && (await lien.textContent()) === 'M’écrire sur Instagram';
     const titres = await page.locator('h1, h2').allTextContents();
-    const imgsVisibles = await page.locator('main img').evaluateAll ? null : null;
-    const nbImg = await page.locator('main img').count();
+    const photos = page.locator('main .vignette img');
+    const nbImg = await photos.count();
     let visibles = 0;
-    for (let i = 0; i < nbImg; i++) if (await page.locator('main img').nth(i).isVisible()) visibles++;
+    for (let i = 0; i < nbImg; i++) if (await photos.nth(i).isVisible()) visibles++;
     const textes = await page.locator('.rui__langues li').count();
     verifier(M, 'Sans JavaScript : module remplacé par « M’écrire sur Instagram »', !moduleVisible && lienOk);
     verifier(M, 'Sans JavaScript : tout le contenu reste lisible (titres, photos, langues, contact)',
-      titres.length === 7 && visibles === nbImg && nbImg === 8 && textes === 5 && await page.locator('.contact__pseudo').isVisible(), `${titres.length} titres, ${visibles}/${nbImg} photos`);
+      titres.length === 7 && visibles === nbImg && nbImg === 7 && textes === 5 && await page.locator('.contact__pseudo').isVisible(), `${titres.length} titres, ${visibles}/${nbImg} photos`);
     await page.screenshot({ path: path.join(ROOT, 'build', `sans-js-${M}.png`), fullPage: true });
     await ctx.close();
   }
@@ -462,7 +490,7 @@ for (const [nomMoteur, type] of moteurs) {
     const page = await ctx.newPage();
     await page.goto(BASE);
     const alts = await page.$$eval('main img', is => is.map(i => i.alt));
-    verifier(M, 'Toutes les photos ont un texte alternatif précis (DOM)', alts.length === 8 && alts.every(a => a.length >= 12 && /vu|vus/.test(a)), JSON.stringify(alts));
+    verifier(M, 'Toutes les photos ont un texte alternatif précis (DOM)', alts.length === 7 && alts.every(a => a.length >= 12 && /vu|vus/.test(a)), JSON.stringify(alts));
     await ctx.close();
   }
 

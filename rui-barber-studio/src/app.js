@@ -1,4 +1,4 @@
-/* Rui’s Barber Studio — trois modules indépendants, chacun dans son try/catch. */
+/* Rui’s Barber Studio — quatre modules indépendants, chacun dans son try/catch. */
 (function () {
   "use strict";
   var CFG = {{jsconfig}};
@@ -118,7 +118,9 @@
       // Le champ prend la hauteur exacte du message (aucune barre de défilement).
       function ajuster() {
         apercu.style.height = "auto";
-        apercu.style.height = (apercu.scrollHeight + 2) + "px";
+        var cs = window.getComputedStyle(apercu);
+        var bords = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
+        apercu.style.height = (apercu.scrollHeight + bords) + "px";
       }
       window.addEventListener("resize", ajuster);
 
@@ -257,7 +259,32 @@
     })();
   } catch (e) {}
 
-  /* ---------- 3. Défilement doux vers les ancres ---------- */
+  /* ---------- 3. Halo du héros : suit la souris, s’arrête quand elle s’arrête ---------- */
+  try {
+    (function () {
+      var halo = document.getElementById("halo");
+      var zone = halo ? halo.closest(".heros-bande") : null;
+      if (!halo || !zone || reduit || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+      var x = 0, y = 0, cx = 0, cy = 0, boucle = null, pret = false;
+      function pas() {
+        cx += (x - cx) * 0.12;
+        cy += (y - cy) * 0.12;
+        halo.style.transform = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
+        boucle = (Math.abs(x - cx) > 0.5 || Math.abs(y - cy) > 0.5) ? requestAnimationFrame(pas) : null;
+      }
+      zone.addEventListener("pointermove", function (e) {
+        var r = zone.getBoundingClientRect();
+        x = e.clientX - r.left;
+        y = e.clientY - r.top;
+        if (!pret) { cx = x; cy = y; pret = true; }
+        halo.classList.add("est-actif");
+        if (!boucle) boucle = requestAnimationFrame(pas);
+      });
+      zone.addEventListener("pointerleave", function () { halo.classList.remove("est-actif"); });
+    })();
+  } catch (e) {}
+
+  /* ---------- 4. Défilement doux vers les ancres ---------- */
   try {
     document.addEventListener("click", function (e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
