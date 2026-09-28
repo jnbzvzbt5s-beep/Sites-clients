@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{meta.titre}}</title>
+<meta name="description" content="{{meta.description}}">
+<meta name="theme-color" content="{{meta.theme}}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_LU">
+<meta property="og:title" content="{{meta.titre}}">
+<meta property="og:description" content="{{meta.description}}">
+<link rel="icon" type="image/svg+xml" href="{{favicon}}">
+<style>
+{{css}}
+</style>
+<script type="application/ld+json">{{jsonld}}</script>
+</head>
+<body id="haut">
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+<header class="entete">
+  <div class="enveloppe entete__barre">
+    <a class="logo" href="#haut" aria-label="{{nom}}, haut de page">{{> logo}}</a>
+    <nav class="entete__nav" aria-label="Sections">
+      <ul>
+        <li class="entete__ancre"><a href="#coupes">Les coupes</a></li>
+        <li class="entete__ancre"><a href="#prix">Le prix</a></li>
+        <li class="entete__ancre"><a href="#rendez-vous">Rendez-vous</a></li>
+        <li><a class="bouton bouton--plein bouton--petit" href="#rendez-vous">Prendre rendez-vous</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="contenu" tabindex="-1">
+<div class="degrade">
+
+  <section class="heros enveloppe" aria-labelledby="accroche">
+    <p class="heros__moien">Moien&nbsp;!</p>
+    <h1 class="heros__titre" id="accroche">Une coupe nette, sans vous presser.</h1>
+    <figure class="heros__photo">
+      {{img:hero}}
+    </figure>
+    <div class="heros__suite">
+      <p class="heros__intro">Je suis {{barbier}}, barbier à {{ville}} depuis {{depuis}}.</p>
+      <p class="heros__prix"><span>{{prestation.nom}}&nbsp;:</span> <strong class="chiffres" data-prix>{{prestation.affichage}}</strong></p>
+      <div class="boutons">
+        <a class="bouton bouton--plein" href="#rendez-vous">Prendre rendez-vous</a>
+        <a class="bouton bouton--trait" href="#coupes">Voir les coupes</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="filet" aria-hidden="true"></div>
+
+  <section class="coupes enveloppe" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
+    <h2 id="coupes-titre">Les coupes</h2>
+    {{gallery}}
+  </section>
+
+  <section class="prix enveloppe" id="prix" aria-labelledby="prix-titre" tabindex="-1">
+    <h2 id="prix-titre">Le prix</h2>
+    <p class="prix__ligne">
+      <span class="prix__nom">{{prestation.nom}}</span>
+      <strong class="prix__montant chiffres" data-prix>{{prestation.affichage}}</strong>
+    </p>
+  </section>
+
+  <section class="etapes enveloppe" aria-labelledby="etapes-titre">
+    <h2 id="etapes-titre">Comment ça marche</h2>
+    <ol class="etapes__liste">
+      <li>
+        <h3>Vous proposez un créneau.</h3>
+        <p>Choisissez le jour et le moment qui vous arrangent, puis envoyez-moi le message sur Instagram.</p>
+      </li>
+      <li>
+        <h3>Je vous confirme.</h3>
+        <p>Je réponds sur Instagram avec l’heure exacte et l’adresse du studio, ou je vous propose un autre moment.</p>
+      </li>
+      <li>
+        <h3>Vous passez au fauteuil.</h3>
+        <p>Je prends le temps qu’il faut pour une coupe nette.</p>
+      </li>
+    </ol>
+  </section>
+
+  <div class="filet" aria-hidden="true"></div>
+</div>
+
+<div class="apres">
+  <section class="rdv" id="rendez-vous" aria-labelledby="rdv-titre" tabindex="-1">
+    <div class="enveloppe">
+      <h2 id="rdv-titre">Proposez un créneau, je vous confirme.</h2>
+
+      <noscript>
+        <p class="rdv__sansjs"><a class="bouton bouton--plein" href="{{instagram.message}}" rel="noopener">M’écrire sur Instagram</a></p>
+      </noscript>
+
+      <form class="module" id="module" hidden novalidate>
+        <div class="module__choix">
+          <fieldset class="groupe">
+            <legend>Jour</legend>
+            <div class="puces puces--jours" id="jours"></div>
+          </fieldset>
+          <fieldset class="groupe">
+            <legend>Moment</legend>
+            <div class="puces puces--moments">
+              <label class="puce"><input type="radio" name="moment" value="le matin"><span>Le matin</span></label>
+              <label class="puce"><input type="radio" name="moment" value="à midi"><span>À midi</span></label>
+              <label class="puce"><input type="radio" name="moment" value="l’après-midi"><span>L’après-midi</span></label>
+              <label class="puce"><input type="radio" name="moment" value="en fin de journée"><span>En fin de journée</span></label>
+              <label class="puce"><input type="radio" name="moment" value="je suis flexible"><span>Je suis flexible</span></label>
+            </div>
+          </fieldset>
+          <div class="champ">
+            <label for="prenom">Votre prénom <span class="facultatif">(facultatif)</span></label>
+            <input id="prenom" name="prenom" type="text" maxlength="30" autocomplete="given-name" autocapitalize="words" spellcheck="false" enterkeyhint="done">
+          </div>
+        </div>
+
+        <div class="module__envoi">
+          <label class="apercu__titre" for="apercu">Votre message</label>
+          <textarea class="apercu" id="apercu" rows="6" readonly spellcheck="false"></textarea>
+          <div class="module__boutons">
+            <a class="bouton bouton--plein bouton--large" id="envoyer" href="{{instagram.message}}" target="_blank" rel="noopener">Copier et envoyer sur Instagram</a>
+            <button class="bouton bouton--trait bouton--large" id="copier" type="button">Copier le message</button>
+          </div>
+          <p class="module__statut" id="statut" role="status" aria-live="polite"></p>
+          <p class="module__note">Je vous réponds sur Instagram pour confirmer ou proposer un autre moment. Rien n’est envoyé tant que vous ne me l’envoyez pas.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="rui enveloppe" id="rui" aria-labelledby="rui-titre">
+    <h2 id="rui-titre">{{barbier}}</h2>
+    <div class="rui__texte">
+      <p>Je coupe les cheveux depuis {{depuis}}&nbsp;: {{coupes_realisees}} coupes à ce jour.</p>
+      <p>Je suis jeune et je progresse encore, alors chaque coupe compte pour moi.</p>
+      <p>Je prends le temps qu’il faut pour vos cheveux, sans vous presser. Et si vous avez une question, je vous réponds volontiers.</p>
+    </div>
+    <ul class="rui__langues" aria-label="Les langues que je parle">
+      <li lang="lb">Ech schwätze Lëtzebuergesch.</li>
+      <li>Je parle français.</li>
+      <li lang="de">Ich spreche Deutsch.</li>
+      <li lang="en">I speak English.</li>
+      <li lang="pt">Falo português.</li>
+    </ul>
+  </section>
+
+  <section class="contact enveloppe" id="contact" aria-labelledby="contact-titre">
+    <h2 id="contact-titre">Contact</h2>
+    <p data-contact="seul_moyen">{{contact.seul_moyen}}</p>
+    <p class="contact__pseudo" translate="no">{{instagram.affichage}}</p>
+    <div class="boutons">
+      <a class="bouton bouton--plein" href="{{instagram.message}}" target="_blank" rel="noopener">M’écrire</a>
+      <a class="bouton bouton--trait" href="{{instagram.profil}}" target="_blank" rel="noopener">Voir mon profil</a>
+    </div>
+    <p class="contact__lieu" data-contact="lieu">{{contact.lieu}}</p>
+  </section>
+</div>
+</main>
+
+<footer class="pied">
+  <div class="enveloppe pied__grille">
+    <p class="pied__logo">{{> logo}}</p>
+    <ul class="pied__liens">
+      <li><a href="{{instagram.profil}}" target="_blank" rel="noopener">Instagram <span translate="no">{{instagram.affichage}}</span></a></li>
+      <li>Ce site ne dépose aucun cookie.</li>
+      {{mentions}}
+      <li class="pied__credit"><a href="{{credit.url}}" target="_blank" rel="noopener">{{credit.texte}}</a></li>
+    </ul>
+  </div>
+</footer>
+
+<div class="barre">
+  <a class="bouton bouton--plein bouton--large" href="#rendez-vous">Prendre rendez-vous</a>
+</div>
+
+<dialog class="visionneuse" id="visionneuse" aria-label="Photos des coupes">
+  <div class="visionneuse__cadre">
+    <figure class="visionneuse__figure">
+      <img class="visionneuse__img" id="vis-img" alt="" width="560" height="700">
+      <figcaption class="visionneuse__legende">
+        <span id="vis-legende"></span>
+        <span class="visionneuse__compteur chiffres" id="vis-compteur"></span>
+      </figcaption>
+    </figure>
+    <div class="visionneuse__nav">
+      <button class="visionneuse__btn" type="button" id="vis-prec" aria-label="Photo précédente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="visionneuse__btn" type="button" id="vis-suiv" aria-label="Photo suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+    <button class="visionneuse__btn visionneuse__fermer" type="button" id="vis-fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+</dialog>
+
+<script>
+{{js}}
+</script>
+</body>
+</html>
