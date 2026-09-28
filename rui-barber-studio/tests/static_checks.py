@@ -113,7 +113,10 @@ verifier("Le bleu clair ne sert jamais de couleur de texte",
 
 # ---------- 12. Photos : texte alternatif, aucune métadonnée ----------
 imgs = re.findall(r"<img\s[^>]*>", PAGE)
-contenu = [i for i in imgs if 'src="data:image/webp' in i]
+contenu = [i for i in imgs if 'src="data:image/webp' in i and "logo__img" not in i]
+logos = [i for i in imgs if "logo__img" in i]
+verifier("Logo : même composant en en-tête et pied de page, 48 px, image décorative à côté du nom",
+         len(logos) == 2 and all('height="48"' in i and 'alt=""' in i for i in logos) and PAGE.count('class="logotype"') == 2)
 sans_alt = [i[:80] for i in contenu if not re.search(r'alt="[^"]{12,}"', i)]
 verifier("Chaque photo a un texte alternatif précis", len(contenu) >= 7 and not sans_alt,
          f"{len(contenu)} photos")
@@ -180,7 +183,7 @@ verifier("Meta description ≈ 150 caractères (Mersch, 15 €, Instagram)",
          135 <= len(desc) <= 160 and "Mersch" in desc and prix in desc and "Instagram" in desc, f"{len(desc)} caractères")
 verifier("lang=fr, theme-color = --fond, favicon en data URI",
          '<html lang="fr">' in PAGE and f'name="theme-color" content="{V["fond"]}"' in PAGE
-         and re.search(r'<link rel="icon"[^>]+href="data:image/svg\+xml', PAGE) is not None)
+         and re.search(r'<link rel="icon" type="image/png" href="data:image/png', PAGE) is not None)
 verifier("Open Graph titre et description, pas d’og:image sans adresse définitive",
          'property="og:title"' in PAGE and 'property="og:description"' in PAGE
          and ('property="og:image"' in PAGE) == bool(SITE.get("adresse_site")))

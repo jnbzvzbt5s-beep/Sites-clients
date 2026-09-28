@@ -1,7 +1,7 @@
 """Assemble index.html (un seul fichier) à partir de data/ et src/.
 
 Usage : python3 tools/build.py
-Pré-requis : python3 tools/photos.py (build/img/), police Archivo dans FONT_SRC.
+Pré-requis : python3 tools/photos.py (build/img/) et tools/logo.py (build/logo/), police Archivo dans FONT_SRC.
 """
 import base64
 import html
@@ -12,8 +12,6 @@ import re
 import subprocess
 import sys
 
-from fontTools.pens.svgPathPen import SVGPathPen
-from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
 
@@ -71,29 +69,8 @@ def sous_ensemble_police(texte):
 
 
 def favicon():
-    """Un R en Archivo 700 (largeur 110), --encre sur --bleu."""
-    f = TTFont(FONT_SRC)
-    inst = instancer.instantiateVariableFont(f, {"wght": 700, "wdth": 110})
-    gs = inst.getGlyphSet()
-    name = inst.getBestCmap()[ord("R")]
-    upm = inst["head"].unitsPerEm
-    cap = inst["OS/2"].sCapHeight or 0.7 * upm
-    adv = gs[name].width
-    size = 64
-    scale = 40 / cap
-    tx = (size - adv * scale) / 2
-    ty = (size + cap * scale) / 2
-    pen = SVGPathPen(gs)
-    gs[name].draw(TransformPen(pen, (scale, 0, 0, -scale, tx, ty)))
-    d = pen.getCommands()
-    d = re.sub(r"\d+\.\d+", lambda m: f"{float(m.group()):.2f}".rstrip("0").rstrip("."), d)
-    svg = (
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
-        '<rect width="64" height="64" rx="10" fill="#9FCBE8"/>'
-        f'<path fill="#22262A" d="{d}"/></svg>'
-    )
-    (BUILD / "favicon.svg").write_text(svg, encoding="utf-8")
-    return "data:image/svg+xml;base64," + base64.b64encode(svg.encode()).decode()
+    """Favicon : le monogramme « RBS » du logo (build/logo/favicon.png, par tools/logo.py)."""
+    return data_uri(BUILD / "logo" / "favicon.png", "image/png")
 
 
 def balise_img(fichier, alt, focal, manifest, lazy=True, prioritaire=False, classe=None):
@@ -182,6 +159,7 @@ def main():
 
     # 1. Textes issus de la source de données unique
     page = page.replace("{{> logo}}", logo)
+    page = page.replace("{{logo_src}}", data_uri(BUILD / "logo" / "logo.webp", "image/webp"))
     page = page.replace("{{mentions}}", mentions(site))
 
     def remplacer(m):

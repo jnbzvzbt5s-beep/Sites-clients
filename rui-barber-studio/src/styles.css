@@ -105,19 +105,28 @@ h3 { font-size: 1.1875rem; font-stretch: 106%; line-height: 1.25; }
   padding-inline: max(var(--marge), env(safe-area-inset-left), env(safe-area-inset-right));
 }
 
-/* ---------- Logotype (composant unique) ---------- */
+/* ---------- Logo (composant unique) ---------- */
 .logo {
   display: inline-flex;
   align-items: center;
+  gap: 10px;
   min-height: 44px;
   max-height: 48px;
   max-width: 220px;
   color: var(--encre);
   text-decoration: none;
 }
+.logo__img, .pied__logo .logo__img {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
 .logotype {
-  font-size: 1.25rem;
-  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  line-height: 1.08;
   font-weight: 400;
   font-stretch: 104%;
   letter-spacing: -.01em;
@@ -125,6 +134,7 @@ h3 { font-size: 1.1875rem; font-stretch: 106%; line-height: 1.25; }
   color: var(--encre);
 }
 .logotype b { font-weight: 700; font-stretch: 108%; }
+.pied__logo { display: flex; align-items: center; gap: 10px; }
 
 /* ---------- Boutons ---------- */
 .bouton {
