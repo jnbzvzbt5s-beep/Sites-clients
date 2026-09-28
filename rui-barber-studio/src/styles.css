@@ -1,4 +1,4 @@
-/* Rui’s Barber Studio — blanc, bleu, rouge. Un point focal par écran ; le détail vit dans l’arrière-plan. */
+/* Rui’s Barber Studio — bleu nuit, rouge, blanc. De grands aplats de couleur, un point focal par écran. */
 
 @font-face {
   font-family: "Archivo";
@@ -17,6 +17,10 @@
   --bleu-pale: #EEF5FA;
   --bleu-fonce: #1D4F91;
   --rouge: #CC1F1A;
+  --rouge-fonce: #A51712;
+  --nuit: #0F2A52;
+  --nuit-texte: #D3E1F0;
+  --biais: clamp(28px, 4vw, 64px);
 
   --trait: rgba(22, 25, 29, .12);
   --marge: 20px;
@@ -71,7 +75,7 @@ button, .bouton, .puce, .vignette { touch-action: manipulation; }
   outline-offset: 3px;
   border-radius: 2px;
 }
-.pied :focus-visible { outline-color: var(--bleu); }
+.pied :focus-visible, .entete :focus-visible, .bande--nuit :focus-visible, .bande--rouge :focus-visible { outline-color: var(--blanc); }
 [tabindex="-1"]:focus { outline: none; }
 
 h1, h2, h3 {
@@ -110,7 +114,18 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
 /* ---------- Bandes ---------- */
 .bande { position: relative; background: var(--blanc); }
 .bande--blanc + .bande--blanc > .enveloppe { border-top: 1px solid var(--trait); }
-.bande--bleu { background: var(--bleu-pale); }
+.bande--bleu, .bande--pale { background: var(--bleu-pale); }
+.bande--nuit {
+  background: linear-gradient(135deg, var(--nuit) 0%, #16396B 55%, var(--bleu-fonce) 100%);
+  color: var(--blanc);
+}
+.bande--rouge { background: linear-gradient(160deg, #D8261F 0%, var(--rouge) 45%, #B51914 100%); color: var(--blanc); }
+/* Bord supérieur en biais : la bande recouvre la précédente d’une diagonale franche */
+.biais {
+  margin-top: calc(-1 * var(--biais));
+  padding-top: var(--biais);
+  clip-path: polygon(0 var(--biais), 100% 0, 100% 100%, 0 100%);
+}
 
 /* ---------- Logo (composant unique) ---------- */
 .logo {
@@ -163,11 +178,15 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
 .bouton:active { transform: scale(.97); }
 .bouton--plein { background: var(--bleu-fonce); color: var(--blanc); }
 .bouton--trait { background: var(--blanc); color: var(--bleu-fonce); }
+.bouton--rouge { background: var(--rouge); border-color: var(--rouge); color: var(--blanc); }
+.bouton--clair { background: transparent; border-color: rgba(255, 255, 255, .75); color: var(--blanc); }
 .bouton--petit { min-height: 44px; padding: 0 18px; font-size: .9375rem; }
 .bouton--large { width: 100%; }
 @media (hover: hover) and (pointer: fine) {
   .bouton--plein:hover { background: #163E73; transform: translateY(-1px); }
   .bouton--trait:hover { background: var(--bleu-pale); transform: translateY(-1px); }
+  .bouton--rouge:hover { background: var(--rouge-fonce); border-color: var(--rouge-fonce); transform: translateY(-1px); }
+  .bouton--clair:hover { background: rgba(255, 255, 255, .12); transform: translateY(-1px); }
   a:not(.bouton):not(.logo):hover { text-decoration-thickness: 2px; }
 }
 
@@ -175,7 +194,8 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
 .boutons .bouton { flex: 1 1 11rem; }
 
 /* ---------- En-tête ---------- */
-.entete { position: relative; z-index: 20; background: var(--blanc); }
+.entete { position: relative; z-index: 20; background: var(--nuit); color: var(--blanc); }
+.entete .logo { color: var(--blanc); }
 .entete__barre {
   display: flex;
   align-items: center;
@@ -190,13 +210,13 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
   align-items: center;
   min-height: 44px;
   padding: 0 12px;
-  color: var(--encre);
+  color: var(--blanc);
   text-decoration: none;
   font-size: .9375rem;
   font-weight: 600;
 }
 @media (hover: hover) and (pointer: fine) {
-  .entete__ancre a:hover { color: var(--bleu-fonce); }
+  .entete__ancre a:hover { color: var(--bleu); }
 }
 
 @media (min-width: 768px) {
@@ -204,12 +224,12 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
   .entete {
     position: sticky;
     top: 0;
-    background: rgba(255, 255, 255, .92);
-    border-bottom: 1px solid var(--trait);
+    background: rgba(15, 42, 82, .96);
+    border-bottom: 1px solid rgba(255, 255, 255, .12);
   }
   @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
     .entete {
-      background: rgba(255, 255, 255, .78);
+      background: rgba(15, 42, 82, .82);
       -webkit-backdrop-filter: blur(14px) saturate(1.4);
       backdrop-filter: blur(14px) saturate(1.4);
     }
@@ -231,7 +251,7 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
   pointer-events: none;
   z-index: 0;
 }
-.heros-fond__rayures, .rdv-fond {
+.rdv-fond {
   background-image: repeating-linear-gradient(
     135deg,
     rgba(204, 31, 26, .26) 0 1.5px,
@@ -239,6 +259,22 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
     rgba(29, 79, 145, .26) 18px 19.5px,
     transparent 19.5px 36px
   );
+}
+.heros-fond__rayures {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(230, 60, 52, .7) 0 1.5px,
+    transparent 1.5px 18px,
+    rgba(255, 255, 255, .22) 18px 19.5px,
+    transparent 19.5px 36px
+  );
+}
+.rayures {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, .16) 0 1.5px, transparent 1.5px 18px);
+  opacity: .5;
 }
 .heros-fond__rayures {
   position: absolute;
@@ -255,6 +291,11 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
     -webkit-mask-image: radial-gradient(50% 60% at 100% 0%, #000 0%, transparent 70%);
     mask-image: radial-gradient(50% 60% at 100% 0%, #000 0%, transparent 70%);
   }
+  .rayures {
+    opacity: 1;
+    -webkit-mask-image: linear-gradient(100deg, transparent 35%, #000 100%);
+    mask-image: linear-gradient(100deg, transparent 35%, #000 100%);
+  }
 }
 @supports not ((mask-image: linear-gradient(#000, #000)) or (-webkit-mask-image: linear-gradient(#000, #000))) {
   .rdv-fond { opacity: .35; }
@@ -268,17 +309,17 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
   height: 560px;
   margin: -280px 0 0 -280px;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(159, 203, 232, .55), rgba(159, 203, 232, 0));
+  background: radial-gradient(closest-side, rgba(159, 203, 232, .38), rgba(159, 203, 232, 0));
   opacity: .7;
   transform: translate3d(80vw, 25%, 0);
   transition: opacity 400ms linear;
   will-change: transform;
 }
 .halo.est-actif { opacity: 1; }
-.rdv > .enveloppe { position: relative; z-index: 1; }
+.rdv > .enveloppe, .prix { position: relative; z-index: 1; }
 
 /* ---------- Héros : une phrase, un prix, une action ---------- */
-.heros-bande { overflow: hidden; }
+.heros-bande { overflow: hidden; padding-bottom: var(--biais); }
 .heros {
   position: relative;
   z-index: 1;
@@ -289,10 +330,19 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
   padding-bottom: clamp(56px, 7vw, 120px);
 }
 .heros__moien {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   font-size: 1.125rem;
   font-weight: 700;
   font-stretch: 108%;
-  color: var(--rouge);
+  color: var(--bleu);
+}
+.heros__moien::before {
+  content: "";
+  width: 32px;
+  height: 3px;
+  background: var(--rouge);
 }
 .heros__titre {
   margin-top: 10px;
@@ -303,7 +353,7 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
   line-height: .98;
   max-width: 11ch;
 }
-.heros__intro { margin-top: 24px; max-width: 34ch; font-size: 1.125rem; color: var(--gris); text-wrap: pretty; }
+.heros__intro { margin-top: 24px; max-width: 34ch; font-size: 1.125rem; color: var(--nuit-texte); text-wrap: pretty; }
 .heros__prix {
   display: flex;
   flex-wrap: wrap;
@@ -314,11 +364,14 @@ h3 { font-size: 1.1875rem; font-weight: 700; font-stretch: 106%; line-height: 1.
   font-weight: 600;
 }
 .heros__prix strong {
-  font-size: 2.25rem;
+  padding: 2px 12px 0;
+  border-radius: 6px;
+  background: var(--rouge);
+  font-size: 2rem;
   font-weight: 800;
   font-stretch: 116%;
   letter-spacing: -.02em;
-  color: var(--rouge);
+  color: var(--blanc);
 }
 .heros .boutons { margin-top: 28px; max-width: 30rem; }
 
@@ -410,6 +463,7 @@ section[id] { scroll-margin-top: 16px; }
 
 /* ---------- Le prix ---------- */
 .prix__ligne { display: flex; flex-direction: column; }
+.prix h2, .prix__nom, .prix__montant { color: var(--blanc); }
 .prix__nom {
   font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2rem);
   font-weight: 700;
@@ -424,7 +478,7 @@ section[id] { scroll-margin-top: 16px; }
   margin-top: 8px;
   margin-left: -.04em;
   white-space: nowrap;
-  color: var(--rouge);
+  text-shadow: 0 18px 40px rgba(90, 8, 5, .35);
 }
 
 /* ---------- Comment ça marche ---------- */
@@ -447,13 +501,14 @@ section[id] { scroll-margin-top: 16px; }
   place-items: center;
   width: 2.5rem;
   height: 2.5rem;
-  border: 1.5px solid var(--bleu-fonce);
   border-radius: 50%;
+  background: var(--bleu-fonce);
   font-size: 1.0625rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  color: var(--bleu-fonce);
+  color: var(--blanc);
 }
+.etapes__liste li:nth-child(2)::before { background: var(--rouge); }
 .etapes__liste p { color: var(--gris); }
 @media (min-width: 700px) {
   .etapes__liste { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
@@ -596,14 +651,18 @@ section[id] { scroll-margin-top: 16px; }
 
 /* ---------- Rui ---------- */
 .rui__texte { display: grid; gap: 14px; max-width: 38rem; }
+.rui h2 { font-size: clamp(3.5rem, 2rem + 7vw, 7rem); font-stretch: 122%; line-height: .9; }
+.rui h2::after { content: ""; display: block; width: 56px; height: 4px; margin-top: 14px; background: var(--rouge); }
 .rui__texte p:first-child { font-size: 1.375rem; font-weight: 700; line-height: 1.4; }
-.rui__texte p:not(:first-child) { color: var(--gris); }
+.rui__texte p:not(:first-child) { color: var(--nuit-texte); }
+.rui__langues { display: flex; flex-wrap: wrap; align-content: start; gap: 8px; }
 .rui__langues li {
-  padding: 10px 0;
-  border-top: 1px solid var(--trait);
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, .32);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, .06);
   font-weight: 600;
 }
-.rui__langues li:last-child { border-bottom: 1px solid var(--trait); }
 @media (min-width: 1024px) {
   .rui__texte { grid-column: 5 / span 5; grid-row: 1; }
   .rui__langues { grid-column: 10 / -1; grid-row: 1; }
@@ -619,12 +678,14 @@ section[id] { scroll-margin-top: 16px; }
   color: var(--bleu-fonce);
   overflow-wrap: anywhere;
 }
+.contact__pseudo::after { content: ""; display: block; width: 56px; height: 4px; margin-top: 14px; background: var(--rouge); }
+
 .contact .boutons { max-width: 30rem; }
 .contact__lieu { color: var(--gris); }
 
 /* ---------- Pied de page ---------- */
 .pied {
-  background: var(--encre);
+  background: #0B1F3D;
   color: #C9CDD2;
   padding-block: 36px 44px;
   font-size: .9375rem;

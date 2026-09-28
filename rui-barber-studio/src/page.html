@@ -27,7 +27,7 @@
         <li class="entete__ancre"><a href="#coupes">Les coupes</a></li>
         <li class="entete__ancre"><a href="#prix">Le prix</a></li>
         <li class="entete__ancre"><a href="#rendez-vous">Rendez-vous</a></li>
-        <li><a class="bouton bouton--plein bouton--petit" href="#rendez-vous">Prendre rendez-vous</a></li>
+        <li><a class="bouton bouton--rouge bouton--petit" href="#rendez-vous">Prendre rendez-vous</a></li>
       </ul>
     </nav>
   </div>
@@ -35,7 +35,7 @@
 
 <main id="contenu" tabindex="-1">
 
-  <section class="bande heros-bande" aria-labelledby="accroche">
+  <section class="bande bande--nuit heros-bande" aria-labelledby="accroche">
     <div class="heros-fond" aria-hidden="true"><div class="heros-fond__rayures"></div><div class="halo" id="halo"></div></div>
     <div class="enveloppe heros">
       <p class="heros__moien">Moien&nbsp;!</p>
@@ -43,20 +43,21 @@
       <p class="heros__intro">Je suis {{barbier}}, barbier à {{ville}} depuis {{depuis}}.</p>
       <p class="heros__prix"><span>{{prestation.nom}}&nbsp;:</span> <strong class="chiffres" data-prix>{{prestation.affichage}}</strong></p>
       <div class="boutons">
-        <a class="bouton bouton--plein" href="#rendez-vous">Prendre rendez-vous</a>
-        <a class="bouton bouton--trait" href="#coupes">Voir les coupes</a>
+        <a class="bouton bouton--rouge" href="#rendez-vous">Prendre rendez-vous</a>
+        <a class="bouton bouton--clair" href="#coupes">Voir les coupes</a>
       </div>
     </div>
   </section>
 
-  <section class="bande bande--blanc" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
+  <section class="bande bande--pale biais" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
     <div class="enveloppe coupes">
       <h2 id="coupes-titre">Les coupes</h2>
       {{gallery}}
     </div>
   </section>
 
-  <section class="bande bande--blanc" id="prix" aria-labelledby="prix-titre" tabindex="-1">
+  <section class="bande bande--rouge biais" id="prix" aria-labelledby="prix-titre" tabindex="-1">
+    <div class="rayures rayures--prix" aria-hidden="true"></div>
     <div class="enveloppe prix">
       <h2 id="prix-titre">Le prix</h2>
       <p class="prix__ligne">
@@ -121,7 +122,7 @@
           <label class="apercu__titre" for="apercu">Votre message</label>
           <textarea class="apercu" id="apercu" rows="6" readonly spellcheck="false"></textarea>
           <div class="module__boutons">
-            <a class="bouton bouton--plein bouton--large" id="envoyer" href="{{instagram.message}}" target="_blank" rel="noopener">Copier et envoyer sur Instagram</a>
+            <a class="bouton bouton--rouge bouton--large" id="envoyer" href="{{instagram.message}}" target="_blank" rel="noopener">Copier et envoyer sur Instagram</a>
             <button class="bouton bouton--trait bouton--large" id="copier" type="button">Copier le message</button>
           </div>
           <p class="module__statut" id="statut" role="status" aria-live="polite"></p>
@@ -131,7 +132,7 @@
     </div>
   </section>
 
-  <section class="bande bande--blanc" id="rui" aria-labelledby="rui-titre">
+  <section class="bande bande--nuit biais" id="rui" aria-labelledby="rui-titre">
     <div class="enveloppe rui">
       <h2 id="rui-titre">{{barbier}}</h2>
       <div class="rui__texte">
@@ -176,7 +177,7 @@
 </footer>
 
 <div class="barre">
-  <a class="bouton bouton--plein bouton--large" href="#rendez-vous">Prendre rendez-vous</a>
+  <a class="bouton bouton--rouge bouton--large" href="#rendez-vous">Prendre rendez-vous</a>
 </div>
 
 <dialog class="visionneuse" id="visionneuse" aria-label="Photos des coupes">

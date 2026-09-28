@@ -88,32 +88,41 @@ V = {k: v for k, v in re.findall(r"--([a-z-]+):\s*(#[0-9A-Fa-f]{6})", css)}
 paires = [
     # (texte, fond, seuil, usage)
     ("encre", "blanc", 4.5, "texte courant"),
-    ("encre", "bleu-pale", 4.5, "module de rendez-vous"),
+    ("encre", "bleu-pale", 4.5, "galerie, module de rendez-vous"),
     ("encre", "bleu", 4.5, "puce choisie"),
     ("gris", "blanc", 4.5, "texte secondaire"),
-    ("gris", "bleu-pale", 4.5, "notes du module"),
-    ("rouge", "blanc", 4.5, "« Moien ! », prix"),
-    ("bleu-fonce", "blanc", 4.5, "liens, boutons au trait, pseudo"),
+    ("gris", "bleu-pale", 4.5, "légendes, notes du module"),
+    ("blanc", "nuit", 4.5, "héros, en-tête, bande Rui"),
+    ("blanc", "bleu-fonce", 4.5, "fin du dégradé bleu nuit, boutons bleus"),
+    ("nuit-texte", "nuit", 4.5, "texte secondaire sur bleu nuit"),
+    ("nuit-texte", "bleu-fonce", 4.5, "texte secondaire, fin du dégradé"),
+    ("bleu", "nuit", 4.5, "« Moien ! »"),
+    ("bleu", "bleu-fonce", 3.0, "« Moien ! » si le dégradé passe derrière"),
+    ("blanc", "rouge", 4.5, "prix, boutons rouges"),
+    ("blanc", "rouge-fonce", 4.5, "bouton rouge au survol"),
+    ("bleu-fonce", "blanc", 4.5, "liens, pseudo, boutons au trait"),
     ("bleu-fonce", "bleu-pale", 4.5, "boutons dans le module"),
-    ("blanc", "bleu-fonce", 4.5, "boutons pleins, barre d’action"),
-    ("blanc", "encre", 4.5, "pied de page"),
     ("gris", "blanc", 3.0, "bordure des puces et du champ"),
-    ("bleu-fonce", "blanc", 3.0, "anneau de focus"),
+    ("bleu-fonce", "blanc", 3.0, "anneau de focus sur fond clair"),
 ]
 for t, f, seuil, usage in paires:
     r = ratio(V[t], V[f])
     verifier(f"Contraste {t} sur {f} ≥ {seuil} ({usage})", r >= seuil, f"{r:.2f}:1")
 for t, f, seuil, usage in [("#8A2A1B", V["bleu-pale"], 4.5, "message d’échec de copie"),
                            (V["bleu"], "#0E1115", 4.5, "compteur de la visionneuse"),
-                           ("#C9CDD2", V["encre"], 4.5, "texte du pied de page"),
+                           ("#C9CDD2", "#0B1F3D", 4.5, "texte du pied de page"),
+                           ("#FFFFFF", "#B51914", 4.5, "bas du dégradé rouge"),
+                           ("#FFFFFF", "#D8261F", 4.5, "haut du dégradé rouge"),
                            ("#E6E8EA", "#141619", 4.5, "légende de la visionneuse"),
 ]:
     r = ratio(t, f)
     verifier(f"Contraste {t} sur {f} ≥ {seuil} ({usage})", r >= seuil, f"{r:.2f}:1")
 regles_bleu = [sel.strip() for sel, corps in re.findall(r"([^{}]+)\{([^{}]*)\}", css)
                if re.search(r"(?<![-\w])color:\s*var\(--bleu\)", corps)]
-verifier("Le bleu clair ne sert jamais de texte sur fond clair (seulement dans la visionneuse sombre)",
-         all("visionneuse" in r for r in regles_bleu), str(regles_bleu))
+# Zones sombres (bleu nuit ou quasi noir) : le bleu clair y est lisible.
+ZONES_SOMBRES = ("visionneuse", "entete", "heros")
+verifier("Le bleu clair ne sert jamais de texte sur fond clair (seulement sur les zones sombres)",
+         all(any(z in r for z in ZONES_SOMBRES) for r in regles_bleu), str(regles_bleu))
 
 # ---------- 12. Photos : texte alternatif, aucune métadonnée ----------
 imgs = re.findall(r"<img\s[^>]*>", PAGE)
@@ -128,7 +137,7 @@ verifier("Chaque photo a width, height et decoding=async",
          all(re.search(r'width="\d+"', i) and re.search(r'height="\d+"', i) and 'decoding="async"' in i for i in contenu))
 verifier("Photos des coupes (sous la ligne de flottaison) en loading=lazy",
          all('loading="lazy"' in i for i in contenu))
-verifier("Aucune photo de coupe au premier plan du héros", "<img" not in PAGE[PAGE.index('class="bande heros-bande"'):PAGE.index('id="coupes"')])
+verifier("Aucune photo de coupe au premier plan du héros", "<img" not in PAGE[PAGE.index('heros-bande"'):PAGE.index('id="coupes"')])
 meta_trouvees = []
 poids = []
 for i in contenu:
@@ -186,8 +195,8 @@ desc = html.unescape(re.search(r'<meta name="description" content="([^"]+)"', PA
 verifier("Titre", titre == SITE["meta"]["titre"], titre)
 verifier("Meta description ≈ 150 caractères (Mersch, 15 €, Instagram)",
          135 <= len(desc) <= 160 and "Mersch" in desc and prix in desc and "Instagram" in desc, f"{len(desc)} caractères")
-verifier("lang=fr, theme-color = --blanc, favicon en data URI",
-         '<html lang="fr">' in PAGE and f'name="theme-color" content="{V["blanc"]}"' in PAGE
+verifier("lang=fr, theme-color = --nuit (haut de page), favicon en data URI",
+         '<html lang="fr">' in PAGE and f'name="theme-color" content="{V["nuit"]}"' in PAGE
          and re.search(r'<link rel="icon" type="image/png" href="data:image/png', PAGE) is not None)
 verifier("Open Graph titre et description, pas d’og:image sans adresse définitive",
          'property="og:title"' in PAGE and 'property="og:description"' in PAGE
