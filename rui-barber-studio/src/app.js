@@ -1,4 +1,4 @@
-/* Rui’s Barber Studio — quatre modules indépendants (dates, ticket, visionneuse, pastille), chacun dans son try/catch. */
+/* Rui’s Barber Studio — modules indépendants (police, dates, ticket, visionneuse, pastille), chacun dans son try/catch. */
 (function () {
   "use strict";
   var CFG = {{jsconfig}};
@@ -191,17 +191,17 @@
     })();
   } catch (e) {}
 
-  /* ---------- 3. Visionneuse ---------- */
+  /* ---------- 3. Visionneuse (page des coupes) ---------- */
   try {
     (function () {
       var dlg = document.getElementById("visionneuse");
-      var photos = Array.prototype.slice.call(document.querySelectorAll(".galerie .photo img"));
-      if (!dlg || typeof dlg.showModal !== "function" || !photos.length) return;
+      var liens = Array.prototype.slice.call(document.querySelectorAll(".galerie .vignette"));
+      if (!dlg || typeof dlg.showModal !== "function" || !liens.length) return;
+      var photos = liens.map(function (a) { return a.querySelector("img"); });
       var img = document.getElementById("vis-img");
       var compteur = document.getElementById("vis-compteur");
       var index = 0;
       var origine = null;
-      var boutons = [];
 
       function montrer(i) {
         index = (i + photos.length) % photos.length;
@@ -212,24 +212,21 @@
         img.height = source.naturalHeight || source.height;
         compteur.textContent = (index + 1) + " sur " + photos.length;
       }
+      function ouvrir(i) {
+        origine = liens[i];
+        montrer(i);
+        if (!dlg.open) dlg.showModal();
+      }
+      function sansAncre() {
+        if (/^#photo-\d+$/.test(window.location.hash)) {
+          try { history.replaceState(null, "", window.location.pathname + window.location.search); } catch (e) {}
+        }
+      }
 
-      // Sans JS, les vignettes restent de simples images ; ici, chacune devient un bouton.
-      photos.forEach(function (p, i) {
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "vignette";
-        b.setAttribute("aria-haspopup", "dialog");
-        b.setAttribute("aria-label", "Agrandir la photo " + (i + 1) + " sur " + photos.length + " : " + p.alt);
-        p.parentNode.insertBefore(b, p);
-        b.appendChild(p);
-        b.addEventListener("click", function () {
-          origine = b;
-          montrer(i);
-          dlg.showModal();
-        });
-        boutons.push(b);
+      // Sans JS, chaque lien #photo-N agrandit la photo (:target) ; ici, la visionneuse prend le relais.
+      liens.forEach(function (a, i) {
+        a.addEventListener("click", function (e) { e.preventDefault(); ouvrir(i); });
       });
-
       document.getElementById("vis-prec").addEventListener("click", function () { montrer(index - 1); });
       document.getElementById("vis-suiv").addEventListener("click", function () { montrer(index + 1); });
       document.getElementById("vis-fermer").addEventListener("click", function () { dlg.close(); });
@@ -255,8 +252,18 @@
         if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) montrer(index + (dx < 0 ? 1 : -1));
       }, { passive: true });
       dlg.addEventListener("close", function () {
+        sansAncre();
         if (origine) { try { origine.focus({ preventScroll: true }); } catch (e) { origine.focus(); } }
       });
+
+      // Arrivée depuis l’accueil sur coupes.html#photo-N : la photo s’ouvre directement.
+      var m = /^#photo-(\d+)$/.exec(window.location.hash);
+      if (m && liens[+m[1] - 1]) {
+        var k = +m[1] - 1;
+        sansAncre();
+        liens[k].scrollIntoView({ block: "center" });
+        ouvrir(k);
+      }
     })();
   } catch (e) {}
 
@@ -264,10 +271,9 @@
   try {
     (function () {
       var pastille = document.getElementById("pastille");
-      // Masquée tant que le bouton du hero, le panneau ou les boutons du contact sont à l’écran.
-      var cibles = [document.getElementById("cta-heros"), document.querySelector(".panneau"), document.querySelector(".profil__boutons")];
-      if (!pastille || !("IntersectionObserver" in window) || !cibles[0] || !cibles[1]) return;
-      cibles = cibles.filter(Boolean);
+      // Masquée tant qu’un autre appel à l’action est à l’écran (bouton du hero, panneau, contact, carte de fin).
+      var cibles = Array.prototype.slice.call(document.querySelectorAll("[data-masque-pastille]"));
+      if (!pastille || !("IntersectionObserver" in window) || !cibles.length) return;
       var visibles = new Set();
       function maj() {
         var montrer = visibles.size === 0;

@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
-const HTML = fs.readFileSync(path.join(ROOT, 'index.html'));
+const FICHIERS = { '/': 'index.html', '/index.html': 'index.html', '/coupes.html': 'coupes.html' };
 const LARGEURS = [320, 390, 834, 1180, 1440];
 const IG = 'https://ig.me/m/ruis_barber_studio';
 const FINE = ' ', NB = ' ';
@@ -16,9 +16,10 @@ fs.mkdirSync(BUDGET, { recursive: true });
 let requetesServeur = [];
 const serveur = http.createServer((req, res) => {
   requetesServeur.push(req.url);
-  if (req.url === '/' || req.url.startsWith('/?')) {
+  const f = FICHIERS[req.url.split(/[?#]/)[0]];
+  if (f) {
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
-    res.end(HTML);
+    res.end(fs.readFileSync(path.join(ROOT, f)));
   } else { res.writeHead(404); res.end(); }
 });
 await new Promise(r => serveur.listen(0, '127.0.0.1', r));
@@ -64,7 +65,8 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
   console.log(`— ${M} ${nav.version()}`);
 
   // 1, 2, 17 — console, réseau, cookies, défilement horizontal, ouverture, CLS — à chaque largeur
-  for (const w of LARGEURS) {
+  for (const [pg, w] of ['', 'coupes.html'].flatMap(pg => LARGEURS.map(w => [pg, w]))) {
+    const nomPage = pg || 'index.html';
     const ctx = await nav.newContext({ viewport: { width: w, height: w < 768 ? 844 : 900 } });
     const page = await ctx.newPage();
     const erreurs = [], requetes = [];
@@ -76,19 +78,19 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
       try { new PerformanceObserver(l => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: 'layout-shift', buffered: true }); } catch (e) {}
     });
     requetesServeur = [];
-    await page.goto(BASE + '?date=2026-09-29', { waitUntil: 'load' });
+    await page.goto(BASE + pg + '?date=2026-09-29', { waitUntil: 'load' });
     const anims = await page.evaluate(() => document.getAnimations().map(a => { const t = a.effect.getComputedTiming(); return t.delay + t.duration; }));
     await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 300) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 15)); } });
     await page.waitForTimeout(1600);
-    verifier(M, 1, `${w}px : zéro erreur ni avertissement dans la console`, erreurs.length === 0, erreurs.join(' | '));
-    verifier(M, 1, `${w}px : aucune requête réseau hors data:`, requetes.length === 1 && requetesServeur.length === 1, requetes.join(', '));
-    verifier(M, 1, `${w}px : aucun cookie`, (await ctx.cookies()).length === 0 && (await page.evaluate(() => document.cookie)) === '');
+    verifier(M, 1, `${nomPage} ${w}px : zéro erreur ni avertissement dans la console`, erreurs.length === 0, erreurs.join(' | '));
+    verifier(M, 1, `${nomPage} ${w}px : aucune requête réseau hors data:`, requetes.length === 1 && requetesServeur.length === 1, requetes.join(', '));
+    verifier(M, 1, `${nomPage} ${w}px : aucun cookie`, (await ctx.cookies()).length === 0 && (await page.evaluate(() => document.cookie)) === '');
     const sw = await page.evaluate(() => [document.documentElement.scrollWidth, document.body.scrollWidth, window.innerWidth]);
-    verifier(M, 2, `${w}px : aucun défilement horizontal`, sw[0] <= sw[2] && sw[1] <= sw[2], JSON.stringify(sw));
+    verifier(M, 2, `${nomPage} ${w}px : aucun défilement horizontal`, sw[0] <= sw[2] && sw[1] <= sw[2], JSON.stringify(sw));
     const maxAnim = Math.max(0, ...anims);
-    verifier(M, 17, `${w}px : ouverture terminée en ≤ 1,5 s`, maxAnim <= 1500, `${maxAnim} ms`);
+    verifier(M, 17, `${nomPage} ${w}px : ouverture terminée en ≤ 1,5 s`, maxAnim <= 1500, `${maxAnim} ms`);
     const cls = await page.evaluate(() => window.__cls);
-    verifier(M, 17, `${w}px : CLS ≤ 0,01`, cls <= 0.01, cls.toFixed(4));
+    verifier(M, 17, `${nomPage} ${w}px : CLS ≤ 0,01`, cls <= 0.01, cls.toFixed(4));
     await ctx.close();
   }
 
@@ -264,7 +266,9 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     await page.keyboard.press('ArrowRight');
     const m = await page.evaluate(() => [document.activeElement.value, document.activeElement.checked]);
     verifier(M, 8, 'Clavier : flèches dans les groupes de radios', j[0] === 'jeudi 1er octobre' && j[1] && m[0] === 'à midi' && m[1], JSON.stringify([j, m]));
-    await page.locator('.vignette').first().click();
+    await page.goto(BASE + 'coupes.html');
+    await page.waitForFunction(() => !document.documentElement.classList.contains('attente'));
+    await page.locator('.galerie .vignette').first().click();
     await page.keyboard.press('Escape');
     const ferme = await page.evaluate(() => !document.getElementById('visionneuse').open);
     verifier(M, 8, 'Clavier : Échap ferme la visionneuse', ferme);
@@ -275,8 +279,8 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
   {
     const ctx = await nav.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true });
     const page = await ctx.newPage();
-    await page.goto(BASE + '?date=2026-09-29');
-    const v = page.locator('.vignette');
+    await page.goto(BASE + 'coupes.html');
+    const v = page.locator('.galerie .vignette');
     const n = await v.count();
     await v.nth(2).scrollIntoViewIfNeeded();
     await v.nth(2).click();
@@ -295,45 +299,48 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     }, dx);
     const s1 = await balayer(-120), s2 = await balayer(120);
     await page.keyboard.press('Escape');
-    const f = await page.evaluate(() => document.activeElement === document.querySelectorAll('.vignette')[2]);
+    const f = await page.evaluate(() => document.activeElement === document.querySelectorAll('.galerie .vignette')[2]);
     await v.nth(4).click(); await page.waitForTimeout(250);
     await page.mouse.click(6, 420); await page.waitForTimeout(100);
-    const f2 = await page.evaluate(() => [!document.getElementById('visionneuse').open, document.activeElement === document.querySelectorAll('.vignette')[4]]);
+    const f2 = await page.evaluate(() => [!document.getElementById('visionneuse').open, document.activeElement === document.querySelectorAll('.galerie .vignette')[4]]);
     verifier(M, 9, `Visionneuse : ouverture, compteur « 3 sur ${n} », flèches, balayage, focus rendu`,
       c1 === `3 sur ${n}` && c2 === `4 sur ${n}` && c3 === `2 sur ${n}` && s1 === `3 sur ${n}` && s2 === `2 sur ${n}` && f && f2[0] && f2[1], JSON.stringify([c1, c2, c3, s1, s2, f, f2]));
     await ctx.close();
   }
 
-  // 10 — pastille mobile
+  // 10 — pastille mobile : visible si et seulement si aucun autre appel à l’action n’est à l’écran
   {
     const ctx = await nav.newContext({ viewport: { width: 390, height: 844 } });
     const page = await ctx.newPage();
     await page.goto(BASE + '?date=2026-09-29');
-    const etat = () => page.evaluate(() => { const p = document.getElementById('pastille'); return getComputedStyle(p).opacity === '1' && p.classList.contains('est-visible'); });
     await page.waitForTimeout(300);
-    const haut = await etat();
-    await page.evaluate(() => document.getElementById('coupes').scrollIntoView({ block: 'center', behavior: 'instant' }));
-    await page.waitForTimeout(500);
-    const coupes = await etat();
-    await page.evaluate(() => document.querySelector('.panneau').scrollIntoView({ block: 'center', behavior: 'instant' }));
-    await page.waitForTimeout(500);
-    const panneau = await etat();
-    await page.evaluate(() => document.querySelector('.rui__texte').scrollIntoView({ block: 'center', behavior: 'instant' }));
-    await page.waitForTimeout(500);
-    const rui = await etat();
-    await page.evaluate(() => document.querySelector('.profil__boutons').scrollIntoView({ block: 'center', behavior: 'instant' }));
-    await page.waitForTimeout(500);
-    const contact = await etat();
+    const H = await page.evaluate(() => document.documentElement.scrollHeight);
+    const ecarts = [];
+    let vue = 0, cachee = 0;
+    for (let y = 0; y < H; y += 350) {
+      await page.evaluate(y => window.scrollTo({ top: y, behavior: 'instant' }), y);
+      await page.waitForTimeout(260);
+      const r = await page.evaluate(() => {
+        const h = window.innerHeight;
+        const attendu = ![...document.querySelectorAll('[data-masque-pastille]')].some(el => { const b = el.getBoundingClientRect(); return b.bottom > 0 && b.top < h; });
+        const p = document.getElementById('pastille');
+        return { attendu, reel: getComputedStyle(p).opacity === '1' };
+      });
+      if (r.attendu !== r.reel) ecarts.push(y);
+      r.reel ? vue++ : cachee++;
+    }
     await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(400);
     const pied = await page.evaluate(() => {
-      const p = document.getElementById('pastille'), v = getComputedStyle(p).opacity === '1';
-      return { visible: v, piedBas: document.querySelector('.pied__credit').getBoundingClientRect().bottom, pastilleHaut: p.getBoundingClientRect().top };
+      const p = document.getElementById('pastille');
+      return getComputedStyle(p).opacity !== '1' || document.querySelector('.pied__credit').getBoundingClientRect().bottom <= p.getBoundingClientRect().top;
     });
-    verifier(M, 10, 'Pastille : masquée avec le bouton du hero, le panneau ou les boutons du contact, visible ailleurs, ne masque jamais le pied',
-      !haut && coupes && !panneau && rui && !contact && (!pied.visible || pied.piedBas <= pied.pastilleHaut), JSON.stringify({ haut, coupes, panneau, rui, contact, pied }));
+    verifier(M, 10, 'Pastille : visible seulement quand aucun autre appel à l’action n’est à l’écran, jamais sur le pied de page',
+      ecarts.length === 0 && vue > 0 && cachee > 0 && pied, JSON.stringify({ ecarts, vue, cachee, pied }));
     const large = await (async () => { await page.setViewportSize({ width: 1180, height: 900 }); return page.$eval('#pastille', p => getComputedStyle(p).display); })();
     verifier(M, 10, 'Pastille : absente dès 768 px', large === 'none');
+    await page.goto(BASE + 'coupes.html');
+    verifier(M, 10, 'Pastille : absente de la page des coupes (la carte de fin porte le bouton)', (await page.$$('#pastille')).length === 0);
     await ctx.close();
   }
 
@@ -384,25 +391,28 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     verifier(M, 13, 'Logo carré, jamais recadré ni déformé (3 occurrences), alt « Rui’s Barber Studio »',
       logos.length === 3 && logos.every(l => l.n[0] === l.n[1] && l.a[0] === l.a[1] && l.alt === 'Rui’s Barber Studio' && l.fit === 'fill'), JSON.stringify(logos));
     const alts = await page.$$eval('main img:not(.logo__img)', is => is.map(i => i.alt));
-    verifier(M, 13, 'Photos : alt précis sur chacune', alts.length === 6 && alts.every(a => a.length >= 30 && /vu|vus/.test(a)), JSON.stringify(alts));
+    await page.goto(BASE + 'coupes.html');
+    const alts2 = await page.$$eval('main img:not(.logo__img)', is => is.map(i => i.alt));
+    verifier(M, 13, 'Photos : alt précis sur chacune (accueil 4, coupes 5)', alts.length === 4 && alts2.length === 5 && [...alts, ...alts2].every(a => a.length >= 30 && /vu|vus/.test(a)), JSON.stringify(alts2));
     await ctx.close();
   }
 
   // 14 — captures pour les budgets de couleur (analysées par tests/budgets.py)
   if (M === 'chromium') {
-    for (const w of [390, 1440]) {
+    for (const [pg, w] of [['', 390], ['', 1440], ['coupes.html', 390], ['coupes.html', 1440]]) {
+      const pre = pg ? 'coupes-' : '';
       const ctx = await nav.newContext({ viewport: { width: w, height: w === 390 ? 844 : 900 }, reducedMotion: 'reduce' });
       const page = await ctx.newPage();
-      await page.goto(BASE + '?date=2026-09-29');
+      await page.goto(BASE + pg + '?date=2026-09-29');
       await page.addStyleTag({ content: 'img{visibility:hidden!important}.bouton--rouge{color:transparent!important}.bouton--rouge svg{visibility:hidden}' });
       await page.waitForTimeout(200);
-      await page.screenshot({ path: path.join(BUDGET, `page-${w}.png`), fullPage: true });
+      await page.screenshot({ path: path.join(BUDGET, `page-${pre}${w}.png`), fullPage: true });
       if (w === 390) {
         const H = await page.evaluate(() => document.documentElement.scrollHeight);
         for (let y = 0, k = 0; y < H - 200; y += 600, k++) {
           await page.evaluate(y => window.scrollTo({ top: y, behavior: 'instant' }), y);
           await page.waitForTimeout(250);
-          await page.screenshot({ path: path.join(BUDGET, `ecran-${String(k).padStart(2, '0')}.png`) });
+          await page.screenshot({ path: path.join(BUDGET, `ecran-${pre}${String(k).padStart(2, '0')}.png`) });
         }
       }
       await ctx.close();
@@ -414,8 +424,52 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     const ctx = await nav.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await ctx.newPage();
     await page.goto(BASE);
-    const n = await page.$$eval('.ruban', r => r.filter(x => x.getBoundingClientRect().width > 0).length);
-    verifier(M, 18, 'Ruban tricolore présent exactement quatre fois', n === 4, String(n));
+    const n = await page.$$eval('.ruban', r => r.filter(x => x.offsetWidth > 0).length);
+    await page.goto(BASE + 'coupes.html');
+    const n2 = await page.$$eval('.ruban', r => r.filter(x => x.offsetWidth > 0).length);
+    verifier(M, 18, 'Ruban tricolore : quatre fois sur l’accueil, deux sur la page des coupes', n === 4 && n2 === 2, `${n} / ${n2}`);
+    await ctx.close();
+  }
+
+  // 19 — deux pages : « Voir les coupes » mène à la page 2 ; une coupe de l’accueil s’ouvre directement
+  {
+    const ctx = await nav.newContext({ viewport: { width: 390, height: 844 } });
+    const page = await ctx.newPage();
+    await page.goto(BASE);
+    await page.waitForFunction(() => !document.documentElement.classList.contains('attente'));
+    await Promise.all([page.waitForURL(/coupes\.html$/), page.click('.heros .lien-fleche')]);
+    const h1 = await page.textContent('h1');
+    verifier(M, 19, '« Voir les coupes » ouvre la page des coupes', h1.trim() === 'Les coupes', h1);
+    await page.goto(BASE);
+    await page.waitForFunction(() => !document.documentElement.classList.contains('attente'));
+    await page.locator('.vitrine__photo').nth(1).scrollIntoViewIfNeeded();
+    await Promise.all([page.waitForURL(/coupes\.html/), page.locator('.vitrine__photo').nth(1).click()]);
+    await page.waitForTimeout(400);
+    const r = await page.evaluate(() => ({ open: document.getElementById('visionneuse').open, c: document.getElementById('vis-compteur').textContent, hash: location.hash }));
+    verifier(M, 19, 'Une coupe de l’accueil s’ouvre en grand sur la page 2 (« 2 sur 5 »)', r.open && r.c === '2 sur 5' && r.hash === '', JSON.stringify(r));
+    await page.keyboard.press('Escape');
+    await page.goto(BASE + 'coupes.html');
+    await Promise.all([page.waitForURL(/index\.html$/), page.click('.lien-fleche--retour')]);
+    verifier(M, 19, 'Lien « Accueil » de la page des coupes', (await page.locator('h1').textContent()).includes('Une coupe nette'));
+    await ctx.close();
+  }
+
+  // 20 — sans JavaScript, les coupes s’agrandissent quand même (:target)
+  {
+    const ctx = await nav.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto(BASE + 'coupes.html');
+    await page.locator('.galerie .vignette').nth(2).click();
+    const r = await page.evaluate(() => {
+      const f = document.querySelector('#photo-3 .photo'), cs = getComputedStyle(f), b = f.getBoundingClientRect();
+      return { pos: cs.position, couvre: b.width >= window.innerWidth - 1 && b.height >= window.innerHeight - 1, compteur: document.querySelector('#photo-3 .photo__compteur').textContent };
+    });
+    await page.click('#photo-3 .photo__suiv');
+    const suiv = await page.evaluate(() => location.hash);
+    await page.click('#photo-4 .photo__fermer');
+    const ferme = await page.evaluate(() => getComputedStyle(document.querySelector('#photo-4 .photo')).position);
+    verifier(M, 20, 'Sans JS : la photo cliquée s’affiche en grand, suivante et fermer fonctionnent',
+      r.pos === 'fixed' && r.couvre && r.compteur === '3 sur 5' && suiv === '#photo-4' && ferme !== 'fixed', JSON.stringify({ r, suiv, ferme }));
     await ctx.close();
   }
 

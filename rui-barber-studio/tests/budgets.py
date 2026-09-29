@@ -50,13 +50,15 @@ def main():
         ok = rouge <= .06 and rose <= .0005 and violet <= .0002
         echecs += not ok
         print(f"{'OK ' if ok else 'ÉCHEC'} {p.name} : rouge {rouge:.2%} · rose {rose:.3%} · violet {violet:.3%}")
-    for w in (390, 1440):
-        rouge, rose, violet, sombre = parts(DOSSIER / f"page-{w}.png")
+    pages = sorted(DOSSIER.glob("page-*.png"))
+    for chemin_page in pages:
+        w = chemin_page.stem
+        rouge, rose, violet, sombre = parts(chemin_page)
         ok = rouge <= .025 and sombre <= .30
         echecs += not ok
-        print(f"{'OK ' if ok else 'ÉCHEC'} page entière {w} px : rouge {rouge:.2%} (≤ 2,5 %) · sombre {sombre:.1%} (≤ 30 %) · rose {rose:.3%} · violet {violet:.3%}")
+        print(f"{'OK ' if ok else 'ÉCHEC'} {w} (page entière) : rouge {rouge:.2%} (≤ 2,5 %) · sombre {sombre:.1%} (≤ 30 %) · rose {rose:.3%} · violet {violet:.3%}")
     print(f"Pires écrans 390×844 : rouge {pire['rouge']:.2%} (≤ 6 %) · rose {pire['rose']:.3%} (≤ 0,05 %) · violet {pire['violet']:.3%} (≤ 0,02 %)")
-    print(f"\n{len(ecrans) + 2 - echecs}/{len(ecrans) + 2} contrôles de budget réussis.")
+    print(f"\n{len(ecrans) + len(pages) - echecs}/{len(ecrans) + len(pages)} contrôles de budget réussis.")
     sys.exit(1 if echecs else 0)
 
 

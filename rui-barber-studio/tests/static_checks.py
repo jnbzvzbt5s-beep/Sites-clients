@@ -1,6 +1,6 @@
 """Contrôles statiques de index.html (V5) : poids, couleurs, contrastes, photos, données, textes.
 
-Usage : python3 tests/static_checks.py   (code de sortie 1 si un contrôle échoue)
+Usage : python3 tests/static_checks.py [index.html|coupes.html]   (sans argument : les deux pages)
 """
 import base64
 import colorsys
@@ -14,7 +14,19 @@ import sys
 from PIL import Image
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-PAGE = (ROOT / "index.html").read_text(encoding="utf-8")
+if len(sys.argv) == 1:
+    import subprocess
+    codes = [subprocess.run([sys.executable, __file__, n]).returncode for n in ("index.html", "coupes.html")]
+    sys.exit(max(codes))
+NOM = sys.argv[1]
+ACCUEIL = NOM == "index.html"
+# Attendus propres à chaque page
+ATT = {
+    "index.html": {"photos": 4, "hero": True, "logos": 3, "ruban": 4, "titre": "Rui’s Barber Studio — barbier à Mersch"},
+    "coupes.html": {"photos": 5, "hero": False, "logos": 2, "ruban": 2, "titre": "Les coupes — Rui’s Barber Studio, barbier à Mersch"},
+}[NOM]
+print(f"== {NOM}")
+PAGE = (ROOT / NOM).read_text(encoding="utf-8")
 C = json.loads((ROOT / "data" / "contenu.json").read_text(encoding="utf-8"))
 CSS = "\n".join(re.findall(r"<style>(.*?)</style>", PAGE, re.S))
 JS = "\n".join(re.findall(r"<script>(.*?)</script>", PAGE, re.S))
@@ -65,7 +77,7 @@ verifier(15, "Aucun rose, magenta ni violet dans le code", not interdites, f"{le
 rouges_transparents = [n for n, (r, g, b), a in toutes if r > 150 and g < 80 and b < 80 and a < 1]
 verifier(15, "Rouge jamais transparent, flouté ou en ombre", not rouges_transparents, str(rouges_transparents))
 verifier(18, "Aucun bord en biais (polygon, skew, rotate de section)", not re.search(r"polygon\(|skew", CSS))
-verifier(18, "Ruban tricolore exactement quatre fois dans la page", len(re.findall(r'class="ruban ruban--', PAGE)) == 4)
+verifier(18, f"Ruban tricolore exactement {ATT['ruban']} fois dans la page", len(re.findall(r'class="ruban ruban--', PAGE)) == ATT["ruban"])
 verifier(18, "Rouge uniquement dans le ruban, le point de « Moien ! », le séparateur et les boutons laqués",
          set(re.findall(r"var\(--rouge[\w-]*\)", CSS)) <= {"var(--rouge)"} and CSS.count("var(--rouge)") == 1)
 REGLES = re.findall(r"([^{}]+)\{([^{}]*)\}", CSS_SANS_DATA)
@@ -127,12 +139,14 @@ verifier(15, "--ciel jamais en texte hors du panneau nuit",
 imgs = re.findall(r"<img\s[^>]*>", PAGE)
 photos = [i for i in imgs if "logo__img" not in i and "src=" in i]
 logos = [i for i in imgs if "logo__img" in i]
-verifier(13, "Six photos avec width, height, decoding=async ; loading=lazy sauf le hero (fetchpriority=high)",
-         len(photos) == 6 and all(re.search(r'width="\d+" height="\d+"', i) and 'decoding="async"' in i for i in photos)
-         and 'fetchpriority="high"' in photos[0] and 'loading="lazy"' not in photos[0] and all('loading="lazy"' in i for i in photos[1:]))
+premiere_lazy = 1 if ATT["hero"] else 0
+verifier(13, f"{ATT['photos']} photos avec width, height, decoding=async ; loading=lazy" + (" sauf le hero (fetchpriority=high)" if ATT["hero"] else ""),
+         len(photos) == ATT["photos"] and all(re.search(r'width="\d+" height="\d+"', i) and 'decoding="async"' in i for i in photos)
+         and (not ATT["hero"] or ('fetchpriority="high"' in photos[0] and 'loading="lazy"' not in photos[0]))
+         and all('loading="lazy"' in i for i in photos[premiere_lazy:]))
 verifier(13, "Alt précis sur chaque photo", all(re.search(r'alt="[^"]{30,}"', i) for i in photos))
-verifier(13, "Logo : trois occurrences carrées, alt « Rui’s Barber Studio »",
-         len(logos) == 3 and all('alt="Rui’s Barber Studio"' in i and re.search(r'width="(\d+)" height="\1"', i) for i in logos))
+verifier(13, f"Logo : {ATT['logos']} occurrences carrées, alt « Rui’s Barber Studio »",
+         len(logos) == ATT["logos"] and all('alt="Rui’s Barber Studio"' in i and re.search(r'width="(\d+)" height="\1"', i) for i in logos))
 meta, poids = [], []
 for i in photos + logos:
     m = re.search(r'src="data:image/(webp|png);base64,([^"]+)"', i)
@@ -144,13 +158,13 @@ for i in photos + logos:
         poids.append((len(data), im.size))
 verifier(13, "Aucune métadonnée EXIF, GPS ni XMP dans les images", not meta, str(meta))
 verifier(13, "Poids : hero ≤ 180 Ko, autres photos ≤ 80 Ko ; toutes en 4:5",
-         poids[0][0] <= 180 * 1024 and all(p <= 80 * 1024 for p, _ in poids[1:]) and all(abs(w * 5 - h * 4) <= 5 for _, (w, h) in poids),
+         all(p <= (180 if (ATT["hero"] and k == 0) else 80) * 1024 for k, (p, _) in enumerate(poids)) and all(abs(w * 5 - h * 4) <= 5 for _, (w, h) in poids),
          ", ".join(f"{p / 1024:.0f} Ko {w}×{h}" for p, (w, h) in poids))
 
 # ---------- Données, métadonnées, JSON-LD ----------
 titre = html.unescape(re.search(r"<title>(.*?)</title>", PAGE).group(1))
 desc = html.unescape(re.search(r'<meta name="description" content="([^"]+)"', PAGE).group(1))
-verifier(16, "Titre « Rui’s Barber Studio — barbier à Mersch »", titre == "Rui’s Barber Studio — barbier à Mersch")
+verifier(16, f"Titre « {ATT['titre']} »", titre == ATT["titre"], titre)
 verifier(16, "Meta description exacte", desc == "Coupe complète à 15 € à Mersch. Proposez un créneau sur Instagram, Rui vous confirme.", desc)
 verifier(16, "theme-color #F5F8FC, favicon et apple-touch-icon en data URI",
          'name="theme-color" content="#F5F8FC"' in PAGE and 'rel="icon" type="image/png" sizes="64x64" href="data:image/png' in PAGE
@@ -164,17 +178,21 @@ verifier(16, "JSON-LD HairSalon : name, image, adresse Mersch/LU, priceRange 15 
          and ld["priceRange"] == "15 €" and ld["sameAs"] == [C["site"]["instagram"]["profil"]]
          and not any(k in ld for k in ("telephone", "email", "openingHours", "openingHoursSpecification")))
 liens_ig = set(re.findall(r'href="(https://[^"]*(?:ig\.me|instagram\.com)[^"]*)"', PAGE))
-verifier(16, "Liens Instagram = contenu.json", liens_ig == {C["site"]["instagram"]["message"], C["site"]["instagram"]["profil"]}, str(liens_ig))
+attendus_ig = {C["site"]["instagram"]["message"], C["site"]["instagram"]["profil"]} if ACCUEIL else {C["site"]["instagram"]["profil"]}
+verifier(16, "Liens Instagram = contenu.json", liens_ig == attendus_ig, str(liens_ig))
+liens_int = set(re.findall(r'href="((?:index|coupes)\.html[^"]*)"', PAGE))
+verifier(16, "Liens entre les deux pages", ("coupes.html" in liens_int) if ACCUEIL else ({"index.html", "index.html#rendez-vous"} <= liens_int), str(sorted(liens_int)))
 verifier(16, "Aucun téléphone, e-mail ni horaire affiché", not re.search(r"mailto:|tel:|\b\d{2}[ .]\d{2}[ .]\d{2}\b|\bh\d{2}\b", SANS_DATA))
 
 # ---------- 14. Textes ----------
 visible = html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)\b.*?</\1>", "", PAGE, flags=re.S)))
 interdits = ["bienvenue", "passion", "excellence", "premium", "expérience unique", "n° 1", "le meilleur", "pas cher", "votre satisfaction"]
 verifier(14, "Aucun mot interdit", not [m for m in interdits if m in visible.lower()])
-verifier(14, "« Plus de 100 coupes » écrit dans le texte, jamais en compteur", "plus de 100 coupes" in visible.lower())
+if ACCUEIL:
+    verifier(14, "« Plus de 100 coupes » écrit dans le texte, jamais en compteur", "plus de 100 coupes" in visible.lower())
 mauvais = re.findall(r"\S[  ][;!?]|\S [:»]|« ", visible)
 verifier(14, "Fine insécable avant ; ! ?, insécable avant :, apostrophe ’", not mauvais and "'" not in visible, str(mauvais[:4]))
-verifier(14, "Prix écrit « 15 € » avec insécable", "15 €" in visible and "15 €" not in visible)
+verifier(14, "Prix écrit « 15 € » avec insécable", (not ACCUEIL or "15 €" in visible) and "15 €" not in visible)
 verifier(14, "« À COMPLÉTER » affiché seulement dans les mentions légales, surligné",
          visible.count("À COMPLÉTER") == PAGE.count('<mark class="a-completer">') <= 1)
 verifier(8, "Police Archivo en woff2 intégrée, variable (wght, wdth)", "font/woff2;base64," in CSS and "font-weight: 400 700" in CSS and "font-stretch: 75% 125%" in CSS)

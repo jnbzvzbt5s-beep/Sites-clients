@@ -1,4 +1,4 @@
-"""Assemble index.html (un seul fichier) à partir de data/contenu.json et de src/.
+"""Assemble index.html (accueil) et coupes.html (galerie), chacun autonome, à partir de data/contenu.json et de src/.
 
 Usage : python3 tools/build.py [--brouillon]
   Sans option, le script échoue s’il reste un « À COMPLÉTER » dans contenu.json.
@@ -23,7 +23,7 @@ from PIL import Image
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 BUILD = ROOT / "build"
-OUT = ROOT / "index.html"
+PAGES = {"accueil.html": ROOT / "index.html", "coupes.html": ROOT / "coupes.html"}
 FONT_SRC = ROOT / "fonts" / "archivo-latin-wdth-normal.woff2"
 A_COMPLETER = "À COMPLÉTER"
 UNICODES = ("U+0020-007E,U+00A0-00FF,U+0152-0153,U+2013-2014,U+2019,U+201C-201E,"
@@ -38,6 +38,8 @@ ICONES = {
     "fermer": '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
     "chevron-gauche": '<path d="M14.5 6 8.5 12l6 6"/>',
     "chevron-droite": '<path d="M9.5 6l6 6-6 6"/>',
+    "fleche-droite": '<path d="M5 12h14M13.5 6.5 19 12l-5.5 5.5"/>',
+    "fleche-ouvrir": '<path d="M8 16 16 8M10 8h6v6"/>',
 }
 
 
@@ -181,20 +183,40 @@ def image(photo, manifeste, hero=False):
     return f"<img {attrs}>"
 
 
-def galerie(photos, manifeste):
-    vedette = [p for p in photos if p["role"] == "vedette"][0]
-    vignettes = [p for p in photos if p["role"] == "vignette"]
+def galerie(photos, manifeste, t):
+    """Galerie de la page 2. Chaque photo est un lien #photo-N : sans JS, :target l’agrandit ; avec JS, la visionneuse s’ouvre."""
+    serie = [p for p in photos if p["role"] == "vedette"] + [p for p in photos if p["role"] == "vignette"]
+    n = len(serie)
     out = ['<ul class="galerie">']
-    leg = f'<p class="photo__legende">{e(vedette["legende"])}</p>' if rempli(vedette.get("legende")) else ""
-    out.append('<li class="galerie__item galerie__item--vedette"><div class="cadre">'
-               f'<figure class="photo">{image(vedette, manifeste)}</figure>'
-               f'<span class="repere repere--haut" aria-hidden="true"></span><span class="repere repere--bas" aria-hidden="true"></span>'
-               f'</div>{leg}</li>')
-    for n, p in enumerate(vignettes, start=2):
-        out.append(f'<li class="galerie__item"><figure class="photo">{image(p, manifeste)}'
-                   f'<span class="photo__index" aria-hidden="true">{n:02d}</span></figure></li>')
+    for k, p in enumerate(serie, start=1):
+        prec, suiv = (k - 2) % n + 1, k % n + 1
+        vedette = k == 1
+        index = "" if vedette else f'<span class="photo__index" aria-hidden="true">{k:02d}</span>'
+        figure = (f'<figure class="photo"><a class="vignette" href="#photo-{k}" aria-label="{e(t["agrandir"])} : {e(p["alt"])}">'
+                  f'{image(p, manifeste)}<span class="photo__ouvrir" aria-hidden="true">{icone("fleche-ouvrir")}</span></a>{index}'
+                  f'<span class="photo__cible" aria-hidden="true">'
+                  f'<a class="photo__fermer" href="#galerie" tabindex="-1">{icone("fermer")}<span>{e(t["fermer"])}</span></a>'
+                  f'<a class="photo__prec" href="#photo-{prec}" tabindex="-1">{icone("chevron-gauche")}</a>'
+                  f'<a class="photo__suiv" href="#photo-{suiv}" tabindex="-1">{icone("chevron-droite")}</a>'
+                  f'<span class="photo__compteur chiffres">{k} sur {n}</span></span></figure>')
+        leg = f'<p class="photo__legende">{e(p["legende"])}</p>' if rempli(p.get("legende")) else ""
+        if vedette:
+            out.append(f'<li class="galerie__item galerie__item--vedette" id="photo-{k}"><div class="cadre">{figure}'
+                       '<span class="repere repere--haut" aria-hidden="true"></span><span class="repere repere--bas" aria-hidden="true"></span>'
+                       f'</div>{leg}</li>')
+        else:
+            out.append(f'<li class="galerie__item" id="photo-{k}">{figure}{leg}</li>')
     out.append("</ul>")
     return "\n      ".join(out)
+
+
+def vitrine(photos, manifeste, t):
+    """Accueil : trois coupes qui mènent chacune à sa photo sur la page 2."""
+    serie = ([p for p in photos if p["role"] == "vedette"] + [p for p in photos if p["role"] == "vignette"])[:3]
+    items = "".join(f'<li><a class="vitrine__photo" href="coupes.html#photo-{k}" aria-label="{e(t["agrandir"])} : {e(p["alt"])}">'
+                    f'{image(p, manifeste)}<span class="photo__ouvrir" aria-hidden="true">{icone("fleche-ouvrir")}</span></a></li>'
+                    for k, p in enumerate(serie, start=1))
+    return f'<ul class="vitrine__photos">{items}</ul>'
 
 
 def moments(t):
@@ -264,9 +286,11 @@ def main():
     site, t = c["site"], c["textes"]
     manifeste = json.loads((BUILD / "img" / "manifest.json").read_text())
 
-    page = (SRC / "page.html").read_text(encoding="utf-8")
     css = (SRC / "styles.css").read_text(encoding="utf-8")
     js = (SRC / "app.js").read_text(encoding="utf-8")
+    partiels = {n: (SRC / "partials" / f"{n}.html").read_text(encoding="utf-8") for n in ("tete", "entete", "pied", "fin")}
+    # Page des coupes : pas de pastille, la carte de fin porte déjà l’appel à l’action
+    partiels["fin_sans_pastille"] = re.sub(r'<a class="bouton bouton--rouge pastille".*?</a>\n*', "", partiels["fin"], flags=re.S)
 
     hero = [p for p in c["photos"] if p["role"] == "hero"][0]
     mentions = site["mentions_legales"]
@@ -282,10 +306,13 @@ def main():
         "{{img:hero}}": image(hero, manifeste, hero=True),
         "{{regle}}": regle(),
         "{{separateur:25}}": separateur(25),
+        "{{separateur:40}}": separateur(40),
         "{{separateur:60}}": separateur(60),
-        "{{galerie}}": galerie(c["photos"], manifeste),
+        "{{galerie}}": galerie(c["photos"], manifeste, t),
+        "{{vitrine}}": vitrine(c["photos"], manifeste, t),
         "{{trame:ciel}}": trame(),
         "{{trame:brume}}": trame(),
+        "{{trame:blanc}}": trame(),
         "{{etapes}}": "\n          ".join(f'<li><span class="etapes__num" aria-hidden="true">{i}</span>{e(x)}</li>'
                                            for i, x in enumerate(t["etapes"], start=1)),
         "{{moments}}": moments(t),
@@ -302,21 +329,8 @@ def main():
     for nom in ICONES:
         blocs["{{icone:" + nom + "}}"] = icone(nom)
 
-    # 1. Textes issus de contenu.json (échappés), avant l’insertion des blocs et des données brutes
-    def remplacer(m):
-        return e(chemin(c, m.group(1)))
-    page = re.sub(r"\{\{((?:site|meta|textes)(?:\.[a-z_]+)+)\}\}", remplacer, page)
-    # Index de section « 01 — Les coupes » : le numéro en bleu roi
-    page = re.sub(r'(<p class="etiquette"[^>]*>)(\d{2}) — ', r'\1<span class="etiquette__num">\2</span> — ', page)
-    for k, v in blocs.items():
-        page = page.replace(k, v)
-
-    # 2. Police et CSS
-    texte_page = html.unescape(re.sub(r"<[^>]+>", " ", page))
     police_fichier = police()
     css = css.replace("{{font}}", data_uri(police_fichier, "font/woff2")).replace("{{grain}}", grain())
-
-    # 3. Script
     cfg = {
         "salut": t["message"]["salut"], "fin": t["message"]["fin"],
         "jour": t["ticket_jour"], "moment": t["ticket_moment"], "prenom": t["ticket_prenom"],
@@ -328,19 +342,32 @@ def main():
     }
     js = js.replace("{{jsconfig}}", json.dumps(cfg, ensure_ascii=False))
 
-    page = page.replace("{{css}}", css.strip()).replace("{{js}}", js.strip())
-    reste = re.findall(r"\{\{[^}]*\}\}", page)
-    if reste:
-        sys.exit(f"Espaces réservés non remplacés : {sorted(set(reste))}")
-
-    OUT.write_text(page, encoding="utf-8")
+    contextes = {
+        "accueil.html": {"{{page_titre}}": e(c["meta"]["titre"]), "{{lien:haut}}": "#haut", "{{lien:accueil}}": "", "{{courant:coupes}}": ""},
+        "coupes.html": {"{{page_titre}}": e(c["meta"]["titre_coupes"]), "{{lien:haut}}": "index.html", "{{lien:accueil}}": "index.html",
+                        "{{courant:coupes}}": ' aria-current="page"'},
+    }
+    for gabarit, sortie in PAGES.items():
+        page = (SRC / gabarit).read_text(encoding="utf-8")
+        for n in sorted(partiels, key=len, reverse=True):
+            page = page.replace("{{> " + n + "}}", partiels[n])
+        for k, v in contextes[gabarit].items():
+            page = page.replace(k, v)
+        page = re.sub(r"\{\{((?:site|meta|textes)(?:\.[a-z_]+)+)\}\}", lambda m: e(chemin(c, m.group(1))), page)
+        # Index de section « 01 — Les coupes » : le numéro en bleu roi
+        page = re.sub(r'(<p class="etiquette"[^>]*>)(\d{2}) — ', r'\1<span class="etiquette__num">\2</span> — ', page)
+        for k, v in blocs.items():
+            page = page.replace(k, v)
+        page = page.replace("{{css}}", css.strip()).replace("{{js}}", js.strip())
+        reste = re.findall(r"\{\{[^}]*\}\}", page)
+        if reste:
+            sys.exit(f"{gabarit} : espaces réservés non remplacés : {sorted(set(reste))}")
+        sortie.write_text(page, encoding="utf-8")
+        print(f"{sortie.name} : {sortie.stat().st_size / 1024:.1f} Ko" + (" — BROUILLON" if brouillon else ""))
     planche(css)
-    taille = OUT.stat().st_size
-    print(f"index.html : {taille / 1024:.1f} Ko — police {police_fichier.stat().st_size / 1024:.1f} Ko"
-          + (" — BROUILLON" if brouillon else ""))
+    print(f"police : {police_fichier.stat().st_size / 1024:.1f} Ko")
     if manquants:
         print("À COMPLÉTER restants :\n  " + "\n  ".join(manquants))
-    del texte_page
 
 
 if __name__ == "__main__":

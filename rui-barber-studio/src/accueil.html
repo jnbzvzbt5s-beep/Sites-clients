@@ -1,43 +1,7 @@
-<!doctype html>
-<html lang="fr" class="no-js">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>document.documentElement.className = document.documentElement.className.replace("no-js", "js attente");</script>
-<title>{{meta.titre}}</title>
-<meta name="description" content="{{meta.description}}">
-<meta name="theme-color" content="{{meta.theme}}">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="fr_LU">
-<meta property="og:title" content="{{meta.titre}}">
-<meta property="og:description" content="{{meta.description}}">
-<link rel="icon" type="image/png" sizes="64x64" href="{{favicon}}">
-<link rel="apple-touch-icon" sizes="180x180" href="{{apple_touch}}">
-<style>
-{{css}}
-</style>
-<script type="application/ld+json">{{jsonld}}</script>
-</head>
-<body id="haut">
+{{> tete}}<body id="haut">
 <a class="evitement" href="#contenu">Aller au contenu</a>
 
-<header class="entete">
-  <div class="ruban ruban--page ruban--haut" aria-hidden="true"></div>
-  <div class="enveloppe entete__barre">
-    <a class="logo" href="#haut">{{logo:44}}</a>
-    <nav class="entete__nav" aria-label="Sections">
-      <ul>
-        <li><a href="#coupes">Les coupes</a></li>
-        <li><a href="#rendez-vous">Rendez-vous</a></li>
-        <li><a href="#rui">Rui</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-    <a class="bouton bouton--nuit bouton--petit entete__cta" href="#rendez-vous">{{textes.cta}}</a>
-    <a class="entete__ig" href="{{site.instagram.profil}}" rel="noopener" aria-label="Instagram de Rui">{{icone:instagram}}</a>
-  </div>
-</header>
-
+{{> entete}}
 <main id="contenu" tabindex="-1">
 
   <section class="heros enveloppe" aria-labelledby="accroche">
@@ -47,8 +11,8 @@
       <h1 id="accroche">{{textes.accroche}}</h1>
       <p class="chapo heros__chapo">{{textes.chapo}}</p>
       <div class="heros__actions">
-        <a class="bouton bouton--rouge" id="cta-heros" href="#rendez-vous">{{textes.cta}}</a>
-        <a class="lien-fleche" href="#coupes">{{textes.voir_coupes}}{{icone:fleche-bas}}</a>
+        <a class="bouton bouton--rouge" id="cta-heros" data-masque-pastille href="#rendez-vous">{{textes.cta}}</a>
+        <a class="lien-fleche" href="coupes.html">{{textes.voir_coupes}}{{icone:fleche-droite}}</a>
       </div>
     </div>
     <div class="heros__visuel">
@@ -67,18 +31,19 @@
 
   {{separateur:25}}
 
-  <section class="coupes enveloppe" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
+  <section class="vitrine enveloppe" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
     <p class="etiquette">{{textes.coupes_index}}</p>
     <h2 id="coupes-titre">{{textes.coupes_titre}}</h2>
     <p class="chapo">{{textes.coupes_phrase}}</p>
-    <div class="coupes__zone">
-      <div class="halo halo--coupes" aria-hidden="true"></div>
-      {{galerie}}
+    <div class="vitrine__carte">
+      <div class="vitrine__trame" aria-hidden="true">{{trame:blanc}}</div>
+      {{vitrine}}
+      <a class="bouton bouton--blanc vitrine__bouton" href="coupes.html">{{textes.voir_toutes}}{{icone:fleche-droite}}</a>
     </div>
   </section>
 
   <section class="rdv" id="rendez-vous" aria-labelledby="rdv-titre" tabindex="-1">
-    <div class="panneau">
+    <div class="panneau" data-masque-pastille>
       <div class="panneau__trame" aria-hidden="true">{{trame:ciel}}</div>
       <div class="panneau__grain" aria-hidden="true"></div>
       <div class="panneau__intro">
@@ -124,6 +89,7 @@
   </section>
 
   <section class="rui enveloppe" id="rui" aria-labelledby="rui-titre">
+    <div class="rui__carte">
     <p class="etiquette">{{textes.rui_index}}</p>
     <div class="rui__tete">
       <h2 class="rui__nom" id="rui-titre">{{textes.rui_nom}}</h2>
@@ -141,6 +107,7 @@
         </ul>
       </div>
     </div>
+    </div>
   </section>
 
   {{separateur:60}}
@@ -155,7 +122,7 @@
         <p class="profil__pseudo" translate="no">{{site.instagram.affichage}}</p>
         <p class="profil__nom">{{textes.contact_sous_titre}}</p>
         <p class="profil__seul" data-contact="seul_moyen">{{textes.contact_seul_moyen}}</p>
-        <div class="profil__boutons">
+        <div class="profil__boutons" data-masque-pastille>
           <a class="bouton bouton--nuit" href="{{site.instagram.message}}" rel="noopener">{{icone:instagram}}{{textes.contact_ecrire}}</a>
           <a class="bouton bouton--contour" href="{{site.instagram.profil}}" rel="noopener">{{textes.contact_profil}}</a>
         </div>
@@ -165,37 +132,5 @@
   </section>
 </main>
 
-<footer class="pied">
-  <div class="enveloppe pied__grille">
-    <p class="pied__logo">{{logo:32}}</p>
-    <p>{{textes.pied_cookies}}</p>
-    <details class="pied__mentions">
-      <summary>{{textes.pied_mentions}}</summary>
-      <p>{{mentions}}</p>
-    </details>
-    <p class="pied__credit"><a href="{{site.credit.url}}" rel="noopener">{{site.credit.texte}} ({{site.credit.affichage}})</a></p>
-  </div>
-  <div class="ruban ruban--page ruban--bas" aria-hidden="true"></div>
-</footer>
-
-<a class="bouton bouton--rouge pastille" id="pastille" href="#rendez-vous" tabindex="-1" aria-hidden="true">{{textes.cta}}</a>
-
-<dialog class="visionneuse" id="visionneuse" aria-label="Photos des coupes">
-  <div class="visionneuse__cadre">
-    <figure class="visionneuse__figure">
-      <img class="visionneuse__img" id="vis-img" alt="" width="400" height="500">
-      <figcaption class="visionneuse__compteur chiffres" id="vis-compteur"></figcaption>
-    </figure>
-    <div class="visionneuse__nav">
-      <button class="visionneuse__btn" type="button" id="vis-prec" aria-label="Photo précédente">{{icone:chevron-gauche}}</button>
-      <button class="visionneuse__btn" type="button" id="vis-suiv" aria-label="Photo suivante">{{icone:chevron-droite}}</button>
-    </div>
-    <button class="visionneuse__btn visionneuse__fermer" type="button" id="vis-fermer" aria-label="Fermer">{{icone:fermer}}</button>
-  </div>
-</dialog>
-
-<script>
-{{js}}
-</script>
-</body>
-</html>
+{{> pied}}
+{{> fin}}

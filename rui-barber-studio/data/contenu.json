@@ -33,7 +33,8 @@
   "meta": {
     "titre": "Rui’s Barber Studio — barbier à Mersch",
     "description": "Coupe complète à 15 € à Mersch. Proposez un créneau sur Instagram, Rui vous confirme.",
-    "theme": "#F5F8FC"
+    "theme": "#F5F8FC",
+    "titre_coupes": "Les coupes — Rui’s Barber Studio, barbier à Mersch"
   },
   "textes": {
     "lieu": "Mersch · Luxembourg",
@@ -125,7 +126,12 @@
     "contact_profil": "Voir mon profil",
     "contact_lieu": "Je coupe à Mersch. L’adresse exacte vous est envoyée à la confirmation.",
     "pied_cookies": "Ce site ne dépose aucun cookie.",
-    "pied_mentions": "Mentions légales"
+    "pied_mentions": "Mentions légales",
+    "voir_toutes": "Voir toutes les coupes",
+    "retour_accueil": "Accueil",
+    "agrandir": "Agrandir",
+    "fermer": "Fermer",
+    "rdv_court": "Rendez-vous"
   },
   "portrait": "À COMPLÉTER",
   "photos": [
@@ -134,10 +140,10 @@
       "source": "p4.jpg",
       "role": "hero",
       "recadrage": [
-        150,
-        470,
-        590,
-        1020
+        162,
+        370,
+        602,
+        920
       ],
       "alt": "Dégradé à blanc sur la nuque et les côtés, dessus court, vu de dos de trois quarts",
       "legende": "À COMPLÉTER"
@@ -147,10 +153,10 @@
       "source": "p7.jpg",
       "role": "vedette",
       "recadrage": [
-        200,
-        490,
-        520,
-        890
+        215,
+        455,
+        535,
+        855
       ],
       "alt": "Dessus bouclé et dégradé bas à la nuque, vu de dos de trois quarts",
       "legende": "À COMPLÉTER"
@@ -160,10 +166,10 @@
       "source": "p10.jpg",
       "role": "vignette",
       "recadrage": [
-        215,
-        480,
-        545,
-        892
+        202,
+        444,
+        532,
+        856
       ],
       "alt": "Dégradé haut à blanc sur la nuque et les côtés, dessus court, vu de dos de trois quarts",
       "legende": "À COMPLÉTER"
@@ -173,10 +179,10 @@
       "source": "p8.jpg",
       "role": "vignette",
       "recadrage": [
-        196,
-        398,
-        526,
-        810
+        205,
+        364,
+        535,
+        776
       ],
       "alt": "Dessus long et lisse, dégradé bas à la nuque, vu de dos de trois quarts",
       "legende": "À COMPLÉTER"
@@ -186,10 +192,10 @@
       "source": "p6.jpg",
       "role": "vignette",
       "recadrage": [
-        70,
-        410,
-        400,
-        822
+        75,
+        404,
+        405,
+        816
       ],
       "alt": "Cheveux longs attachés en chignon, côtés et nuque dégradés, vu de profil arrière",
       "legende": "À COMPLÉTER"
@@ -199,10 +205,10 @@
       "source": "p5.jpg",
       "role": "vignette",
       "recadrage": [
-        222,
-        370,
-        590,
-        830
+        241,
+        390,
+        609,
+        850
       ],
       "alt": "Cheveux afro réguliers et nuque nette, vus de dos de trois quarts",
       "legende": "À COMPLÉTER"
