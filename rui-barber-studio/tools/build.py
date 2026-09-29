@@ -1,4 +1,4 @@
-"""Assemble index.html (accueil) et coupes.html (galerie), chacun autonome, à partir de data/contenu.json et de src/.
+"""Assemble index.html, fichier unique et autonome (accueil + vue « Les coupes »), à partir de data/contenu.json et de src/.
 
 Usage : python3 tools/build.py [--brouillon]
   Sans option, le script échoue s’il reste un « À COMPLÉTER » dans contenu.json.
@@ -23,7 +23,7 @@ from PIL import Image
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 BUILD = ROOT / "build"
-PAGES = {"accueil.html": ROOT / "index.html", "coupes.html": ROOT / "coupes.html"}
+PAGES = {"accueil.html": ROOT / "index.html"}
 FONT_SRC = ROOT / "fonts" / "archivo-latin-wdth-normal.woff2"
 A_COMPLETER = "À COMPLÉTER"
 UNICODES = ("U+0020-007E,U+00A0-00FF,U+0152-0153,U+2013-2014,U+2019,U+201C-201E,"
@@ -184,7 +184,7 @@ def image(photo, manifeste, hero=False):
 
 
 def galerie(photos, manifeste, t):
-    """Galerie de la page 2. Chaque photo est un lien #photo-N : sans JS, :target l’agrandit ; avec JS, la visionneuse s’ouvre."""
+    """Galerie de la vue « Les coupes ». Chaque photo est un lien #photo-N : sans JS, :target l’agrandit ; avec JS, la visionneuse s’ouvre."""
     serie = [p for p in photos if p["role"] == "vedette"] + [p for p in photos if p["role"] == "vignette"]
     n = len(serie)
     out = ['<ul class="galerie">']
@@ -211,9 +211,9 @@ def galerie(photos, manifeste, t):
 
 
 def vitrine(photos, manifeste, t):
-    """Accueil : trois coupes qui mènent chacune à sa photo sur la page 2."""
+    """Accueil : trois coupes qui mènent chacune à sa photo dans la vue « Les coupes »."""
     serie = ([p for p in photos if p["role"] == "vedette"] + [p for p in photos if p["role"] == "vignette"])[:3]
-    items = "".join(f'<li><a class="vitrine__photo" href="coupes.html#photo-{k}" aria-label="{e(t["agrandir"])} : {e(p["alt"])}">'
+    items = "".join(f'<li><a class="vitrine__photo" href="#photo-{k}" aria-label="{e(t["agrandir"])} : {e(p["alt"])}">'
                     f'{image(p, manifeste)}<span class="photo__ouvrir" aria-hidden="true">{icone("fleche-ouvrir")}</span></a></li>'
                     for k, p in enumerate(serie, start=1))
     return f'<ul class="vitrine__photos">{items}</ul>'
@@ -289,8 +289,6 @@ def main():
     css = (SRC / "styles.css").read_text(encoding="utf-8")
     js = (SRC / "app.js").read_text(encoding="utf-8")
     partiels = {n: (SRC / "partials" / f"{n}.html").read_text(encoding="utf-8") for n in ("tete", "entete", "pied", "fin")}
-    # Page des coupes : pas de pastille, la carte de fin porte déjà l’appel à l’action
-    partiels["fin_sans_pastille"] = re.sub(r'<a class="bouton bouton--rouge pastille".*?</a>\n*', "", partiels["fin"], flags=re.S)
 
     hero = [p for p in c["photos"] if p["role"] == "hero"][0]
     mentions = site["mentions_legales"]
@@ -343,9 +341,7 @@ def main():
     js = js.replace("{{jsconfig}}", json.dumps(cfg, ensure_ascii=False))
 
     contextes = {
-        "accueil.html": {"{{page_titre}}": e(c["meta"]["titre"]), "{{lien:haut}}": "#haut", "{{lien:accueil}}": "", "{{courant:coupes}}": ""},
-        "coupes.html": {"{{page_titre}}": e(c["meta"]["titre_coupes"]), "{{lien:haut}}": "index.html", "{{lien:accueil}}": "index.html",
-                        "{{courant:coupes}}": ' aria-current="page"'},
+        "accueil.html": {"{{page_titre}}": e(c["meta"]["titre"])},
     }
     for gabarit, sortie in PAGES.items():
         page = (SRC / gabarit).read_text(encoding="utf-8")

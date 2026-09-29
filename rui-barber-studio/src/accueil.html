@@ -3,6 +3,7 @@
 
 {{> entete}}
 <main id="contenu" tabindex="-1">
+<div class="vue vue--accueil">
 
   <section class="heros enveloppe" aria-labelledby="accroche">
     <div class="heros__texte">
@@ -12,7 +13,7 @@
       <p class="chapo heros__chapo">{{textes.chapo}}</p>
       <div class="heros__actions">
         <a class="bouton bouton--rouge" id="cta-heros" data-masque-pastille href="#rendez-vous">{{textes.cta}}</a>
-        <a class="lien-fleche" href="coupes.html">{{textes.voir_coupes}}{{icone:fleche-droite}}</a>
+        <a class="lien-fleche" href="#les-coupes">{{textes.voir_coupes}}{{icone:fleche-droite}}</a>
       </div>
     </div>
     <div class="heros__visuel">
@@ -38,7 +39,7 @@
     <div class="vitrine__carte">
       <div class="vitrine__trame" aria-hidden="true">{{trame:blanc}}</div>
       {{vitrine}}
-      <a class="bouton bouton--blanc vitrine__bouton" href="coupes.html">{{textes.voir_toutes}}{{icone:fleche-droite}}</a>
+      <a class="bouton bouton--blanc vitrine__bouton" href="#les-coupes">{{textes.voir_toutes}}{{icone:fleche-droite}}</a>
     </div>
   </section>
 
@@ -130,6 +131,31 @@
       </div>
     </div>
   </section>
+</div>
+
+<div class="vue vue--coupes" id="les-coupes" tabindex="-1">
+  <section class="page-coupes enveloppe" aria-labelledby="galerie-titre">
+    <a class="lien-fleche lien-fleche--retour" href="#haut">{{icone:chevron-gauche}}{{textes.retour_accueil}}</a>
+    <p class="etiquette">{{textes.coupes_index}}</p>
+    <h2 class="page-coupes__titre" id="galerie-titre">{{textes.coupes_titre}}</h2>
+    <p class="chapo">{{textes.coupes_phrase}}</p>
+    <div class="coupes__zone" id="galerie">
+      <div class="halo halo--coupes" aria-hidden="true"></div>
+      {{galerie}}
+    </div>
+  </section>
+
+  {{separateur:40}}
+
+  <section class="suite enveloppe" aria-labelledby="suite-titre">
+    <div class="suite__carte" data-masque-pastille>
+      <div class="vitrine__trame" aria-hidden="true">{{trame:blanc}}</div>
+      <p class="etiquette">{{textes.rdv_court}}</p>
+      <h2 id="suite-titre">{{textes.rdv_titre}}</h2>
+      <a class="bouton bouton--rouge" href="#rendez-vous">{{textes.cta}}</a>
+    </div>
+  </section>
+</div>
 </main>
 
 {{> pied}}

@@ -1,4 +1,4 @@
-/* Rui’s Barber Studio — modules indépendants (police, dates, ticket, visionneuse, pastille), chacun dans son try/catch. */
+/* Rui’s Barber Studio — modules indépendants (police, dates, ticket, vues, visionneuse, pastille), chacun dans son try/catch. */
 (function () {
   "use strict";
   var CFG = {{jsconfig}};
@@ -191,7 +191,65 @@
     })();
   } catch (e) {}
 
-  /* ---------- 3. Visionneuse (page des coupes) ---------- */
+  /* ---------- 3a. Vues : l’accueil et « Les coupes » vivent dans ce seul fichier ----------
+     Sans JS, :target fait le travail. Avec JS, la classe .sur-coupes suit l’ancre (y compris le bouton Retour). */
+  try {
+    (function () {
+      var html = document.documentElement;
+      var vue = document.getElementById("les-coupes");
+      if (!vue) return;
+      var lienNav = document.querySelector('.entete__nav a[href="#les-coupes"]');
+      function cible(h) {
+        if (!h || h.length < 2) return null;
+        try { return document.getElementById(decodeURIComponent(h.slice(1))); } catch (e) { return null; }
+      }
+      function dansCoupes(h) {
+        var el = cible(h);
+        return !!el && (el === vue || vue.contains(el));
+      }
+      function defiler(h) {
+        var el = cible(h);
+        if (!el || el === vue || el.id === "haut") window.scrollTo({ top: 0, behavior: "instant" });
+        else el.scrollIntoView({ behavior: "instant" });
+      }
+      function appliquer(h, doitDefiler) {
+        var avant = html.classList.contains("sur-coupes");
+        var apres = dansCoupes(h);
+        html.classList.toggle("sur-coupes", apres);
+        if (lienNav) { if (apres) lienNav.setAttribute("aria-current", "page"); else lienNav.removeAttribute("aria-current"); }
+        if (doitDefiler && avant !== apres) defiler(h);
+        return apres;
+      }
+      if (appliquer(window.location.hash, false) && window.location.hash === "#les-coupes") defiler("#les-coupes");
+
+      document.addEventListener("click", function (e) {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+        if (!a) return;
+        var h = a.getAttribute("href");
+        var photo = /^#photo-\d+$/.test(h) ? document.querySelector(h + " .vignette") : null;
+        // Vignette de l’accueil : on passe sur « Les coupes » et la visionneuse s’ouvre sur cette photo.
+        if (photo && !vue.contains(a)) {
+          e.preventDefault();
+          try { history.pushState(null, "", "#les-coupes"); } catch (err) {}
+          appliquer("#les-coupes", true);
+          photo.click();
+          return;
+        }
+        if (dansCoupes(h) === html.classList.contains("sur-coupes")) return; // même vue : navigation ordinaire
+        e.preventDefault();
+        try { history.pushState(null, "", h); } catch (err) { window.location.hash = h; return; }
+        appliquer(h, true);
+        var el = cible(h);
+        if (el && el.hasAttribute("tabindex")) { try { el.focus({ preventScroll: true }); } catch (err) {} }
+      });
+      function suivre() { appliquer(window.location.hash, true); }
+      window.addEventListener("popstate", suivre);
+      window.addEventListener("hashchange", suivre);
+    })();
+  } catch (e) {}
+
+  /* ---------- 3b. Visionneuse (vue « Les coupes ») ---------- */
   try {
     (function () {
       var dlg = document.getElementById("visionneuse");
@@ -219,7 +277,7 @@
       }
       function sansAncre() {
         if (/^#photo-\d+$/.test(window.location.hash)) {
-          try { history.replaceState(null, "", window.location.pathname + window.location.search); } catch (e) {}
+          try { history.replaceState(null, "", "#les-coupes"); } catch (e) {}
         }
       }
 
@@ -256,14 +314,17 @@
         if (origine) { try { origine.focus({ preventScroll: true }); } catch (e) { origine.focus(); } }
       });
 
-      // Arrivée depuis l’accueil sur coupes.html#photo-N : la photo s’ouvre directement.
-      var m = /^#photo-(\d+)$/.exec(window.location.hash);
-      if (m && liens[+m[1] - 1]) {
+      // Lien direct vers #photo-N (au chargement ou en cours de visite) : la vue « Les coupes » s’affiche et la photo s’ouvre.
+      function depuisAncre() {
+        var m = /^#photo-(\d+)$/.exec(window.location.hash);
+        if (!m || !liens[+m[1] - 1]) return;
         var k = +m[1] - 1;
         sansAncre();
         liens[k].scrollIntoView({ block: "center" });
         ouvrir(k);
       }
+      depuisAncre();
+      window.addEventListener("hashchange", depuisAncre);
     })();
   } catch (e) {}
 

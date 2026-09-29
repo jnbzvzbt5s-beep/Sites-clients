@@ -19,7 +19,7 @@
   --marine: #13305F;
   --nuit: #0A1C3A;
   --encre: #0E1D35;
-  --gris: #5B6579;
+  --gris: #475268; /* assombri pour rester lisible sur le fond plus bleu */
   --rouge: #D7141A;
   --rouge-vif: #E3242B;
   --rouge-profond: #A30E1B;
@@ -60,9 +60,11 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(120% 55% at 90% 0%, #D4E4F7 0%, rgba(212, 228, 247, 0) 62%),
-    radial-gradient(80% 45% at 0% 38%, #DCE8F8 0%, rgba(220, 232, 248, 0) 70%),
-    linear-gradient(180deg, #FFFFFF 0%, #F2F7FC 35%, #FFFFFF 62%, #E6EFFA 100%);
+    radial-gradient(110% 38% at 100% 0%, rgba(125, 176, 232, .40) 0%, rgba(125, 176, 232, 0) 70%),
+    radial-gradient(90% 30% at 0% 34%, rgba(125, 176, 232, .32) 0%, rgba(125, 176, 232, 0) 70%),
+    radial-gradient(90% 30% at 100% 72%, rgba(125, 176, 232, .30) 0%, rgba(125, 176, 232, 0) 70%),
+    linear-gradient(180deg, #E2EDFA 0%, #D3E4F7 30%, #E4EEFA 55%, #D6E6F8 80%, #C9DDF4 100%);
+  background-color: #D9E7F8;
   color: var(--encre);
   font-family: var(--police);
   font-size: 17px;
@@ -300,7 +302,7 @@ h2 {
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(closest-side, #C6DCF5, rgba(198, 220, 245, 0));
+  background: radial-gradient(closest-side, #A9CBF0, rgba(169, 203, 240, 0));
 }
 
 /* ---------- Hero ---------- */
@@ -486,9 +488,15 @@ h2 {
 }
 .photo__ouvrir .icone { width: 16px; height: 16px; }
 
-/* ---------- Page 2 : les coupes ---------- */
+/* ---------- Vue « Les coupes » : même fichier, affichée par l’ancre #les-coupes ----------
+   Sans JS : :target (et :has pour une photo agrandie). Avec JS : classe .sur-coupes posée par app.js. */
+.vue--coupes { display: none; }
+.no-js .vue--coupes:target, .no-js .vue--coupes:has(:target), .sur-coupes .vue--coupes { display: block; }
+.no-js body:has(.vue--coupes:target, .vue--coupes :target) .vue--accueil, .sur-coupes .vue--accueil { display: none; }
+.sur-coupes .pastille, .no-js body:has(.vue--coupes:target) .pastille { display: none !important; }
+.sur-coupes .entete__nav a[href="#les-coupes"] { color: var(--roi); }
 .page-coupes { padding-block: 28px 56px; }
-.page-coupes h1 { margin-top: 8px; font-size: clamp(2.25rem, 1.5rem + 3vw, 4rem); }
+.page-coupes__titre { margin-top: 8px; font-size: clamp(2.25rem, 1.5rem + 3vw, 4rem); }
 .page-coupes .chapo { margin-top: 10px; }
 .suite { padding-block: 24px 88px; }
 .suite__carte {
@@ -514,7 +522,7 @@ h2 {
 
 /* ---------- Galerie (page 2) ---------- */
 .coupes__zone { position: relative; isolation: isolate; margin-top: 28px; }
-.halo--coupes { width: 150%; height: 130%; left: 5%; top: -12%; }
+.halo--coupes { width: 100%; height: 124%; left: 0; top: -12%; } /* reste dans la section : pas de bord coupé net */
 .galerie { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .galerie__item--vedette { grid-column: 1 / -1; margin: 0 10px 18px 0; }
 .photo {
@@ -551,7 +559,7 @@ h2 {
 }
 /* Sans JS : la photo visée (#photo-N) s’agrandit en plein écran ; avec JS, la visionneuse prend le relais */
 .photo__cible { display: none; }
-.galerie__item:target .photo {
+.no-js .galerie__item:target .photo {
   position: fixed;
   inset: 0;
   z-index: 70;
@@ -563,8 +571,8 @@ h2 {
   background: rgba(10, 28, 58, .94);
   box-shadow: none;
 }
-.galerie__item:target .vignette { display: contents; cursor: default; }
-.galerie__item:target .photo img {
+.no-js .galerie__item:target .vignette { display: contents; cursor: default; }
+.no-js .galerie__item:target .photo img {
   width: auto;
   height: auto;
   max-width: min(92vw, 640px);
@@ -573,8 +581,8 @@ h2 {
   object-fit: contain;
   transform: none;
 }
-.galerie__item:target .photo__ouvrir, .galerie__item:target .photo__index { display: none; }
-.galerie__item:target .photo__cible { display: block; }
+.no-js .galerie__item:target .photo__ouvrir, .no-js .galerie__item:target .photo__index { display: none; }
+.no-js .galerie__item:target .photo__cible { display: block; }
 .photo__fermer, .photo__prec, .photo__suiv {
   position: fixed;
   display: inline-flex;
@@ -935,7 +943,7 @@ h2 {
 
 /* ---------- Pied de page ---------- */
 .pied {
-  background: linear-gradient(180deg, #F2F7FC 0%, #E4EEFA 100%);
+  background: linear-gradient(180deg, #D6E6F8 0%, #C9DDF4 100%);
   border-top: 1px solid var(--filet);
   font-size: 13px;
   color: var(--gris);

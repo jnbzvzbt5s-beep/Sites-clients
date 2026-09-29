@@ -1,6 +1,6 @@
 # Rui’s Barber Studio — site vitrine (V5 « le dégradé net »)
 
-Livrables : `index.html` (accueil) et `coupes.html` (galerie), chacun autonome ; à déposer ensemble sur un nouveau site Netlify.
+Livrable : `index.html`, un seul fichier autonome. Il contient l’accueil et la vue « Les coupes » (ancre `#les-coupes`), affichée par JS ou, sans JS, par `:target`.
 Planche de tokens : `tokens.html`. Captures : `livraison/`.
 
 ## Construire
@@ -9,7 +9,7 @@ Planche de tokens : `tokens.html`. Captures : `livraison/`.
 pip install pillow pillow-heif fonttools brotli numpy
 python3 tools/photos.py           # photos-src/ → build/img/ (EXIF appliqué puis supprimé, recadrage 4:5, étalonnage)
 python3 tools/logo.py             # logo-src/ → build/logo/ (image carrée telle quelle, redimensionnée)
-python3 tools/build.py            # produit index.html et coupes.html ; échoue tant qu’il reste un « À COMPLÉTER »
+python3 tools/build.py            # produit index.html ; échoue tant qu’il reste un « À COMPLÉTER »
 python3 tools/build.py --brouillon  # assemble quand même, « À COMPLÉTER » affichés surlignés
 ```
 
@@ -18,7 +18,7 @@ python3 tools/build.py --brouillon  # assemble quand même, « À COMPLÉTER » 
 ## Tester
 
 ```sh
-python3 tests/static_checks.py    # (les deux pages) poids, couleurs interdites, contrastes, métadonnées, JSON-LD, typographie
+python3 tests/static_checks.py    # poids, couleurs interdites, contrastes, métadonnées, JSON-LD, typographie
 node tests/acceptance.mjs         # Playwright (Chromium --disable-lcd-text ; WebKit s’il est installé)
 python3 tests/budgets.py          # budgets rouge / rose / violet / sombre sur les captures de acceptance.mjs
 node tests/lighthouse.mjs         # Lighthouse mobile, page servie compressée

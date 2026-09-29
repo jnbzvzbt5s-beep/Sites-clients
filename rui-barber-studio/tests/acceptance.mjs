@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
-const FICHIERS = { '/': 'index.html', '/index.html': 'index.html', '/coupes.html': 'coupes.html' };
+const FICHIERS = { '/': 'index.html', '/index.html': 'index.html' };
 const LARGEURS = [320, 390, 834, 1180, 1440];
 const IG = 'https://ig.me/m/ruis_barber_studio';
 const FINE = ' ', NB = ' ';
@@ -65,8 +65,8 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
   console.log(`— ${M} ${nav.version()}`);
 
   // 1, 2, 17 — console, réseau, cookies, défilement horizontal, ouverture, CLS — à chaque largeur
-  for (const [pg, w] of ['', 'coupes.html'].flatMap(pg => LARGEURS.map(w => [pg, w]))) {
-    const nomPage = pg || 'index.html';
+  for (const [pg, w] of ['', '#les-coupes'].flatMap(pg => LARGEURS.map(w => [pg, w]))) {
+    const nomPage = 'index.html' + pg;
     const ctx = await nav.newContext({ viewport: { width: w, height: w < 768 ? 844 : 900 } });
     const page = await ctx.newPage();
     const erreurs = [], requetes = [];
@@ -78,7 +78,7 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
       try { new PerformanceObserver(l => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: 'layout-shift', buffered: true }); } catch (e) {}
     });
     requetesServeur = [];
-    await page.goto(BASE + pg + '?date=2026-09-29', { waitUntil: 'load' });
+    await page.goto(BASE + '?date=2026-09-29' + pg, { waitUntil: 'load' });
     const anims = await page.evaluate(() => document.getAnimations().map(a => { const t = a.effect.getComputedTiming(); return t.delay + t.duration; }));
     await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 300) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 15)); } });
     await page.waitForTimeout(1600);
@@ -266,7 +266,7 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     await page.keyboard.press('ArrowRight');
     const m = await page.evaluate(() => [document.activeElement.value, document.activeElement.checked]);
     verifier(M, 8, 'Clavier : flèches dans les groupes de radios', j[0] === 'jeudi 1er octobre' && j[1] && m[0] === 'à midi' && m[1], JSON.stringify([j, m]));
-    await page.goto(BASE + 'coupes.html');
+    await page.goto(BASE + '#les-coupes');
     await page.waitForFunction(() => !document.documentElement.classList.contains('attente'));
     await page.locator('.galerie .vignette').first().click();
     await page.keyboard.press('Escape');
@@ -279,7 +279,7 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
   {
     const ctx = await nav.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true });
     const page = await ctx.newPage();
-    await page.goto(BASE + 'coupes.html');
+    await page.goto(BASE + '#les-coupes');
     const v = page.locator('.galerie .vignette');
     const n = await v.count();
     await v.nth(2).scrollIntoViewIfNeeded();
@@ -339,8 +339,10 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
       ecarts.length === 0 && vue > 0 && cachee > 0 && pied, JSON.stringify({ ecarts, vue, cachee, pied }));
     const large = await (async () => { await page.setViewportSize({ width: 1180, height: 900 }); return page.$eval('#pastille', p => getComputedStyle(p).display); })();
     verifier(M, 10, 'Pastille : absente dès 768 px', large === 'none');
-    await page.goto(BASE + 'coupes.html');
-    verifier(M, 10, 'Pastille : absente de la page des coupes (la carte de fin porte le bouton)', (await page.$$('#pastille')).length === 0);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(BASE + '#les-coupes');
+    await page.waitForTimeout(300);
+    verifier(M, 10, 'Pastille : absente de la vue des coupes (la carte de fin porte le bouton)', (await page.$eval('#pastille', p => getComputedStyle(p).display)) === 'none');
     await ctx.close();
   }
 
@@ -371,7 +373,7 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     const phrase = await page.locator('.ticket__sansjs').isVisible();
     const champs = await page.locator('.ticket__champ').evaluateAll(ls => ls.every(l => getComputedStyle(l).display === 'none'));
     const pastille = await page.locator('#pastille').evaluate(p => getComputedStyle(p).display);
-    const vides = await page.locator('main h2').evaluateAll(hs => hs.filter(h => {
+    const vides = await page.locator('main h2').evaluateAll(hs => hs.filter(h => h.offsetParent !== null).filter(h => {
       const s = h.closest('section'); const r = s.getBoundingClientRect(), rh = h.getBoundingClientRect();
       return r.bottom - rh.bottom < 120;
     }).map(h => h.textContent));
@@ -390,20 +392,20 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     const logos = await page.$$eval('img.logo__img', is => is.map(i => ({ n: [i.naturalWidth, i.naturalHeight], a: [Math.round(i.getBoundingClientRect().width), Math.round(i.getBoundingClientRect().height)], fit: getComputedStyle(i).objectFit, alt: i.alt })));
     verifier(M, 13, 'Logo carré, jamais recadré ni déformé (3 occurrences), alt « Rui’s Barber Studio »',
       logos.length === 3 && logos.every(l => l.n[0] === l.n[1] && l.a[0] === l.a[1] && l.alt === 'Rui’s Barber Studio' && l.fit === 'fill'), JSON.stringify(logos));
-    const alts = await page.$$eval('main img:not(.logo__img)', is => is.map(i => i.alt));
-    await page.goto(BASE + 'coupes.html');
-    const alts2 = await page.$$eval('main img:not(.logo__img)', is => is.map(i => i.alt));
+    const alts = await page.$$eval('.vue--accueil img:not(.logo__img)', is => is.map(i => i.alt));
+    const alts2 = await page.$$eval('.vue--coupes img:not(.logo__img)', is => is.map(i => i.alt));
     verifier(M, 13, 'Photos : alt précis sur chacune (accueil 4, coupes 5)', alts.length === 4 && alts2.length === 5 && [...alts, ...alts2].every(a => a.length >= 30 && /vu|vus/.test(a)), JSON.stringify(alts2));
     await ctx.close();
   }
 
   // 14 — captures pour les budgets de couleur (analysées par tests/budgets.py)
   if (M === 'chromium') {
-    for (const [pg, w] of [['', 390], ['', 1440], ['coupes.html', 390], ['coupes.html', 1440]]) {
+    for (const [pg, w] of [['', 390], ['', 1440], ['#les-coupes', 390], ['#les-coupes', 1440]]) {
       const pre = pg ? 'coupes-' : '';
       const ctx = await nav.newContext({ viewport: { width: w, height: w === 390 ? 844 : 900 }, reducedMotion: 'reduce' });
       const page = await ctx.newPage();
-      await page.goto(BASE + pg + '?date=2026-09-29');
+      await page.goto(BASE + '?date=2026-09-29' + pg);
+      await page.waitForFunction(() => !document.documentElement.classList.contains('attente'));
       await page.addStyleTag({ content: 'img{visibility:hidden!important}.bouton--rouge{color:transparent!important}.bouton--rouge svg{visibility:hidden}' });
       await page.waitForTimeout(200);
       await page.screenshot({ path: path.join(BUDGET, `page-${pre}${w}.png`), fullPage: true });
@@ -425,40 +427,62 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     const page = await ctx.newPage();
     await page.goto(BASE);
     const n = await page.$$eval('.ruban', r => r.filter(x => x.offsetWidth > 0).length);
-    await page.goto(BASE + 'coupes.html');
+    await page.goto(BASE + '#les-coupes');
     const n2 = await page.$$eval('.ruban', r => r.filter(x => x.offsetWidth > 0).length);
-    verifier(M, 18, 'Ruban tricolore : quatre fois sur l’accueil, deux sur la page des coupes', n === 4 && n2 === 2, `${n} / ${n2}`);
+    verifier(M, 18, 'Ruban tricolore : quatre fois sur l’accueil, deux sur la vue des coupes', n === 4 && n2 === 2, `${n} / ${n2}`);
     await ctx.close();
   }
 
-  // 19 — deux pages : « Voir les coupes » mène à la page 2 ; une coupe de l’accueil s’ouvre directement
-  {
+  // 19 — une seule page, deux vues : « Voir les coupes » affiche la galerie, aussi en file:// (aperçu d’un fichier seul)
+  for (const [origine, url] of [['http', BASE], ['file://', 'file://' + path.join(ROOT, 'index.html')]]) {
     const ctx = await nav.newContext({ viewport: { width: 390, height: 844 } });
     const page = await ctx.newPage();
-    await page.goto(BASE);
+    const visible = s => page.evaluate(s => { const e = document.querySelector(s); return !!e && e.getClientRects().length > 0; }, s);
+    await page.goto(url);
     await page.waitForFunction(() => !document.documentElement.classList.contains('attente'));
-    await Promise.all([page.waitForURL(/coupes\.html$/), page.click('.heros .lien-fleche')]);
-    const h1 = await page.textContent('h1');
-    verifier(M, 19, '« Voir les coupes » ouvre la page des coupes', h1.trim() === 'Les coupes', h1);
-    await page.goto(BASE);
-    await page.waitForFunction(() => !document.documentElement.classList.contains('attente'));
+    await page.click('.heros .lien-fleche');
+    await page.waitForTimeout(300);
+    const r1 = { galerie: await visible('#galerie'), accueil: await visible('.heros'), haut: await page.evaluate(() => Math.round(document.querySelector('#les-coupes').getBoundingClientRect().top)), hash: await page.evaluate(() => location.hash) };
+    verifier(M, 19, `${origine} : « Voir les coupes » affiche la galerie, en haut d’écran`, r1.galerie && !r1.accueil && r1.hash === '#les-coupes' && r1.haut >= -2 && r1.haut < 200, JSON.stringify(r1));
+    await page.goBack();
+    await page.waitForTimeout(300);
+    verifier(M, 19, `${origine} : le bouton Retour du navigateur revient à l’accueil`, (await visible('.heros')) && !(await visible('#galerie')));
     await page.locator('.vitrine__photo').nth(1).scrollIntoViewIfNeeded();
-    await Promise.all([page.waitForURL(/coupes\.html/), page.locator('.vitrine__photo').nth(1).click()]);
+    await page.locator('.vitrine__photo').nth(1).click();
     await page.waitForTimeout(400);
     const r = await page.evaluate(() => ({ open: document.getElementById('visionneuse').open, c: document.getElementById('vis-compteur').textContent, hash: location.hash }));
-    verifier(M, 19, 'Une coupe de l’accueil s’ouvre en grand sur la page 2 (« 2 sur 5 »)', r.open && r.c === '2 sur 5' && r.hash === '', JSON.stringify(r));
+    verifier(M, 19, `${origine} : une coupe de l’accueil s’ouvre en grand (« 2 sur 5 »)`, r.open && r.c === '2 sur 5' && r.hash === '#les-coupes', JSON.stringify(r));
     await page.keyboard.press('Escape');
-    await page.goto(BASE + 'coupes.html');
-    await Promise.all([page.waitForURL(/index\.html$/), page.click('.lien-fleche--retour')]);
-    verifier(M, 19, 'Lien « Accueil » de la page des coupes', (await page.locator('h1').textContent()).includes('Une coupe nette'));
+    await page.waitForTimeout(200);
+    const apres = { galerie: await visible('#galerie'), hash: await page.evaluate(() => location.hash) };
+    verifier(M, 19, `${origine} : après fermeture, on reste sur la galerie`, apres.galerie && apres.hash === '#les-coupes', JSON.stringify(apres));
+    await page.click('.lien-fleche--retour');
+    await page.waitForTimeout(300);
+    verifier(M, 19, `${origine} : lien « Accueil » de la galerie`, (await visible('.heros')) && !(await visible('#galerie')) && (await page.evaluate(() => window.scrollY)) < 5);
+    await page.click('.entete__nav a[href="#les-coupes"]').catch(() => {});
+    if (await visible('.entete__nav')) {
+      await page.waitForTimeout(300);
+      await page.click('.suite__carte .bouton');
+      await page.waitForTimeout(400);
+      const rdv = await page.evaluate(() => Math.round(document.getElementById('rendez-vous').getBoundingClientRect().top));
+      verifier(M, 19, `${origine} : « Prendre rendez-vous » de la galerie mène au module`, (await visible('#ticket')) && Math.abs(rdv) < 60, String(rdv));
+    }
+    // Lien direct vers une photo : la galerie s’affiche et la photo s’ouvre
+    await page.goto(url + '#photo-3');
+    await page.waitForTimeout(500);
+    const d = await page.evaluate(() => ({ open: document.getElementById('visionneuse').open, c: document.getElementById('vis-compteur').textContent }));
+    verifier(M, 19, `${origine} : lien direct #photo-3 → galerie et photo ouverte`, d.open && d.c === '3 sur 5' && (await visible('#galerie')), JSON.stringify(d));
     await ctx.close();
   }
 
-  // 20 — sans JavaScript, les coupes s’agrandissent quand même (:target)
+  // 20 — sans JavaScript : la vue s’affiche par :target et les coupes s’agrandissent quand même
   {
     const ctx = await nav.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
     const page = await ctx.newPage();
-    await page.goto(BASE + 'coupes.html');
+    await page.goto(BASE);
+    await page.click('.heros .lien-fleche');
+    const vue = await page.evaluate(() => [document.querySelector('#galerie').getClientRects().length > 0, document.querySelector('.heros').getClientRects().length > 0]);
+    verifier(M, 20, 'Sans JS : « Voir les coupes » affiche la galerie et masque l’accueil', vue[0] && !vue[1], JSON.stringify(vue));
     await page.locator('.galerie .vignette').nth(2).click();
     const r = await page.evaluate(() => {
       const f = document.querySelector('#photo-3 .photo'), cs = getComputedStyle(f), b = f.getBoundingClientRect();
@@ -467,9 +491,11 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     await page.click('#photo-3 .photo__suiv');
     const suiv = await page.evaluate(() => location.hash);
     await page.click('#photo-4 .photo__fermer');
-    const ferme = await page.evaluate(() => getComputedStyle(document.querySelector('#photo-4 .photo')).position);
-    verifier(M, 20, 'Sans JS : la photo cliquée s’affiche en grand, suivante et fermer fonctionnent',
-      r.pos === 'fixed' && r.couvre && r.compteur === '3 sur 5' && suiv === '#photo-4' && ferme !== 'fixed', JSON.stringify({ r, suiv, ferme }));
+    const ferme = await page.evaluate(() => [getComputedStyle(document.querySelector('#photo-4 .photo')).position, document.querySelector('#galerie').getClientRects().length > 0]);
+    verifier(M, 20, 'Sans JS : la photo cliquée s’affiche en grand, suivante et fermer fonctionnent, la galerie reste affichée',
+      r.pos === 'fixed' && r.couvre && r.compteur === '3 sur 5' && suiv === '#photo-4' && ferme[0] !== 'fixed' && ferme[1], JSON.stringify({ r, suiv, ferme }));
+    await page.click('.lien-fleche--retour');
+    verifier(M, 20, 'Sans JS : lien « Accueil » réaffiche l’accueil', await page.evaluate(() => document.querySelector('.heros').getClientRects().length > 0));
     await ctx.close();
   }
 

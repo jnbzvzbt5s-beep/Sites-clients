@@ -1,6 +1,6 @@
 """Contrôles statiques de index.html (V5) : poids, couleurs, contrastes, photos, données, textes.
 
-Usage : python3 tests/static_checks.py [index.html|coupes.html]   (sans argument : les deux pages)
+Usage : python3 tests/static_checks.py   (index.html : accueil + vue « Les coupes », un seul fichier)
 """
 import base64
 import colorsys
@@ -14,17 +14,10 @@ import sys
 from PIL import Image
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-if len(sys.argv) == 1:
-    import subprocess
-    codes = [subprocess.run([sys.executable, __file__, n]).returncode for n in ("index.html", "coupes.html")]
-    sys.exit(max(codes))
-NOM = sys.argv[1]
-ACCUEIL = NOM == "index.html"
-# Attendus propres à chaque page
-ATT = {
-    "index.html": {"photos": 4, "hero": True, "logos": 3, "ruban": 4, "titre": "Rui’s Barber Studio — barbier à Mersch"},
-    "coupes.html": {"photos": 5, "hero": False, "logos": 2, "ruban": 2, "titre": "Les coupes — Rui’s Barber Studio, barbier à Mersch"},
-}[NOM]
+NOM = "index.html"
+ACCUEIL = True
+# Hero + 3 vignettes de la vitrine + 5 photos de la vue « Les coupes »
+ATT = {"photos": 9, "hero": True, "logos": 3, "ruban": 4, "titre": "Rui’s Barber Studio — barbier à Mersch"}
 print(f"== {NOM}")
 PAGE = (ROOT / NOM).read_text(encoding="utf-8")
 C = json.loads((ROOT / "data" / "contenu.json").read_text(encoding="utf-8"))
@@ -110,12 +103,12 @@ def ratio(a, b):
 V = dict(re.findall(r"--([a-z-]+):\s*(#[0-9A-Fa-f]{6})", CSS))
 panneau_clair = melange(V["ciel"], V["nuit"], .36)            # haut gauche : halo ciel sur nuit
 panneau_bas = melange(V["roi"], "#1B4589", .55)               # bas droite : halo roi sur fin de dégradé
-ciel_page = "#D4E4F7"                                         # D1, coin haut droit
+ciel_page = melange(V["ciel"], "#D3E4F7", .40)                # D1, halo ciel au plus dense
 paires = [
     ("encre", "blanc", "texte, ticket, cartes", 4.5), ("encre", "porcelaine", "texte sur la page", 4.5),
-    ("encre", "#E6EFFA", "bas du ciel de page", 4.5), ("encre", ciel_page, "haut droit du ciel de page", 4.5),
+    ("encre", "#C9DDF4", "bas du ciel de page", 4.5), ("encre", ciel_page, "haut droit du ciel de page", 4.5),
     ("gris", "blanc", "étiquettes, chapô", 4.5), ("gris", "porcelaine", "chapô, pied", 4.5),
-    ("gris", "#E6EFFA", "bas de page", 4.5), ("gris", "#E4EEFA", "pied de page", 4.5), ("roi", "#E4EEFA", "numéros, liens du pied", 4.5), ("gris", ciel_page, "étiquettes sous le halo", 4.5),
+    ("gris", "#C9DDF4", "bas de page, pied", 4.5), ("roi", "#C9DDF4", "numéros, liens du pied", 4.5), ("gris", melange(V["ciel"], "#A9CBF0", 0), "étiquettes sur un halo", 4.5), ("gris", ciel_page, "étiquettes sous le halo", 4.5),
     ("roi", "blanc", "liens, « Moien ! »", 4.5), ("roi", "porcelaine", "valeurs de l’aperçu", 4.5),
     ("roi", "brume", "valeur surlignée", 4.5),
     ("blanc", "rouge-vif", "haut du bouton laqué", 4.5), ("blanc", "rouge", "bouton laqué", 4.5),
@@ -167,7 +160,7 @@ desc = html.unescape(re.search(r'<meta name="description" content="([^"]+)"', PA
 verifier(16, f"Titre « {ATT['titre']} »", titre == ATT["titre"], titre)
 verifier(16, "Meta description exacte", desc == "Coupe complète à 15 € à Mersch. Proposez un créneau sur Instagram, Rui vous confirme.", desc)
 verifier(16, "theme-color #F5F8FC, favicon et apple-touch-icon en data URI",
-         'name="theme-color" content="#F5F8FC"' in PAGE and 'rel="icon" type="image/png" sizes="64x64" href="data:image/png' in PAGE
+         'name="theme-color" content="#E2EDFA"' in PAGE and 'rel="icon" type="image/png" sizes="64x64" href="data:image/png' in PAGE
          and 'rel="apple-touch-icon" sizes="180x180" href="data:image/png' in PAGE)
 verifier(16, "Open Graph titre et description ; og:image et og:url absents tant que l’URL est inconnue",
          'property="og:title"' in PAGE and 'property="og:description"' in PAGE and "og:image" not in PAGE and "og:url" not in PAGE)
@@ -180,8 +173,12 @@ verifier(16, "JSON-LD HairSalon : name, image, adresse Mersch/LU, priceRange 15 
 liens_ig = set(re.findall(r'href="(https://[^"]*(?:ig\.me|instagram\.com)[^"]*)"', PAGE))
 attendus_ig = {C["site"]["instagram"]["message"], C["site"]["instagram"]["profil"]} if ACCUEIL else {C["site"]["instagram"]["profil"]}
 verifier(16, "Liens Instagram = contenu.json", liens_ig == attendus_ig, str(liens_ig))
-liens_int = set(re.findall(r'href="((?:index|coupes)\.html[^"]*)"', PAGE))
-verifier(16, "Liens entre les deux pages", ("coupes.html" in liens_int) if ACCUEIL else ({"index.html", "index.html#rendez-vous"} <= liens_int), str(sorted(liens_int)))
+ancres = set(re.findall(r'href="#([^"]+)"', PAGE))
+ids = re.findall(r'\sid="([^"]+)"', PAGE)
+verifier(16, "Un seul fichier : aucun lien vers une autre page HTML locale", not re.search(r'href="(?!https?:|#|data:)[^"]*\.html', PAGE))
+verifier(16, "« Voir les coupes » et le menu mènent à la vue #les-coupes", PAGE.count('href="#les-coupes"') >= 3)
+verifier(16, "Chaque ancre interne vise un id existant, ids uniques", ancres <= set(ids) and len(ids) == len(set(ids)),
+         str(sorted(ancres - set(ids))) + str(sorted({i for i in ids if ids.count(i) > 1})))
 verifier(16, "Aucun téléphone, e-mail ni horaire affiché", not re.search(r"mailto:|tel:|\b\d{2}[ .]\d{2}[ .]\d{2}\b|\bh\d{2}\b", SANS_DATA))
 
 # ---------- 14. Textes ----------
