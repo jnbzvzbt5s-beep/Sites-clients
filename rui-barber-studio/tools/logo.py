@@ -1,58 +1,44 @@
-"""Logo : cercle inscrit dans l’image source carrée (le cercle qu’affiche Instagram), coins rendus transparents.
+"""Logo : l’image carrée telle quelle (ni recadrage, ni recoloration, ni déformation), redimensionnée seulement.
 
 Usage : python3 tools/logo.py  (lit logo-src/logo-source.jpg, écrit build/logo/)
-Le contenu du cercle est gardé tel quel : ni recadrage de ses éléments, ni changement de couleur.
+Les coins arrondis (22 %) sont faits en CSS, jamais dans le fichier.
 """
 import io
 import pathlib
 
-from PIL import Image, ImageDraw
+from PIL import Image
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / "logo-src" / "logo-source.jpg"
 OUT = ROOT / "build" / "logo"
 OUT.mkdir(parents=True, exist_ok=True)
 
-# Source carrée 900 × 900 : cercle inscrit, centré.
-CX, CY, R = 450, 450, 450
-AFFICHAGE = 48  # hauteur d’affichage en px ; export à deux fois cette taille
-SS = 4  # suréchantillonnage du masque pour un bord net
-
-
-def disque(im, cx, cy, r):
-    box = (round(cx - r), round(cy - r), round(cx + r), round(cy + r))
-    carre = im.crop(box).convert("RGBA")
-    n = carre.width
-    masque = Image.new("L", (n * SS, n * SS), 0)
-    ImageDraw.Draw(masque).ellipse((0, 0, n * SS - 1, n * SS - 1), fill=255)
-    carre.putalpha(masque.resize((n, n), Image.LANCZOS))
-    return carre
+WEBP = (88, 240, 64)   # en-tête 44 px, contact 120 px, pied 32 px (tous à deux fois leur taille)
+PNG = (64, 180)        # favicon, apple-touch-icon
 
 
 def propre(im):
-    """Nouvelle image : aucune métadonnée héritée de la capture."""
-    out = Image.new("RGBA", im.size)
+    """Nouvelle image : aucune métadonnée héritée."""
+    out = Image.new("RGB", im.size)
     out.paste(im)
     return out
 
 
 def main():
     src = Image.open(SRC).convert("RGB")
-    cercle = disque(src, CX, CY, R)
-    taille = AFFICHAGE * 2
-    logo = propre(cercle.resize((taille, taille), Image.LANCZOS))
-    buf = io.BytesIO()
-    logo.save(buf, "WEBP", quality=92, method=6)
-    (OUT / "logo.webp").write_bytes(buf.getvalue())
-    logo.save(OUT / "logo-apercu.png")
-
-    # Favicon : la partie la plus reconnaissable, le monogramme « RBS » au centre du cercle.
-    fav = disque(src, 464, 452, 360).resize((64, 64), Image.LANCZOS)
-    buf = io.BytesIO()
-    propre(fav).save(buf, "PNG", optimize=True)
-    (OUT / "favicon.png").write_bytes(buf.getvalue())
-    print(f"logo.webp {taille}×{taille} : {len((OUT / 'logo.webp').read_bytes()) / 1024:.1f} Ko ; "
-          f"favicon.png 64×64 : {len(buf.getvalue()) / 1024:.1f} Ko")
+    if src.width != src.height:
+        raise SystemExit(f"Logo non carré : {src.size}")
+    for n in WEBP:
+        buf = io.BytesIO()
+        propre(src.resize((n, n), Image.LANCZOS)).save(buf, "WEBP", quality=88, method=6)
+        (OUT / f"logo-{n}.webp").write_bytes(buf.getvalue())
+        print(f"logo-{n}.webp : {len(buf.getvalue()) / 1024:.1f} Ko")
+    for n in PNG:
+        buf = io.BytesIO()
+        # Palette de 256 couleurs avec tramage : écart invisible à l’œil, fichier trois fois plus léger.
+        propre(src.resize((n, n), Image.LANCZOS)).quantize(256, dither=Image.Dither.FLOYDSTEINBERG).save(buf, "PNG", optimize=True)
+        (OUT / f"logo-{n}.png").write_bytes(buf.getvalue())
+        print(f"logo-{n}.png : {len(buf.getvalue()) / 1024:.1f} Ko")
 
 
 if __name__ == "__main__":

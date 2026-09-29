@@ -1,27 +1,27 @@
-/* Rui’s Barber Studio — quatre modules indépendants, chacun dans son try/catch. */
+/* Rui’s Barber Studio — quatre modules indépendants (dates, ticket, visionneuse, pastille), chacun dans son try/catch. */
 (function () {
   "use strict";
   var CFG = {{jsconfig}};
-  var NBSP = " ";
   var reduit = false;
   try { reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
 
-  /* ---------- 1. Module de rendez-vous ---------- */
+  /* ---------- 0. Police prête : la page s’affiche d’un bloc, sans décalage ---------- */
+  try {
+    var afficherPage = function () { document.documentElement.classList.remove("attente"); };
+    window.setTimeout(afficherPage, 700);
+    if (document.fonts && document.fonts.load) document.fonts.load('640 20px "Archivo"').then(afficherPage, afficherPage);
+    else afficherPage();
+  } catch (e) { document.documentElement.classList.remove("attente"); }
+
+  /* ---------- 1. Dates : huit tuiles-calendrier, heure du Luxembourg ---------- */
   try {
     (function () {
-      var form = document.getElementById("module");
-      var jours = document.getElementById("jours");
-      var apercu = document.getElementById("apercu");
-      var prenom = document.getElementById("prenom");
-      var envoyer = document.getElementById("envoyer");
-      var copierBtn = document.getElementById("copier");
-      var statut = document.getElementById("statut");
-      if (!form || !jours || !apercu) return;
-
+      var tuiles = document.getElementById("tuiles");
+      if (!tuiles) return;
       var TZ = "Europe/Luxembourg";
       var JOUR_MS = 86400000;
 
-      // « Aujourd’hui » à l’heure du Luxembourg, ou fixé par ?date=AAAA-MM-JJ (tests).
+      // « Aujourd’hui » au Luxembourg, ou fixé par ?date=AAAA-MM-JJ (tests).
       function aujourdhui() {
         var m = /[?&]date=(\d{4})-(\d{2})-(\d{2})(?:&|$)/.exec(window.location.search);
         if (m) {
@@ -33,212 +33,214 @@
         new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" })
           .formatToParts(new Date())
           .forEach(function (x) { p[x.type] = x.value; });
-        // Midi UTC : toujours le même jour civil au Luxembourg (UTC+1 ou UTC+2).
+        // Midi UTC : toujours le même jour civil au Luxembourg (UTC+1 ou UTC+2), changement d’heure compris.
         return Date.UTC(+p.year, +p.month - 1, +p.day, 12);
       }
 
+      function parties(fmt, t) {
+        var p = {};
+        fmt.formatToParts(new Date(t)).forEach(function (x) { p[x.type] = x.value; });
+        return p;
+      }
       var fmtLong = new Intl.DateTimeFormat("fr-FR", { timeZone: TZ, weekday: "long", day: "numeric", month: "long" });
       var fmtCourt = new Intl.DateTimeFormat("fr-FR", { timeZone: TZ, weekday: "short", day: "numeric", month: "short" });
 
-      function formater(fmt, t) {
-        var p = {};
-        fmt.formatToParts(new Date(t)).forEach(function (x) { p[x.type] = x.value; });
-        var jour = p.day === "1" ? "1er" : p.day;
-        return p.weekday + " " + jour + " " + p.month;
+      function el(tag, classe, texte) {
+        var n = document.createElement(tag);
+        if (classe) n.className = classe;
+        if (texte != null) n.textContent = texte;
+        return n;
       }
 
-      function puce(nom, valeur, texte, detail) {
-        var label = document.createElement("label");
-        label.className = "puce";
+      function tuile(valeur, nom, rel, haut, num, mois) {
+        var label = el("label", "tuile");
         var input = document.createElement("input");
         input.type = "radio";
-        input.name = nom;
+        input.name = "jour";
         input.value = valeur;
-        var span = document.createElement("span");
-        span.appendChild(document.createTextNode(texte));
-        if (detail) {
-          var small = document.createElement("small");
-          small.textContent = detail;
-          span.appendChild(small);
+        if (rel) input.setAttribute("data-rel", rel);
+        input.setAttribute("aria-label", nom);
+        var corps = el("span", "tuile__corps");
+        corps.setAttribute("aria-hidden", "true");
+        if (num == null) {
+          label.className += " tuile--seule";
+          corps.appendChild(el("span", "tuile__seul", haut));
+        } else {
+          corps.appendChild(el("span", "tuile__haut", haut));
+          corps.appendChild(el("span", "tuile__num", num));
+          corps.appendChild(el("span", "tuile__mois", mois));
         }
         label.appendChild(input);
-        label.appendChild(span);
+        label.appendChild(corps);
         return label;
       }
 
       var base = aujourdhui();
       for (var i = 0; i < 7; i++) {
         var t = base + i * JOUR_MS;
-        var long = formater(fmtLong, t);
-        var court = formater(fmtCourt, t);
-        var el;
-        if (i === 0) el = puce("jour", long, "Aujourd’hui", court);
-        else if (i === 1) el = puce("jour", long, "Demain", court);
-        else el = puce("jour", long, court, null);
-        el.querySelector("input").setAttribute("data-date", new Date(t).toISOString().slice(0, 10));
-        jours.appendChild(el);
+        var l = parties(fmtLong, t);
+        var c = parties(fmtCourt, t);
+        var quantieme = l.day === "1" ? "1er" : l.day;
+        var valeur = l.weekday + " " + quantieme + " " + l.month;
+        var rel = i === 0 ? CFG.rel_aujourdhui : i === 1 ? CFG.rel_demain : "";
+        var haut = i === 0 ? CFG.aujourdhui : i === 1 ? CFG.demain : c.weekday;
+        tuiles.appendChild(tuile(valeur, valeur + (rel ? " " + rel : ""), rel, haut, quantieme, c.month));
       }
-      jours.appendChild(puce("jour", "peu importe", "Peu importe", null));
+      tuiles.appendChild(tuile(CFG.peu_importe.toLowerCase(), CFG.peu_importe, "", CFG.peu_importe, null, null));
+    })();
+  } catch (e) {}
 
-      function choix(nom) {
-        var c = form.querySelector('input[name="' + nom + '"]:checked');
-        return c ? c.value : null;
-      }
+  /* ---------- 2. Ticket : aperçu en direct et copie ---------- */
+  try {
+    (function () {
+      var form = document.getElementById("ticket");
+      var apercu = document.getElementById("apercu");
+      var prenom = document.getElementById("prenom");
+      var envoyer = document.getElementById("envoyer");
+      var copierBtn = document.getElementById("copier");
+      var statut = document.getElementById("statut");
+      if (!form || !apercu) return;
+      var champs = {
+        jour: apercu.querySelector('[data-champ="jour"]'),
+        moment: apercu.querySelector('[data-champ="moment"]'),
+        prenom: apercu.querySelector('[data-champ="prenom"]')
+      };
+      var lignePrenom = apercu.querySelector('[data-ligne="prenom"]');
 
       function nettoyer(s) {
-        return String(s || "").replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, 30);
+        return String(s || "").replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, 30).trim();
+      }
+
+      function valeurs() {
+        var j = form.querySelector('input[name="jour"]:checked');
+        var m = form.querySelector('input[name="moment"]:checked');
+        var jour = CFG.a_convenir;
+        if (j) jour = j.value + (j.getAttribute("data-rel") ? " " + j.getAttribute("data-rel") : "");
+        return { jour: jour, moment: m ? m.value : CFG.a_convenir, prenom: nettoyer(prenom && prenom.value) };
       }
 
       function message() {
-        var lignes = [
-          "Bonjour " + CFG.barbier + NBSP + "! Je voudrais un rendez-vous pour une " + CFG.prestation + ".",
-          "Jour" + NBSP + ": " + (choix("jour") || "peu importe"),
-          "Moment" + NBSP + ": " + (choix("moment") || "je suis flexible")
-        ];
-        var p = nettoyer(prenom && prenom.value);
-        if (p) lignes.push("Prénom" + NBSP + ": " + p);
-        lignes.push("Merci" + NBSP + "!");
+        var v = valeurs();
+        var lignes = [CFG.salut, CFG.jour + " : " + v.jour, CFG.moment + " : " + v.moment];
+        if (v.prenom) lignes.push(CFG.prenom + " : " + v.prenom);
+        lignes.push(CFG.fin);
         return lignes.join("\n");
       }
 
-      function afficher(anime) {
-        var m = message();
-        if (apercu.value === m) return;
-        apercu.value = m;
-        apercu.rows = m.split("\n").length;
-        ajuster();
-        if (anime && !reduit) {
-          apercu.classList.remove("apercu--maj");
-          void apercu.offsetWidth;
-          apercu.classList.add("apercu--maj");
-        }
-        dire("", false);
+      function afficher() {
+        var v = valeurs();
+        ["jour", "moment", "prenom"].forEach(function (k) {
+          var b = champs[k];
+          if (!b || b.textContent === v[k]) return;
+          b.textContent = v[k];
+          if (!reduit) {
+            b.classList.remove("vient");
+            void b.offsetWidth;
+            b.classList.add("vient");
+          }
+        });
+        if (lignePrenom) lignePrenom.hidden = !v.prenom;
+        dire("");
       }
 
-      // Le champ prend la hauteur exacte du message (aucune barre de défilement).
-      function ajuster() {
-        apercu.style.height = "auto";
-        var cs = window.getComputedStyle(apercu);
-        var bords = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0);
-        apercu.style.height = (apercu.scrollHeight + bords) + "px";
-      }
-      window.addEventListener("resize", ajuster);
+      function dire(texte) { statut.textContent = texte; }
 
-      function dire(texte, erreur) {
-        statut.textContent = texte;
-        statut.classList.toggle("est-erreur", !!erreur);
-        // Le message de résultat ne doit jamais rester caché sous la barre d’action.
-        if (texte) {
-          try { statut.scrollIntoView({ block: "nearest", behavior: reduit ? "auto" : "smooth" }); } catch (e) {}
-        }
+      function selectionner() {
+        try {
+          var r = document.createRange();
+          r.selectNodeContents(apercu);
+          var s = window.getSelection();
+          s.removeAllRanges();
+          s.addRange(r);
+        } catch (e) {}
       }
 
-      // Repli : sélection du champ + execCommand (navigateurs intégrés sans API Clipboard).
+      // Repli : sélection de l’aperçu puis execCommand (navigateurs intégrés sans API Clipboard).
       function copieRepli() {
         try {
-          apercu.focus({ preventScroll: true });
-          apercu.select();
-          apercu.setSelectionRange(0, apercu.value.length);
+          selectionner();
           var ok = document.execCommand && document.execCommand("copy");
+          if (ok) window.getSelection().removeAllRanges();
           return !!ok;
         } catch (e) {
           return false;
         }
       }
 
+      function reussite() { dire(CFG.statut_ok); }
+      function echec() { selectionner(); dire(CFG.statut_echec); }
+
+      // La copie part dans le même geste, sans attendre la promesse : le lien s’ouvre normalement.
       function copier(texte) {
         var cb = navigator.clipboard;
         if (cb && typeof cb.writeText === "function") {
           try {
-            return cb.writeText(texte).then(function () { return true; }, function () { return copieRepli(); });
-          } catch (e) { /* on tente le repli */ }
+            cb.writeText(texte).then(reussite, function () { if (copieRepli()) reussite(); else echec(); });
+            return;
+          } catch (e) { /* repli ci-dessous */ }
         }
-        return Promise.resolve(copieRepli());
+        if (copieRepli()) reussite(); else echec();
       }
 
-      function resultat(ok) {
-        if (ok) {
-          dire("Message copié" + NBSP + ": collez-le dans la conversation.", false);
-        } else {
-          dire("Copie impossible" + NBSP + ": sélectionnez le message et copiez-le.", true);
-          try { apercu.focus({ preventScroll: true }); apercu.select(); } catch (e) {}
-        }
-      }
-
-      form.addEventListener("change", function () { afficher(true); });
-      if (prenom) prenom.addEventListener("input", function () { afficher(true); });
+      form.addEventListener("change", afficher);
+      if (prenom) prenom.addEventListener("input", afficher);
       form.addEventListener("submit", function (e) { e.preventDefault(); });
-
-      // Le lien reste un vrai lien : la copie ne bloque jamais l’ouverture d’Instagram.
-      envoyer.addEventListener("click", function () {
-        var m = message();
-        copier(m).then(resultat, function () { resultat(false); });
-      });
-      copierBtn.addEventListener("click", function () {
-        copier(message()).then(resultat, function () { resultat(false); });
-      });
-
-      form.hidden = false;
-      afficher(false);
-      ajuster();
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajuster);
+      envoyer.addEventListener("click", function () { copier(message()); });
+      copierBtn.addEventListener("click", function () { copier(message()); });
+      afficher();
     })();
-  } catch (e) {
-    try { document.getElementById("module").hidden = true; } catch (x) {}
-  }
+  } catch (e) {}
 
-  /* ---------- 2. Visionneuse ---------- */
+  /* ---------- 3. Visionneuse ---------- */
   try {
     (function () {
       var dlg = document.getElementById("visionneuse");
-      var vignettes = Array.prototype.slice.call(document.querySelectorAll(".vignette"));
-      if (!dlg || typeof dlg.showModal !== "function" || !vignettes.length) {
-        vignettes.forEach(function (v) { v.style.cursor = "default"; });
-        return;
-      }
+      var photos = Array.prototype.slice.call(document.querySelectorAll(".galerie .photo img"));
+      if (!dlg || typeof dlg.showModal !== "function" || !photos.length) return;
       var img = document.getElementById("vis-img");
-      var legende = document.getElementById("vis-legende");
       var compteur = document.getElementById("vis-compteur");
       var index = 0;
       var origine = null;
+      var boutons = [];
 
       function montrer(i) {
-        index = (i + vignettes.length) % vignettes.length;
-        var source = vignettes[index].querySelector("img");
+        index = (i + photos.length) % photos.length;
+        var source = photos[index];
         img.src = source.currentSrc || source.src;
         img.alt = source.alt;
         img.width = source.naturalWidth || source.width;
         img.height = source.naturalHeight || source.height;
-        legende.textContent = vignettes[index].getAttribute("data-legende") || "";
-        compteur.textContent = (index + 1) + " sur " + vignettes.length;
+        compteur.textContent = (index + 1) + " sur " + photos.length;
       }
 
-      vignettes.forEach(function (v, i) {
-        v.addEventListener("click", function () {
-          origine = v;
+      // Sans JS, les vignettes restent de simples images ; ici, chacune devient un bouton.
+      photos.forEach(function (p, i) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "vignette";
+        b.setAttribute("aria-haspopup", "dialog");
+        b.setAttribute("aria-label", "Agrandir la photo " + (i + 1) + " sur " + photos.length + " : " + p.alt);
+        p.parentNode.insertBefore(b, p);
+        b.appendChild(p);
+        b.addEventListener("click", function () {
+          origine = b;
           montrer(i);
           dlg.showModal();
         });
+        boutons.push(b);
       });
 
       document.getElementById("vis-prec").addEventListener("click", function () { montrer(index - 1); });
       document.getElementById("vis-suiv").addEventListener("click", function () { montrer(index + 1); });
       document.getElementById("vis-fermer").addEventListener("click", function () { dlg.close(); });
-
       dlg.addEventListener("keydown", function (e) {
         if (e.key === "ArrowLeft") { e.preventDefault(); montrer(index - 1); }
         else if (e.key === "ArrowRight") { e.preventDefault(); montrer(index + 1); }
       });
-
-      // Toucher hors de la photo : ferme.
       dlg.addEventListener("click", function (e) {
         var t = e.target;
-        if (t === dlg || (t.classList && (t.classList.contains("visionneuse__cadre") || t.classList.contains("visionneuse__nav") || t.classList.contains("visionneuse__figure")))) {
-          dlg.close();
-        }
+        if (t === dlg || (t.classList && (t.classList.contains("visionneuse__cadre") || t.classList.contains("visionneuse__nav") || t.classList.contains("visionneuse__figure")))) dlg.close();
       });
-
-      // Balayage au doigt.
       var x0 = null, y0 = null;
       var fig = dlg.querySelector(".visionneuse__figure");
       fig.addEventListener("touchstart", function (e) {
@@ -252,57 +254,34 @@
         x0 = null;
         if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) montrer(index + (dx < 0 ? 1 : -1));
       }, { passive: true });
-
       dlg.addEventListener("close", function () {
         if (origine) { try { origine.focus({ preventScroll: true }); } catch (e) { origine.focus(); } }
       });
     })();
   } catch (e) {}
 
-  /* ---------- 3. Halo du héros : suit la souris, s’arrête quand elle s’arrête ---------- */
+  /* ---------- 4. Pastille mobile : un seul rouge d’action visible à la fois ---------- */
   try {
     (function () {
-      var halo = document.getElementById("halo");
-      var zone = halo ? halo.closest(".heros-bande") : null;
-      if (!halo || !zone || reduit || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-      var x = 0, y = 0, cx = 0, cy = 0, boucle = null, pret = false;
-      function pas() {
-        cx += (x - cx) * 0.12;
-        cy += (y - cy) * 0.12;
-        halo.style.transform = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
-        boucle = (Math.abs(x - cx) > 0.5 || Math.abs(y - cy) > 0.5) ? requestAnimationFrame(pas) : null;
+      var pastille = document.getElementById("pastille");
+      // Masquée tant que le bouton du hero, le panneau ou les boutons du contact sont à l’écran.
+      var cibles = [document.getElementById("cta-heros"), document.querySelector(".panneau"), document.querySelector(".profil__boutons")];
+      if (!pastille || !("IntersectionObserver" in window) || !cibles[0] || !cibles[1]) return;
+      cibles = cibles.filter(Boolean);
+      var visibles = new Set();
+      function maj() {
+        var montrer = visibles.size === 0;
+        pastille.classList.toggle("est-visible", montrer);
+        pastille.setAttribute("aria-hidden", montrer ? "false" : "true");
+        pastille.tabIndex = montrer ? 0 : -1;
       }
-      zone.addEventListener("pointermove", function (e) {
-        var r = zone.getBoundingClientRect();
-        x = e.clientX - r.left;
-        y = e.clientY - r.top;
-        if (!pret) { cx = x; cy = y; pret = true; }
-        halo.classList.add("est-actif");
-        if (!boucle) boucle = requestAnimationFrame(pas);
+      var io = new IntersectionObserver(function (entrees) {
+        entrees.forEach(function (e) {
+          if (e.isIntersecting) visibles.add(e.target); else visibles.delete(e.target);
+        });
+        maj();
       });
-      zone.addEventListener("pointerleave", function () { halo.classList.remove("est-actif"); });
+      cibles.forEach(function (c) { io.observe(c); });
     })();
-  } catch (e) {}
-
-  /* ---------- 4. Défilement doux vers les ancres ---------- */
-  try {
-    document.addEventListener("click", function (e) {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
-      if (!a) return;
-      var id = a.getAttribute("href").slice(1);
-      var cible = id ? document.getElementById(id) : null;
-      if (!cible) return;
-      e.preventDefault();
-      if (id === "haut") {
-        window.scrollTo({ top: 0, behavior: reduit ? "auto" : "smooth" });
-      } else {
-        cible.scrollIntoView({ behavior: reduit ? "auto" : "smooth", block: "start" });
-        if (cible.hasAttribute("tabindex")) {
-          try { cible.focus({ preventScroll: true }); } catch (x) {}
-        }
-      }
-      try { history.replaceState(null, "", "#" + id); } catch (x) {}
-    });
   } catch (e) {}
 })();

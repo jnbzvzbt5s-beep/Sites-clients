@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>document.documentElement.className = document.documentElement.className.replace("no-js", "js attente");</script>
 <title>{{meta.titre}}</title>
 <meta name="description" content="{{meta.description}}">
 <meta name="theme-color" content="{{meta.theme}}">
@@ -10,7 +11,8 @@
 <meta property="og:locale" content="fr_LU">
 <meta property="og:title" content="{{meta.titre}}">
 <meta property="og:description" content="{{meta.description}}">
-<link rel="icon" type="image/png" href="{{favicon}}">
+<link rel="icon" type="image/png" sizes="64x64" href="{{favicon}}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{apple_touch}}">
 <style>
 {{css}}
 </style>
@@ -20,180 +22,175 @@
 <a class="evitement" href="#contenu">Aller au contenu</a>
 
 <header class="entete">
+  <div class="ruban ruban--page ruban--haut" aria-hidden="true"></div>
   <div class="enveloppe entete__barre">
-    <a class="logo" href="#haut" aria-label="{{nom}}, haut de page">{{> logo}}</a>
+    <a class="logo" href="#haut">{{logo:44}}</a>
     <nav class="entete__nav" aria-label="Sections">
       <ul>
-        <li class="entete__ancre"><a href="#coupes">Les coupes</a></li>
-        <li class="entete__ancre"><a href="#prix">Le prix</a></li>
-        <li class="entete__ancre"><a href="#rendez-vous">Rendez-vous</a></li>
-        <li><a class="bouton bouton--rouge bouton--petit" href="#rendez-vous">Prendre rendez-vous</a></li>
+        <li><a href="#coupes">Les coupes</a></li>
+        <li><a href="#rendez-vous">Rendez-vous</a></li>
+        <li><a href="#rui">Rui</a></li>
+        <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
+    <a class="bouton bouton--nuit bouton--petit entete__cta" href="#rendez-vous">{{textes.cta}}</a>
+    <a class="entete__ig" href="{{site.instagram.profil}}" rel="noopener" aria-label="Instagram de Rui">{{icone:instagram}}</a>
   </div>
 </header>
 
 <main id="contenu" tabindex="-1">
 
-  <section class="bande bande--nuit heros-bande" aria-labelledby="accroche">
-    <div class="heros-fond" aria-hidden="true"><div class="heros-fond__rayures"></div><div class="halo" id="halo"></div></div>
-    <div class="enveloppe heros">
-      <p class="heros__moien">Moien&nbsp;!</p>
-      <h1 class="heros__titre" id="accroche">Une coupe nette, sans vous presser.</h1>
-      <p class="heros__intro">Je suis {{barbier}}, barbier à {{ville}} depuis {{depuis}}.</p>
-      <p class="heros__prix"><span>{{prestation.nom}}&nbsp;:</span> <strong class="chiffres" data-prix>{{prestation.affichage}}</strong></p>
-      <div class="boutons">
-        <a class="bouton bouton--rouge" href="#rendez-vous">Prendre rendez-vous</a>
-        <a class="bouton bouton--clair" href="#coupes">Voir les coupes</a>
+  <section class="heros enveloppe" aria-labelledby="accroche">
+    <div class="heros__texte">
+      <p class="etiquette heros__lieu">{{textes.lieu}}</p>
+      <p class="heros__moien" lang="lb">{{textes.moien}}</p>
+      <h1 id="accroche">{{textes.accroche}}</h1>
+      <p class="chapo heros__chapo">{{textes.chapo}}</p>
+      <div class="heros__actions">
+        <a class="bouton bouton--rouge" id="cta-heros" href="#rendez-vous">{{textes.cta}}</a>
+        <a class="lien-fleche" href="#coupes">{{textes.voir_coupes}}{{icone:fleche-bas}}</a>
       </div>
     </div>
-  </section>
-
-  <section class="bande bande--pale biais" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
-    <div class="enveloppe coupes">
-      <h2 id="coupes-titre">Les coupes</h2>
-      {{gallery}}
-    </div>
-  </section>
-
-  <section class="bande bande--rouge biais" id="prix" aria-labelledby="prix-titre" tabindex="-1">
-    <div class="rayures rayures--prix" aria-hidden="true"></div>
-    <div class="enveloppe prix">
-      <h2 id="prix-titre">Le prix</h2>
-      <p class="prix__ligne">
-        <span class="prix__nom">{{prestation.nom}}</span>
-        <strong class="prix__montant chiffres" data-prix>{{prestation.affichage}}</strong>
+    <div class="heros__visuel">
+      <div class="halo halo--heros" aria-hidden="true"></div>
+      <figure class="heros__photo">
+        {{img:hero}}
+        {{regle}}
+      </figure>
+      <p class="etiquette-prix">
+        <span class="ruban ruban--prix" aria-hidden="true"></span>
+        <span class="etiquette">{{textes.prix_etiquette}}</span>
+        <strong class="etiquette-prix__montant chiffres" data-prix>{{site.prestation.affichage}}</strong>
       </p>
     </div>
   </section>
 
-  <section class="bande bande--blanc" aria-labelledby="etapes-titre">
-    <div class="enveloppe etapes">
-      <h2 id="etapes-titre">Comment ça marche</h2>
-      <ol class="etapes__liste">
-        <li>
-          <h3>Vous proposez un créneau.</h3>
-          <p>Choisissez le jour et le moment qui vous arrangent, puis envoyez-moi le message sur Instagram.</p>
-        </li>
-        <li>
-          <h3>Je vous confirme.</h3>
-          <p>Je réponds sur Instagram avec l’heure exacte et l’adresse du studio, ou je vous propose un autre moment.</p>
-        </li>
-        <li>
-          <h3>Vous passez au fauteuil.</h3>
-          <p>Je prends le temps qu’il faut pour une coupe nette.</p>
-        </li>
-      </ol>
+  {{separateur:25}}
+
+  <section class="coupes enveloppe" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
+    <p class="etiquette">{{textes.coupes_index}}</p>
+    <h2 id="coupes-titre">{{textes.coupes_titre}}</h2>
+    <p class="chapo">{{textes.coupes_phrase}}</p>
+    <div class="coupes__zone">
+      <div class="halo halo--coupes" aria-hidden="true"></div>
+      {{galerie}}
     </div>
   </section>
 
-  <section class="bande bande--bleu rdv" id="rendez-vous" aria-labelledby="rdv-titre" tabindex="-1">
-    <div class="rdv-fond" aria-hidden="true"></div>
-    <div class="enveloppe">
-      <h2 id="rdv-titre">Proposez un créneau, je vous confirme.</h2>
-
-      <noscript>
-        <p class="rdv__sansjs"><a class="bouton bouton--plein" href="{{instagram.message}}" rel="noopener">M’écrire sur Instagram</a></p>
-      </noscript>
-
-      <form class="module" id="module" hidden novalidate>
-        <div class="module__choix">
-          <fieldset class="groupe">
-            <legend>Jour</legend>
-            <div class="puces puces--jours" id="jours"></div>
-          </fieldset>
-          <fieldset class="groupe">
-            <legend>Moment</legend>
-            <div class="puces puces--moments">
-              <label class="puce"><input type="radio" name="moment" value="le matin"><span>Le matin</span></label>
-              <label class="puce"><input type="radio" name="moment" value="à midi"><span>À midi</span></label>
-              <label class="puce"><input type="radio" name="moment" value="l’après-midi"><span>L’après-midi</span></label>
-              <label class="puce"><input type="radio" name="moment" value="en fin de journée"><span>En fin de journée</span></label>
-              <label class="puce"><input type="radio" name="moment" value="je suis flexible"><span>Je suis flexible</span></label>
+  <section class="rdv" id="rendez-vous" aria-labelledby="rdv-titre" tabindex="-1">
+    <div class="panneau">
+      <div class="panneau__trame" aria-hidden="true">{{trame:ciel}}</div>
+      <div class="panneau__grain" aria-hidden="true"></div>
+      <div class="panneau__intro">
+        <p class="etiquette">{{textes.rdv_index}}</p>
+        <h2 id="rdv-titre">{{textes.rdv_titre}}</h2>
+        <ol class="etapes">
+          {{etapes}}
+        </ol>
+      </div>
+      <div class="panneau__ticket">
+        <form class="ticket" id="ticket" novalidate aria-labelledby="ticket-titre">
+          <div class="ticket__haut">
+            <div class="ruban ruban--ticket" aria-hidden="true"></div>
+            <p class="etiquette" id="ticket-titre">{{textes.ticket_titre}}</p>
+            <p class="ticket__prestation">{{textes.ticket_prestation}}</p>
+            <p class="ticket__sansjs">{{textes.phrase_sans_js}}</p>
+            <fieldset class="ticket__champ ticket__champ--jour">
+              <legend><span class="ticket__num" aria-hidden="true">1</span>{{textes.ticket_jour}}</legend>
+              <div class="tuiles" id="tuiles"></div>
+            </fieldset>
+            <fieldset class="ticket__champ">
+              <legend><span class="ticket__num" aria-hidden="true">2</span>{{textes.ticket_moment}}</legend>
+              <div class="puces">
+                {{moments}}
+              </div>
+            </fieldset>
+            <div class="ticket__champ ticket__champ--prenom">
+              <label for="prenom"><span class="ticket__num" aria-hidden="true">3</span>{{textes.ticket_prenom}} <span class="ticket__facultatif">{{textes.ticket_facultatif}}</span></label>
+              <input id="prenom" name="prenom" type="text" maxlength="30" autocomplete="given-name" autocapitalize="words" spellcheck="false" enterkeyhint="done">
             </div>
-          </fieldset>
-          <div class="champ">
-            <label for="prenom">Votre prénom <span class="facultatif">(facultatif)</span></label>
-            <input id="prenom" name="prenom" type="text" maxlength="30" autocomplete="given-name" autocapitalize="words" spellcheck="false" enterkeyhint="done">
           </div>
-        </div>
-
-        <div class="module__envoi">
-          <label class="apercu__titre" for="apercu">Votre message</label>
-          <textarea class="apercu" id="apercu" rows="6" readonly spellcheck="false"></textarea>
-          <div class="module__boutons">
-            <a class="bouton bouton--rouge bouton--large" id="envoyer" href="{{instagram.message}}" target="_blank" rel="noopener">Copier et envoyer sur Instagram</a>
-            <button class="bouton bouton--trait bouton--large" id="copier" type="button">Copier le message</button>
+          <div class="ticket__bas">
+            <p class="etiquette" id="apercu-titre">{{textes.ticket_apercu}}</p>
+            {{apercu}}
+            <a class="bouton bouton--rouge bouton--large" id="envoyer" href="{{site.instagram.message}}" rel="noopener">{{icone:instagram}}<span class="si-js">{{textes.bouton_copier_ouvrir}}</span><span class="si-nojs">{{textes.bouton_sans_js}}</span></a>
+            <button class="lien-bouton si-js" id="copier" type="button">{{textes.bouton_copier_seul}}</button>
+            <p class="ticket__statut" id="statut" role="status" aria-live="polite"></p>
           </div>
-          <p class="module__statut" id="statut" role="status" aria-live="polite"></p>
-          <p class="module__note">Je vous réponds sur Instagram pour confirmer ou proposer un autre moment. Rien n’est envoyé tant que vous ne me l’envoyez pas.</p>
-        </div>
-      </form>
+        </form>
+        <p class="panneau__note">{{textes.rdv_note}}</p>
+      </div>
     </div>
   </section>
 
-  <section class="bande bande--nuit biais" id="rui" aria-labelledby="rui-titre">
-    <div class="enveloppe rui">
-      <h2 id="rui-titre">{{barbier}}</h2>
+  <section class="rui enveloppe" id="rui" aria-labelledby="rui-titre">
+    <p class="etiquette">{{textes.rui_index}}</p>
+    <div class="rui__tete">
+      <h2 class="rui__nom" id="rui-titre">{{textes.rui_nom}}</h2>
+      <div class="rui__trame" aria-hidden="true">{{trame:brume}}</div>
+    </div>
+    <p class="etiquette rui__mots">{{textes.rui_mots}}</p>
+    <div class="rui__corps">
       <div class="rui__texte">
-        <p>Je coupe les cheveux depuis {{depuis}}&nbsp;: {{coupes_realisees}} coupes à ce jour.</p>
-        <p>Je suis jeune et je progresse encore, alors chaque coupe compte pour moi.</p>
-        <p>Je prends le temps qu’il faut pour vos cheveux, sans vous presser. Et si vous avez une question, je vous réponds volontiers.</p>
+        {{rui_texte}}
       </div>
-      <ul class="rui__langues" aria-label="Les langues que je parle">
-        <li lang="lb">Ech schwätze Lëtzebuergesch.</li>
-        <li>Je parle français.</li>
-        <li lang="de">Ich spreche Deutsch.</li>
-        <li lang="en">I speak English.</li>
-        <li lang="pt">Falo português.</li>
-      </ul>
+      <div class="rui__langues">
+        <p class="etiquette">{{textes.langues_titre}}</p>
+        <ul class="langues">
+          {{langues}}
+        </ul>
+      </div>
     </div>
   </section>
 
-  <section class="bande bande--blanc" id="contact" aria-labelledby="contact-titre">
-    <div class="enveloppe contact">
-      <h2 id="contact-titre">Contact</h2>
-      <p data-contact="seul_moyen">{{contact.seul_moyen}}</p>
-      <p class="contact__pseudo" translate="no">{{instagram.affichage}}</p>
-      <div class="boutons">
-        <a class="bouton bouton--plein" href="{{instagram.message}}" target="_blank" rel="noopener">M’écrire</a>
-        <a class="bouton bouton--trait" href="{{instagram.profil}}" target="_blank" rel="noopener">Voir mon profil</a>
+  {{separateur:60}}
+
+  <section class="contact enveloppe" id="contact" aria-labelledby="contact-titre">
+    <p class="etiquette">{{textes.contact_index}}</p>
+    <h2 id="contact-titre">{{textes.contact_titre}}</h2>
+    <div class="contact__zone">
+      <div class="halo halo--contact" aria-hidden="true"></div>
+      <div class="profil">
+        {{logo_tuile:120}}
+        <p class="profil__pseudo" translate="no">{{site.instagram.affichage}}</p>
+        <p class="profil__nom">{{textes.contact_sous_titre}}</p>
+        <p class="profil__seul" data-contact="seul_moyen">{{textes.contact_seul_moyen}}</p>
+        <div class="profil__boutons">
+          <a class="bouton bouton--nuit" href="{{site.instagram.message}}" rel="noopener">{{icone:instagram}}{{textes.contact_ecrire}}</a>
+          <a class="bouton bouton--contour" href="{{site.instagram.profil}}" rel="noopener">{{textes.contact_profil}}</a>
+        </div>
+        <p class="profil__lieu" data-contact="lieu">{{textes.contact_lieu}}</p>
       </div>
-      <p class="contact__lieu" data-contact="lieu">{{contact.lieu}}</p>
     </div>
   </section>
 </main>
 
 <footer class="pied">
   <div class="enveloppe pied__grille">
-    <p class="pied__logo">{{> logo}}</p>
-    <ul class="pied__liens">
-      <li><a href="{{instagram.profil}}" target="_blank" rel="noopener">Instagram&nbsp;<span translate="no">{{instagram.affichage}}</span></a></li>
-      <li>Ce site ne dépose aucun cookie.</li>
-      {{mentions}}
-      <li class="pied__credit"><a href="{{credit.url}}" target="_blank" rel="noopener">{{credit.texte}}</a></li>
-    </ul>
+    <p class="pied__logo">{{logo:32}}</p>
+    <p>{{textes.pied_cookies}}</p>
+    <details class="pied__mentions">
+      <summary>{{textes.pied_mentions}}</summary>
+      <p>{{mentions}}</p>
+    </details>
+    <p class="pied__credit"><a href="{{site.credit.url}}" rel="noopener">{{site.credit.texte}} ({{site.credit.affichage}})</a></p>
   </div>
+  <div class="ruban ruban--page ruban--bas" aria-hidden="true"></div>
 </footer>
 
-<div class="barre">
-  <a class="bouton bouton--rouge bouton--large" href="#rendez-vous">Prendre rendez-vous</a>
-</div>
+<a class="bouton bouton--rouge pastille" id="pastille" href="#rendez-vous" tabindex="-1" aria-hidden="true">{{textes.cta}}</a>
 
 <dialog class="visionneuse" id="visionneuse" aria-label="Photos des coupes">
   <div class="visionneuse__cadre">
     <figure class="visionneuse__figure">
-      <img class="visionneuse__img" id="vis-img" alt="" width="560" height="700">
-      <figcaption class="visionneuse__legende">
-        <span id="vis-legende"></span>
-        <span class="visionneuse__compteur chiffres" id="vis-compteur"></span>
-      </figcaption>
+      <img class="visionneuse__img" id="vis-img" alt="" width="400" height="500">
+      <figcaption class="visionneuse__compteur chiffres" id="vis-compteur"></figcaption>
     </figure>
     <div class="visionneuse__nav">
-      <button class="visionneuse__btn" type="button" id="vis-prec" aria-label="Photo précédente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <button class="visionneuse__btn" type="button" id="vis-suiv" aria-label="Photo suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button class="visionneuse__btn" type="button" id="vis-prec" aria-label="Photo précédente">{{icone:chevron-gauche}}</button>
+      <button class="visionneuse__btn" type="button" id="vis-suiv" aria-label="Photo suivante">{{icone:chevron-droite}}</button>
     </div>
-    <button class="visionneuse__btn visionneuse__fermer" type="button" id="vis-fermer" aria-label="Fermer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button class="visionneuse__btn visionneuse__fermer" type="button" id="vis-fermer" aria-label="Fermer">{{icone:fermer}}</button>
   </div>
 </dialog>
 

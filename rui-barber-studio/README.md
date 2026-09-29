@@ -1,26 +1,26 @@
-# Rui’s Barber Studio — site vitrine
+# Rui’s Barber Studio — site vitrine (V5 « le dégradé net »)
 
-Livrable : `index.html` (fichier unique, à déposer tel quel sur Netlify).
+Livrable : `index.html` (fichier unique, à glisser-déposer sur un nouveau site Netlify).
+Planche de tokens : `tokens.html`. Captures : `livraison/`.
 
 ## Construire
 
 ```sh
 pip install pillow pillow-heif fonttools brotli numpy
-python3 tools/photos.py    # photos-src/ → build/img/ (recadrage, étalonnage, WebP sans métadonnées)
-python3 tools/logo.py      # logo-src/ → build/logo/ (cercle détouré, favicon « RBS »)
-python3 tools/build.py     # data/ + src/ → index.html
+python3 tools/photos.py           # photos-src/ → build/img/ (EXIF appliqué puis supprimé, recadrage 4:5, étalonnage)
+python3 tools/logo.py             # logo-src/ → build/logo/ (image carrée telle quelle, redimensionnée)
+python3 tools/build.py            # échoue tant qu’il reste un « À COMPLÉTER » dans data/contenu.json
+python3 tools/build.py --brouillon  # assemble quand même, « À COMPLÉTER » affichés surlignés
 ```
 
-- `data/site.json` : source unique (prix, liens Instagram, textes de contact, métadonnées, JSON-LD).
-- `data/photos.json` : rôle, texte alternatif, légende et point focal de chaque photo.
-- `src/logo.html` : composant du logo (cercle « RBS » + nom), utilisé en en-tête et en pied de page.
-- `fonts/` : Archivo variable (OFL), réduite à la construction.
+`data/contenu.json` est la source unique : textes, photos (rôle, recadrage, alt, légende), liens.
 
 ## Tester
 
 ```sh
-python3 tests/static_checks.py      # poids, couleurs, contrastes, métadonnées, concordance des données
-node tests/acceptance.mjs           # Playwright : Chromium (+ WebKit s’il est installé)
-node tests/lighthouse.mjs           # Lighthouse mobile, page servie compressée
-node tests/captures.mjs <dossier>   # captures 320 / 390 / 834 / 1180 / 1440
+python3 tests/static_checks.py    # poids, couleurs interdites, contrastes, métadonnées, JSON-LD, typographie
+node tests/acceptance.mjs         # Playwright (Chromium --disable-lcd-text ; WebKit s’il est installé)
+python3 tests/budgets.py          # budgets rouge / rose / violet / sombre sur les captures de acceptance.mjs
+node tests/lighthouse.mjs         # Lighthouse mobile, page servie compressée
+node tests/captures.mjs <dossier> # captures 320 / 390 / 834 / 1180 / 1440
 ```

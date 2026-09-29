@@ -1,0 +1,221 @@
+{
+  "site": {
+    "nom": "Rui’s Barber Studio",
+    "nom_court": "Rui’s",
+    "nom_suite": "Barber Studio",
+    "barbier": "Rui",
+    "ville": "Mersch",
+    "pays": "LU",
+    "depuis": "juillet 2023",
+    "instagram": {
+      "pseudo": "ruis_barber_studio",
+      "affichage": "@ruis_barber_studio",
+      "message": "https://ig.me/m/ruis_barber_studio",
+      "profil": "https://www.instagram.com/ruis_barber_studio/"
+    },
+    "prestation": {
+      "nom": "Coupe complète",
+      "prix": 15,
+      "devise": "EUR",
+      "affichage": "15 €",
+      "comprend": "À COMPLÉTER",
+      "duree": "À COMPLÉTER"
+    },
+    "paiement": "À COMPLÉTER",
+    "url": "À COMPLÉTER",
+    "mentions_legales": "À COMPLÉTER : exploitant, adresse, numéro d’autorisation d’établissement, numéro de TVA s’il existe",
+    "credit": {
+      "texte": "Site : Studio Marcus",
+      "url": "https://studio-marcus.netlify.app",
+      "affichage": "studio-marcus.netlify.app"
+    }
+  },
+  "meta": {
+    "titre": "Rui’s Barber Studio — barbier à Mersch",
+    "description": "Coupe complète à 15 € à Mersch. Proposez un créneau sur Instagram, Rui vous confirme.",
+    "theme": "#F5F8FC"
+  },
+  "textes": {
+    "lieu": "Mersch · Luxembourg",
+    "moien": "Moien !",
+    "accroche": "Une coupe nette, sans vous presser.",
+    "chapo": "Je suis Rui, barbier à Mersch depuis juillet 2023.",
+    "cta": "Prendre rendez-vous",
+    "voir_coupes": "Voir les coupes",
+    "prix_etiquette": "Coupe complète",
+    "coupes_index": "01 — Les coupes",
+    "coupes_titre": "Les coupes",
+    "coupes_phrase": "Quelques coupes faites par moi.",
+    "rdv_index": "02 — Rendez-vous",
+    "rdv_titre": "Proposez un créneau, je vous confirme.",
+    "etapes": [
+      "Vous proposez un créneau.",
+      "Je vous confirme sur Instagram.",
+      "Vous passez au fauteuil."
+    ],
+    "rdv_note": "Je réponds sur Instagram avec l’heure exacte et l’adresse, ou je vous propose un autre moment.",
+    "ticket_titre": "Rendez-vous · Rui’s Barber Studio",
+    "ticket_prestation": "Coupe complète · 15 €",
+    "ticket_jour": "Jour",
+    "ticket_moment": "Moment",
+    "ticket_prenom": "Prénom",
+    "ticket_facultatif": "(facultatif)",
+    "ticket_apercu": "Aperçu du message",
+    "moments": [
+      "Le matin",
+      "À midi",
+      "L’après-midi",
+      "En fin de journée",
+      "Je suis flexible"
+    ],
+    "peu_importe": "Peu importe",
+    "a_convenir": "à convenir",
+    "bouton_copier_ouvrir": "Copier et ouvrir Instagram",
+    "bouton_copier_seul": "Copier le message seulement",
+    "bouton_sans_js": "Écrire à Rui sur Instagram",
+    "phrase_sans_js": "Écrivez-moi le jour et le moment qui vous arrangent.",
+    "statut_ok": "Message copié. Dans Instagram, appuyez longuement dans le champ, puis Coller.",
+    "statut_echec": "La copie automatique n’a pas marché : le message est sélectionné, copiez-le.",
+    "message": {
+      "salut": "Bonjour Rui ! Je voudrais un rendez-vous pour une coupe complète.",
+      "fin": "Merci !"
+    },
+    "rui_index": "03 — Rui",
+    "rui_nom": "Rui",
+    "rui_mots": "Concentré · Serviable · Engagé",
+    "rui_texte": [
+      "Je coupe les cheveux depuis juillet 2023 : plus de 100 coupes à ce jour.",
+      "Je suis jeune et je progresse encore, alors chaque coupe compte pour moi.",
+      "Je prends le temps qu’il faut pour vos cheveux, sans vous presser.",
+      "Ce que mes clients me disent le plus : une coupe nette, un prix doux, un accueil sympa."
+    ],
+    "langues_titre": "Langues",
+    "langues": [
+      {
+        "texte": "Ech schwätze Lëtzebuergesch.",
+        "lang": "lb",
+        "code": "LB"
+      },
+      {
+        "texte": "Je parle français.",
+        "lang": "fr",
+        "code": "FR"
+      },
+      {
+        "texte": "Ich spreche Deutsch.",
+        "lang": "de",
+        "code": "DE"
+      },
+      {
+        "texte": "I speak English.",
+        "lang": "en",
+        "code": "EN"
+      },
+      {
+        "texte": "Falo português.",
+        "lang": "pt",
+        "code": "PT"
+      }
+    ],
+    "contact_index": "04 — Contact",
+    "contact_titre": "Contact",
+    "contact_sous_titre": "Rui’s Barber Studio · Mersch",
+    "contact_seul_moyen": "Instagram est le seul moyen de me joindre.",
+    "contact_ecrire": "M’écrire",
+    "contact_profil": "Voir mon profil",
+    "contact_lieu": "Je coupe à Mersch. L’adresse exacte vous est envoyée à la confirmation.",
+    "pied_cookies": "Ce site ne dépose aucun cookie.",
+    "pied_mentions": "Mentions légales"
+  },
+  "portrait": "À COMPLÉTER",
+  "photos": [
+    {
+      "fichier": "hero",
+      "source": "p4.jpg",
+      "role": "hero",
+      "recadrage": [
+        150,
+        470,
+        590,
+        1020
+      ],
+      "alt": "Dégradé à blanc sur la nuque et les côtés, dessus court, vu de dos de trois quarts",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "vedette",
+      "source": "p7.jpg",
+      "role": "vedette",
+      "recadrage": [
+        200,
+        490,
+        520,
+        890
+      ],
+      "alt": "Dessus bouclé et dégradé bas à la nuque, vu de dos de trois quarts",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-1",
+      "source": "p1.jpg",
+      "role": "vignette",
+      "recadrage": [
+        230,
+        580,
+        630,
+        1080
+      ],
+      "alt": "Dégradé à blanc sur les côtés, dessus court et barbe taillée, vu de profil",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-2",
+      "source": "p8.jpg",
+      "role": "vignette",
+      "recadrage": [
+        196,
+        398,
+        526,
+        810
+      ],
+      "alt": "Dessus long et lisse, dégradé bas à la nuque, vu de dos de trois quarts",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-3",
+      "source": "p6.jpg",
+      "role": "vignette",
+      "recadrage": [
+        70,
+        410,
+        400,
+        822
+      ],
+      "alt": "Cheveux longs attachés en chignon, côtés et nuque dégradés, vu de profil arrière",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-4",
+      "source": "p5.jpg",
+      "role": "vignette",
+      "recadrage": [
+        222,
+        370,
+        590,
+        830
+      ],
+      "alt": "Cheveux afro réguliers et nuque nette, vus de dos de trois quarts",
+      "legende": "À COMPLÉTER"
+    }
+  ],
+  "ecartees": [
+    {
+      "source": "p2.jpg",
+      "raison": "la moins nette de la série sur la zone de la coupe (0,65 × la médiane), contre-jour"
+    },
+    {
+      "source": "p3.jpg",
+      "raison": "la plus faible restante : fond encombré (miroir, produits), écartée pour garder une grille sans trou"
+    }
+  ]
+}

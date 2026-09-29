@@ -1,207 +1,344 @@
-"""Assemble index.html (un seul fichier) à partir de data/ et src/.
+"""Assemble index.html (un seul fichier) à partir de data/contenu.json et de src/.
 
-Usage : python3 tools/build.py
-Pré-requis : python3 tools/photos.py (build/img/) et tools/logo.py (build/logo/), police Archivo dans FONT_SRC.
+Usage : python3 tools/build.py [--brouillon]
+  Sans option, le script échoue s’il reste un « À COMPLÉTER » dans contenu.json.
+  Avec --brouillon, il assemble quand même et surligne les « À COMPLÉTER » affichés.
+Pré-requis : tools/photos.py (build/img/) et tools/logo.py (build/logo/).
 """
 import base64
 import html
+import io
 import json
-import os
+import math
 import pathlib
 import re
 import subprocess
 import sys
 
+import numpy as np
 from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
+from PIL import Image
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
-DATA = ROOT / "data"
 BUILD = ROOT / "build"
 OUT = ROOT / "index.html"
-FONT_SRC = pathlib.Path(os.environ.get(
-    "ARCHIVO_WOFF2",
-    ROOT / "fonts" / "archivo-latin-wdth-normal.woff2",
-))
+FONT_SRC = ROOT / "fonts" / "archivo-latin-wdth-normal.woff2"
+A_COMPLETER = "À COMPLÉTER"
+UNICODES = ("U+0020-007E,U+00A0-00FF,U+0152-0153,U+2013-2014,U+2019,U+201C-201E,"
+            "U+2026,U+2009,U+202F,U+20AC")
+CLES_BRUTES = {"url", "message", "profil", "source", "fichier", "lang", "theme", "code", "pseudo"}
 
-MOIS_JOURS = (
-    "janvier février mars avril mai juin juillet août septembre octobre novembre décembre "
-    "janv. févr. avr. juil. sept. oct. nov. déc. "
-    "lundi mardi mercredi jeudi vendredi samedi dimanche lun. mar. mer. jeu. ven. sam. dim. 0123456789"
-)
+ICONES = {
+    "instagram": '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/>',
+    "fleche-bas": '<path d="M12 5v14M6.5 13.5 12 19l5.5-5.5"/>',
+    "coche": '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+    "copier": '<rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/>',
+    "fermer": '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+    "chevron-gauche": '<path d="M14.5 6 8.5 12l6 6"/>',
+    "chevron-droite": '<path d="M9.5 6l6 6-6 6"/>',
+}
 
 
-def lire(p):
-    return pathlib.Path(p).read_text(encoding="utf-8")
+# ---------- Contenu ----------
+def typo(s):
+    """Typographie française : fine insécable avant ; ! ? et dans « », insécable avant : et avant €."""
+    s = s.replace("'", "’")
+    s = re.sub(r" ?([;!?])", "\u202f\\1", s)
+    s = re.sub(r" :", "\u00a0:", s)
+    s = s.replace("« ", "«\u202f").replace(" »", "\u202f»")
+    s = re.sub(r"(\d) €", "\\1\u00a0€", s)
+    return s
+
+
+def appliquer_typo(v, cle=None):
+    if isinstance(v, dict):
+        return {k: appliquer_typo(x, k) for k, x in v.items()}
+    if isinstance(v, list):
+        return [appliquer_typo(x, cle) for x in v]
+    if isinstance(v, str) and cle not in CLES_BRUTES and not v.startswith("http"):
+        return typo(v)
+    return v
+
+
+def a_completer(v, chemin=""):
+    if isinstance(v, dict):
+        return [c for k, x in v.items() for c in a_completer(x, f"{chemin}.{k}" if chemin else k)]
+    if isinstance(v, list):
+        return [c for i, x in enumerate(v) for c in a_completer(x, f"{chemin}[{i}]")]
+    return [chemin] if isinstance(v, str) and A_COMPLETER in v else []
+
+
+def rempli(v):
+    return bool(v) and A_COMPLETER not in str(v)
 
 
 def chemin(ctx, cle):
-    v = ctx
     for part in cle.split("."):
-        v = v[part]
-    return v
+        ctx = ctx[part]
+    return ctx
+
+
+def e(s):
+    return html.escape(str(s), quote=True)
 
 
 def data_uri(path, mime):
     return f"data:{mime};base64," + base64.b64encode(pathlib.Path(path).read_bytes()).decode("ascii")
 
 
-def sous_ensemble_police(texte):
-    chars = sorted({c for c in texte if c.isprintable() or c in "  "})
-    unicodes = ",".join(f"U+{ord(c):04X}" for c in chars)
-    out = BUILD / "archivo-subset.woff2"
-    # Axes limités aux valeurs utilisées : graisse 400–900, largeur 100–125.
-    borne = BUILD / "archivo-400-700.ttf"
-    f = instancer.instantiateVariableFont(TTFont(FONT_SRC), {"wght": (400, 900), "wdth": (100, 125)})
+# ---------- Police ----------
+def police():
+    """Archivo variable, axes réduits aux valeurs utilisées, espace fine insécable ajoutée, sous-ensemble woff2."""
+    f = instancer.instantiateVariableFont(TTFont(FONT_SRC), {"wght": (400, 700), "wdth": (75, 125)})
+    for table in f["cmap"].tables:
+        if table.isUnicode() and 0x2009 in table.cmap:
+            table.cmap[0x202F] = table.cmap[0x2009]  # U+202F absente d’Archivo : même dessin que U+2009
     f.flavor = None
+    borne = BUILD / "archivo-borne.ttf"
     f.save(borne)
-    subprocess.run([
-        sys.executable, "-m", "fontTools.subset", str(borne),
-        f"--unicodes={unicodes}",
-        "--flavor=woff2",
-        "--layout-features=kern,liga,calt,tnum,lnum",
-        "--desubroutinize",
-        "--name-IDs=*",
-        f"--output-file={out}",
-    ], check=True)
-    return out, chars
+    out = BUILD / "archivo-sous-ensemble.woff2"
+    subprocess.run([sys.executable, "-m", "fontTools.subset", str(borne), f"--unicodes={UNICODES}",
+                    "--flavor=woff2", "--layout-features=kern,liga,tnum,case", "--desubroutinize",
+                    f"--output-file={out}"], check=True)
+    return out
 
 
-def favicon():
-    """Favicon : le monogramme « RBS » du logo (build/logo/favicon.png, par tools/logo.py)."""
-    return data_uri(BUILD / "logo" / "favicon.png", "image/png")
+# ---------- Motifs générés ----------
+def regle():
+    """M2a : 16 traits, position (1,18^i − 1) / (1,18^15 − 1) depuis le bas ; repères 0, 0,5, 1, 2, 3."""
+    reperes = {0: "0", 6: "0,5", 10: "1", 13: "2", 15: "3"}
+    parts = ['<div class="regle" aria-hidden="true"><span class="regle__barre"></span><span class="regle__ligne"></span>']
+    for i in range(16):
+        p = (1.18 ** i - 1) / (1.18 ** 15 - 1)
+        grand = " regle__trait--grand" if i in reperes else ""
+        parts.append(f'<span class="regle__trait{grand}" style="--p:{p:.4f};--i:{i}"></span>')
+        if i in reperes:
+            parts.append(f'<span class="regle__chiffre" style="--p:{p:.4f};--i:{i}">{reperes[i]}</span>')
+    parts.append("</div>")
+    return "".join(parts)
 
 
-def balise_img(fichier, alt, focal, manifest, lazy=True, prioritaire=False, classe=None):
-    m = manifest[fichier]
-    attrs = [
-        f'src="{data_uri(BUILD / "img" / (fichier + ".webp"), "image/webp")}"',
-        f'alt="{html.escape(alt, quote=True)}"',
-        f'width="{m["w"]}"',
-        f'height="{m["h"]}"',
-        'decoding="async"',
-    ]
-    if lazy:
-        attrs.append('loading="lazy"')
-    if prioritaire:
-        attrs.append('fetchpriority="high"')
-    if focal:
-        attrs.append(f'style="object-position:{focal}"')
-    if classe:
-        attrs.append(f'class="{classe}"')
-    return "<img " + " ".join(attrs) + ">"
+def separateur(rouge_pct):
+    """M2b : filet, 25 traits serrés à gauche (1,12^i − 1)/(1,12^24 − 1), un seul trait rouge."""
+    traits = []
+    for i in range(25):
+        x = 1000 * (1.12 ** i - 1) / (1.12 ** 24 - 1)
+        traits.append(f'<line x1="{x:.2f}" y1="1" x2="{x:.2f}" y2="7"/>')
+    xr = 10 * rouge_pct
+    return (f'<div class="enveloppe separateur" aria-hidden="true"><svg viewBox="0 0 1000 14" preserveAspectRatio="none" focusable="false">'
+            f'<g stroke="#C9D8EA" stroke-width="1" vector-effect="non-scaling-stroke" fill="none">'
+            f'<line x1="0" y1="7" x2="1000" y2="7" vector-effect="non-scaling-stroke"/>'
+            + "".join(t.replace("/>", ' vector-effect="non-scaling-stroke"/>') for t in traits) +
+            f'</g><line x1="{xr:.1f}" y1="1" x2="{xr:.1f}" y2="13" stroke="#D7141A" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></div>')
 
 
-def galerie(photos, manifest):
-    def vignette(p):
-        leg = p.get("legende") or ""
-        img = balise_img(p["fichier"], p["alt"], p.get("focal"), manifest)
-        return (f'<button class="vignette" type="button" aria-haspopup="dialog" '
-                f'data-legende="{html.escape(leg, quote=True)}">{img}</button>')
-
-    v = photos["vedette"]
-    parties = ['<div class="galerie">', '<figure class="vedette">', vignette(v)]
-    if v.get("legende"):
-        parties.append(f'<figcaption>{html.escape(v["legende"])}</figcaption>')
-    parties.append("</figure>")
-    parties.append('<ul class="grille" aria-label="Autres coupes">')
-    for p in photos["grille"]:
-        parties.append(f"<li>{vignette(p)}</li>")
-    parties.append("</ul></div>")
-    return "\n    ".join(parties)
+def trame():
+    """M3 : points de 12 px, r = 2,6 × (1 − d)^1,5 depuis le coin haut droit ; points sous 0,35 px supprimés."""
+    taille, pas = 264, 12
+    cercles = []
+    for y in range(pas // 2, taille, pas):
+        for x in range(pas // 2, taille, pas):
+            d = min(1.0, math.hypot(taille - x, y) / taille)
+            r = 2.6 * (1 - d) ** 1.5
+            if r >= 0.35:
+                cercles.append(f'<circle cx="{x}" cy="{y}" r="{r:.2f}"/>')
+    return (f'<svg viewBox="0 0 {taille} {taille}" focusable="false" fill="currentColor">'
+            + "".join(cercles) + "</svg>")
 
 
-def jsonld(site):
+def grain():
+    """Tuile 96×96 de bruit monochrome (utilisée à 5 % d’opacité sur le panneau nuit)."""
+    rng = np.random.default_rng(23)
+    im = Image.fromarray(rng.integers(0, 256, (96, 96), dtype=np.uint8), "L")
+    buf = io.BytesIO()
+    im.save(buf, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+# ---------- Blocs HTML ----------
+def icone(nom):
+    return f'<svg class="icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false">{ICONES[nom]}</svg>'
+
+
+def logo(site, taille, charge_differee=True):
+    fichier = {44: "logo-88.webp", 32: "logo-64.webp", 120: "logo-240.webp"}[taille]
+    lazy = ' loading="lazy"' if charge_differee else ""
+    return (f'<img class="logo__img" src="{data_uri(BUILD / "logo" / fichier, "image/webp")}" alt="{e(site["nom"])}" '
+            f'width="{taille}" height="{taille}" decoding="async"{lazy}>')
+
+
+def logotype(site):
+    return f'<span class="logotype" aria-hidden="true"><b>{e(site["nom_court"])}</b> {e(site["nom_suite"])}</span>'
+
+
+def image(photo, manifeste, hero=False):
+    m = manifeste[photo["fichier"]]
+    attrs = (f'src="{data_uri(BUILD / "img" / (photo["fichier"] + ".webp"), "image/webp")}" alt="{e(photo["alt"])}" '
+             f'width="{m["w"]}" height="{m["h"]}" decoding="async"')
+    attrs += ' fetchpriority="high"' if hero else ' loading="lazy"'
+    return f"<img {attrs}>"
+
+
+def galerie(photos, manifeste):
+    vedette = [p for p in photos if p["role"] == "vedette"][0]
+    vignettes = [p for p in photos if p["role"] == "vignette"]
+    out = ['<ul class="galerie">']
+    leg = f'<p class="photo__legende">{e(vedette["legende"])}</p>' if rempli(vedette.get("legende")) else ""
+    out.append('<li class="galerie__item galerie__item--vedette"><div class="cadre">'
+               f'<figure class="photo">{image(vedette, manifeste)}</figure>'
+               f'<span class="repere repere--haut" aria-hidden="true"></span><span class="repere repere--bas" aria-hidden="true"></span>'
+               f'</div>{leg}</li>')
+    for n, p in enumerate(vignettes, start=2):
+        out.append(f'<li class="galerie__item"><figure class="photo">{image(p, manifeste)}'
+                   f'<span class="photo__index" aria-hidden="true">{n:02d}</span></figure></li>')
+    out.append("</ul>")
+    return "\n      ".join(out)
+
+
+def moments(t):
+    out = []
+    for m in t["moments"]:
+        valeur = m[0].lower() + m[1:]
+        out.append(f'<label class="puce"><input type="radio" name="moment" value="{e(valeur)}"><span>{e(m)}</span></label>')
+    return "\n                ".join(out)
+
+
+def apercu(t):
+    salut, fin = t["message"]["salut"], t["message"]["fin"]
+    return (f'<div class="apercu" id="apercu" aria-labelledby="apercu-titre">'
+            f'<span class="apercu__ligne">{e(salut)}</span>'
+            f'<span class="apercu__ligne">{e(t["ticket_jour"])}\u00a0: <b data-champ="jour">{e(t["a_convenir"])}</b></span>'
+            f'<span class="apercu__ligne">{e(t["ticket_moment"])}\u00a0: <b data-champ="moment">{e(t["a_convenir"])}</b></span>'
+            f'<span class="apercu__ligne" data-ligne="prenom" hidden>{e(t["ticket_prenom"])}\u00a0: <b data-champ="prenom"></b></span>'
+            f'<span class="apercu__ligne">{e(fin)}</span></div>')
+
+
+def jsonld(c):
+    s = c["site"]
     d = {
         "@context": "https://schema.org",
         "@type": "HairSalon",
-        "name": site["nom"],
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": site["ville"],
-            "addressCountry": site["pays"],
-        },
-        "priceRange": site["prestation"]["affichage"],
-        "sameAs": [site["instagram"]["profil"]],
-        "makesOffer": {
-            "@type": "Offer",
-            "name": site["prestation"]["nom"],
-            "price": str(site["prestation"]["prix"]),
-            "priceCurrency": site["prestation"]["devise"],
-        },
+        "name": s["nom"],
+        "image": data_uri(BUILD / "logo" / "logo-88.webp", "image/webp"),
+        "address": {"@type": "PostalAddress", "addressLocality": s["ville"], "addressCountry": s["pays"]},
+        "priceRange": s["prestation"]["affichage"],
+        "sameAs": [s["instagram"]["profil"]],
     }
-    # « image » n’est ajoutée qu’avec une adresse de site définitive (URL absolue requise).
-    if site.get("adresse_site"):
-        d["url"] = site["adresse_site"]
-        d["image"] = site["adresse_site"].rstrip("/") + "/apercu.jpg"
+    if rempli(s.get("url")):
+        d["url"] = s["url"]
     return json.dumps(d, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
 
-def mentions(site):
-    ml = site.get("mentions_legales")
-    if not ml:
-        return ""
-    lignes = "".join(f"<p>{html.escape(l)}</p>" for l in ml)
-    return f'<li><details class="pied__mentions"><summary>Mentions légales</summary>{lignes}</details></li>'
+PALETTE = [
+    ("--blanc", "#FFFFFF", "cartes, ticket, bandes du ruban"), ("--porcelaine", "#F5F8FC", "fond de page"),
+    ("--brume", "#DDE9F6", "halos, surlignages"), ("--filet", "#C9D8EA", "lignes, bordures"),
+    ("--ciel", "#7DB0E8", "ruban, accents du panneau"), ("--roi", "#1F54A6", "liens, puces choisies"),
+    ("--marine", "#13305F", "milieu de dégradé"), ("--nuit", "#0A1C3A", "panneau de rendez-vous"),
+    ("--encre", "#0E1D35", "titres et texte"), ("--gris", "#5B6579", "texte secondaire"),
+    ("--rouge", "#D7141A", "action"), ("--rouge-vif", "#E3242B", "haut du laqué"),
+    ("--rouge-profond", "#A30E1B", "bas du laqué, appui"),
+]
+
+
+def planche(css):
+    """Planche de tokens (tokens.html) : palette, dégradés, motifs, états des composants."""
+    tpl = (SRC / "tokens.html").read_text(encoding="utf-8")
+    palette = "\n    ".join(
+        f'<div class="pastille-couleur"><i style="background:{h}"></i><p><b>{n}</b>{h}<br>{r}</p></div>' for n, h, r in PALETTE)
+    tpl = (tpl.replace("{{palette}}", palette).replace("{{separateur}}", separateur(25).replace('class="enveloppe separateur"', 'class="separateur"'))
+           .replace("{{regle}}", regle()).replace("{{trame}}", trame()).replace("{{css}}", css.strip()))
+    (ROOT / "tokens.html").write_text(tpl, encoding="utf-8")
 
 
 def main():
-    BUILD.mkdir(exist_ok=True)
-    site = json.loads(lire(DATA / "site.json"))
-    photos = json.loads(lire(DATA / "photos.json"))
-    manifest = json.loads(lire(BUILD / "img" / "manifest.json"))
+    brouillon = "--brouillon" in sys.argv
+    brut = json.loads((ROOT / "data" / "contenu.json").read_text(encoding="utf-8"))
+    manquants = a_completer(brut)
+    if manquants and not brouillon:
+        print("Il reste des « À COMPLÉTER » dans contenu.json :\n  " + "\n  ".join(manquants))
+        print("Complétez-les, ou relancez avec --brouillon pour une version de relecture.")
+        sys.exit(1)
+    c = appliquer_typo(brut)
+    site, t = c["site"], c["textes"]
+    manifeste = json.loads((BUILD / "img" / "manifest.json").read_text())
 
-    page = lire(SRC / "page.html")
-    css = lire(SRC / "styles.css")
-    js = lire(SRC / "app.js")
-    logo = lire(SRC / "logo.html").strip()
+    page = (SRC / "page.html").read_text(encoding="utf-8")
+    css = (SRC / "styles.css").read_text(encoding="utf-8")
+    js = (SRC / "app.js").read_text(encoding="utf-8")
 
-    # 1. Textes issus de la source de données unique
-    page = page.replace("{{> logo}}", logo)
-    page = page.replace("{{logo_src}}", data_uri(BUILD / "logo" / "logo.webp", "image/webp"))
-    page = page.replace("{{mentions}}", mentions(site))
+    hero = [p for p in c["photos"] if p["role"] == "hero"][0]
+    mentions = site["mentions_legales"]
+    if A_COMPLETER in mentions:
+        mentions_html = f'<mark class="a-completer">{e(mentions)}</mark>'
+    else:
+        mentions_html = e(mentions)
 
+    blocs = {
+        "{{logo:44}}": logo(site, 44, charge_differee=False) + logotype(site),
+        "{{logo:32}}": logo(site, 32) + logotype(site),
+        "{{logo_tuile:120}}": logo(site, 120).replace('class="logo__img"', 'class="logo__img profil__logo"'),
+        "{{img:hero}}": image(hero, manifeste, hero=True),
+        "{{regle}}": regle(),
+        "{{separateur:25}}": separateur(25),
+        "{{separateur:60}}": separateur(60),
+        "{{galerie}}": galerie(c["photos"], manifeste),
+        "{{trame:ciel}}": trame(),
+        "{{trame:brume}}": trame(),
+        "{{etapes}}": "\n          ".join(f'<li><span class="etapes__num" aria-hidden="true">{i}</span>{e(x)}</li>'
+                                           for i, x in enumerate(t["etapes"], start=1)),
+        "{{moments}}": moments(t),
+        "{{apercu}}": apercu(t),
+        "{{rui_texte}}": "\n        ".join(f"<p>{e(p)}</p>" for p in t["rui_texte"]),
+        "{{langues}}": "\n          ".join(
+            f'<li lang="{l["lang"]}"><span class="langues__texte">{e(l["texte"])}</span><span class="etiquette" lang="fr">{l["code"]}</span></li>'
+            for l in t["langues"]),
+        "{{mentions}}": mentions_html,
+        "{{favicon}}": data_uri(BUILD / "logo" / "logo-64.png", "image/png"),
+        "{{apple_touch}}": data_uri(BUILD / "logo" / "logo-180.png", "image/png"),
+        "{{jsonld}}": jsonld(c),
+    }
+    for nom in ICONES:
+        blocs["{{icone:" + nom + "}}"] = icone(nom)
+
+    # 1. Textes issus de contenu.json (échappés), avant l’insertion des blocs et des données brutes
     def remplacer(m):
-        cle = m.group(1)
-        if cle in ("css", "js", "jsonld", "favicon", "gallery"):
-            return m.group(0)
-        return html.escape(str(chemin(site, cle)), quote=True)
+        return e(chemin(c, m.group(1)))
+    page = re.sub(r"\{\{((?:site|meta|textes)(?:\.[a-z_]+)+)\}\}", remplacer, page)
+    for k, v in blocs.items():
+        page = page.replace(k, v)
 
-    page = re.sub(r"\{\{\s*([a-z_]+(?:\.[a-z_]+)*)\s*\}\}", remplacer, page)
+    # 2. Police et CSS
+    texte_page = html.unescape(re.sub(r"<[^>]+>", " ", page))
+    police_fichier = police()
+    css = css.replace("{{font}}", data_uri(police_fichier, "font/woff2")).replace("{{grain}}", grain())
 
-    # 2. Police : sous-ensemble des caractères réellement utilisés
-    texte = re.sub(r"<[^>]+>", " ", page) + json.dumps(site, ensure_ascii=False) + \
-        json.dumps(photos, ensure_ascii=False) + js + MOIS_JOURS + html.unescape(page)
-    police, chars = sous_ensemble_police(html.unescape(texte))
-    css = css.replace("{{font}}", data_uri(police, "font/woff2"))
-
-    # 3. Script : configuration issue des données
+    # 3. Script
     cfg = {
-        "barbier": site["barbier"],
-        "prestation": site["prestation"]["nom"].lower(),
+        "salut": t["message"]["salut"], "fin": t["message"]["fin"],
+        "jour": t["ticket_jour"], "moment": t["ticket_moment"], "prenom": t["ticket_prenom"],
+        "a_convenir": t["a_convenir"], "peu_importe": t["peu_importe"],
+        "aujourdhui": "Aujourd’hui", "demain": "Demain",
+        "rel_aujourdhui": "(aujourd’hui)", "rel_demain": "(demain)",
+        "statut_ok": t["statut_ok"], "statut_echec": t["statut_echec"],
         "message": site["instagram"]["message"],
     }
     js = js.replace("{{jsconfig}}", json.dumps(cfg, ensure_ascii=False))
 
-    # 4. Images, galerie, favicon, JSON-LD, CSS et JS
-    if "{{img:hero}}" in page:
-        h = photos["hero"]
-        page = page.replace("{{img:hero}}", balise_img(h["fichier"], h["alt"], h.get("focal"), manifest,
-                                                       lazy=False, prioritaire=True))
-    page = page.replace("{{gallery}}", galerie(photos, manifest))
-    page = page.replace("{{favicon}}", favicon())
-    page = page.replace("{{jsonld}}", jsonld(site))
-    page = page.replace("{{css}}", css.strip())
-    page = page.replace("{{js}}", js.strip())
-
+    page = page.replace("{{css}}", css.strip()).replace("{{js}}", js.strip())
     reste = re.findall(r"\{\{[^}]*\}\}", page)
     if reste:
-        sys.exit(f"Espaces réservés non remplacés : {reste}")
+        sys.exit(f"Espaces réservés non remplacés : {sorted(set(reste))}")
 
     OUT.write_text(page, encoding="utf-8")
+    planche(css)
     taille = OUT.stat().st_size
-    print(f"index.html : {taille / 1024:.1f} Ko ({taille} octets) — police {police.stat().st_size / 1024:.1f} Ko, {len(chars)} caractères")
+    print(f"index.html : {taille / 1024:.1f} Ko — police {police_fichier.stat().st_size / 1024:.1f} Ko"
+          + (" — BROUILLON" if brouillon else ""))
+    if manquants:
+        print("À COMPLÉTER restants :\n  " + "\n  ".join(manquants))
+    del texte_page
 
 
 if __name__ == "__main__":
