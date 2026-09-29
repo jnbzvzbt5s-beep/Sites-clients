@@ -96,14 +96,14 @@ def ratio(a, b):
 
 
 V = dict(re.findall(r"--([a-z-]+):\s*(#[0-9A-Fa-f]{6})", CSS))
-panneau_clair = melange(V["ciel"], V["nuit"], .30)            # haut gauche : halo ciel sur nuit
+panneau_clair = melange(V["ciel"], V["nuit"], .36)            # haut gauche : halo ciel sur nuit
 panneau_bas = melange(V["roi"], "#1B4589", .55)               # bas droite : halo roi sur fin de dégradé
-ciel_page = "#DDE9F6"                                         # D1, coin haut droit
+ciel_page = "#D4E4F7"                                         # D1, coin haut droit
 paires = [
     ("encre", "blanc", "texte, ticket, cartes", 4.5), ("encre", "porcelaine", "texte sur la page", 4.5),
-    ("encre", "#EEF4FB", "bas du ciel de page", 4.5), ("encre", ciel_page, "haut droit du ciel de page", 4.5),
+    ("encre", "#E6EFFA", "bas du ciel de page", 4.5), ("encre", ciel_page, "haut droit du ciel de page", 4.5),
     ("gris", "blanc", "étiquettes, chapô", 4.5), ("gris", "porcelaine", "chapô, pied", 4.5),
-    ("gris", "#EEF4FB", "bas de page", 4.5), ("gris", ciel_page, "étiquettes sous le halo", 4.5),
+    ("gris", "#E6EFFA", "bas de page", 4.5), ("gris", "#E4EEFA", "pied de page", 4.5), ("roi", "#E4EEFA", "numéros, liens du pied", 4.5), ("gris", ciel_page, "étiquettes sous le halo", 4.5),
     ("roi", "blanc", "liens, « Moien ! »", 4.5), ("roi", "porcelaine", "valeurs de l’aperçu", 4.5),
     ("roi", "brume", "valeur surlignée", 4.5),
     ("blanc", "rouge-vif", "haut du bouton laqué", 4.5), ("blanc", "rouge", "bouton laqué", 4.5),
@@ -113,7 +113,7 @@ paires = [
     ("ciel", "nuit", "étiquette du panneau", 4.5), ("ciel", panneau_clair, "étiquette sous le halo ciel", 3.0),
     ("brume", "nuit", "étapes", 4.5), ("brume", "marine", "étapes", 4.5), ("brume", "#1B4589", "note sous le ticket", 4.5),
     ("brume", panneau_bas, "note, coin bas droit", 4.5),
-    ("encre", "#FFFFFF", "étiquette prix", 4.5),
+    ("encre", "#FFFFFF", "étiquette prix", 4.5), ("blanc", "#13305F", "numéro d’index dans le panneau", 4.5), ("roi", ciel_page, "numéro d’index sous le halo", 4.5),
 ]
 for t, f, usage, seuil in paires:
     ct, cf = V.get(t, t), V.get(f, f) if isinstance(f, str) else f

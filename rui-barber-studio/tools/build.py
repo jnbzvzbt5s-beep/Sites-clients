@@ -306,6 +306,8 @@ def main():
     def remplacer(m):
         return e(chemin(c, m.group(1)))
     page = re.sub(r"\{\{((?:site|meta|textes)(?:\.[a-z_]+)+)\}\}", remplacer, page)
+    # Index de section « 01 — Les coupes » : le numéro en bleu roi
+    page = re.sub(r'(<p class="etiquette"[^>]*>)(\d{2}) — ', r'\1<span class="etiquette__num">\2</span> — ', page)
     for k, v in blocs.items():
         page = page.replace(k, v)
 

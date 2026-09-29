@@ -157,15 +157,15 @@
     },
     {
       "fichier": "coupe-1",
-      "source": "p1.jpg",
+      "source": "p10.jpg",
       "role": "vignette",
       "recadrage": [
-        230,
-        580,
-        630,
-        1080
+        215,
+        480,
+        545,
+        892
       ],
-      "alt": "Dégradé à blanc sur les côtés, dessus court et barbe taillée, vu de profil",
+      "alt": "Dégradé haut à blanc sur la nuque et les côtés, dessus court, vu de dos de trois quarts",
       "legende": "À COMPLÉTER"
     },
     {
@@ -210,12 +210,8 @@
   ],
   "ecartees": [
     {
-      "source": "p2.jpg",
-      "raison": "la moins nette de la série sur la zone de la coupe (0,65 × la médiane), contre-jour"
-    },
-    {
-      "source": "p3.jpg",
-      "raison": "la plus faible restante : fond encombré (miroir, produits), écartée pour garder une grille sans trou"
+      "source": "p9.jpg",
+      "raison": "la plus faible des sept photos envoyées : miroir, produits et flacon jaune dans le cadre ; écartée pour garder une grille sans trou (1 vedette + 4 vignettes)"
     }
   ]
 }
