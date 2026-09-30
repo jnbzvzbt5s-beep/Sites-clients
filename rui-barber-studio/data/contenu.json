@@ -211,12 +211,38 @@
       ],
       "alt": "Cheveux afro réguliers et nuque nette, vus de dos de trois quarts",
       "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-5",
+      "source": "p11.jpg",
+      "role": "vignette",
+      "recadrage": [
+        195,
+        395,
+        755,
+        1095
+      ],
+      "alt": "Dessus bouclé et épais, dégradé bas à la nuque et derrière l’oreille, vu de profil arrière",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-6",
+      "source": "p12.jpg",
+      "role": "vignette",
+      "recadrage": [
+        205,
+        505,
+        765,
+        1205
+      ],
+      "alt": "Coupe au bol lisse, contour net et nuque dégradée, vue de profil arrière",
+      "legende": "À COMPLÉTER"
     }
   ],
   "ecartees": [
     {
       "source": "p9.jpg",
-      "raison": "la plus faible des sept photos envoyées : miroir, produits et flacon jaune dans le cadre ; écartée pour garder une grille sans trou (1 vedette + 4 vignettes)"
+      "raison": "la plus faible des photos envoyées : miroir, produits et flacon jaune dans le cadre"
     }
   ]
 }

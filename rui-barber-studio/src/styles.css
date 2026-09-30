@@ -59,11 +59,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(110% 38% at 100% 0%, rgba(125, 176, 232, .40) 0%, rgba(125, 176, 232, 0) 70%),
-    radial-gradient(90% 30% at 0% 34%, rgba(125, 176, 232, .32) 0%, rgba(125, 176, 232, 0) 70%),
-    radial-gradient(90% 30% at 100% 72%, rgba(125, 176, 232, .30) 0%, rgba(125, 176, 232, 0) 70%),
-    linear-gradient(180deg, #E2EDFA 0%, #D3E4F7 30%, #E4EEFA 55%, #D6E6F8 80%, #C9DDF4 100%);
+  background: linear-gradient(180deg, #E2EDFA 0%, #D3E4F7 30%, #E4EEFA 55%, #D6E6F8 80%, #C9DDF4 100%);
   background-color: #D9E7F8;
   color: var(--encre);
   font-family: var(--police);
@@ -73,6 +69,19 @@ body {
   line-height: 1.6;
   font-feature-settings: "kern" 1;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Nappe de ciel fixe : trois taches bleu ciel qui dérivent lentement derrière tout (transform seul, sur le compositeur) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -12%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 36% at 88% 10%, rgba(125, 176, 232, .40) 0%, rgba(125, 176, 232, 0) 70%),
+    radial-gradient(38% 32% at 8% 52%, rgba(125, 176, 232, .32) 0%, rgba(125, 176, 232, 0) 70%),
+    radial-gradient(40% 34% at 82% 92%, rgba(125, 176, 232, .30) 0%, rgba(125, 176, 232, 0) 70%);
 }
 
 img { display: block; max-width: 100%; height: auto; }
@@ -628,7 +637,7 @@ h2 {
 .repere--haut { left: 5px; top: 5px; }
 .repere--bas { right: -14px; bottom: -14px; }
 @media (min-width: 1024px) {
-  .galerie { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .galerie { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; } /* vedette 2×2 + 6 vignettes : aucune case vide */
   .galerie__item--vedette { grid-column: 1 / span 2; grid-row: span 2; margin: 0 14px 14px 0; }
   .galerie__item--vedette .photo { height: 100%; aspect-ratio: auto; }
   .galerie__item--vedette .cadre { height: 100%; }
@@ -1056,7 +1065,42 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
   .etiquette-prix { animation: glisser 350ms var(--courbe) 1100ms backwards; }
   .visionneuse[open] .visionneuse__cadre { animation: ouvrir 200ms var(--courbe); }
   .visionneuse[open]::backdrop { animation: apparaitre 200ms linear; }
+  .visionneuse__img { animation: ouvrir 260ms var(--courbe); }
+
+  /* Ciel vivant : dérive lente et continue de la nappe (seule animation sans fin) */
+  body::before { will-change: transform; animation: deriver 26s ease-in-out infinite alternate; }
+
+  /* Apparitions au défilement (classes posées par app.js ; sans JS, tout est visible) */
+  .apparitions [data-apparition] {
+    transition: opacity 700ms var(--courbe), transform 800ms var(--courbe);
+    transition-delay: calc(var(--rang, 0) * 90ms);
+  }
+  .apparitions [data-apparition]:not(.est-apparu) { opacity: 0; transform: translateY(28px); }
+  .apparitions .galerie__item[data-apparition]:not(.est-apparu),
+  .apparitions .vitrine__photos li[data-apparition]:not(.est-apparu) { transform: translateY(34px) scale(.95); }
+  .separateur.est-apparu .separateur__filet { transform-box: view-box; transform-origin: 0 50%; animation: derouler 1100ms var(--courbe) backwards; }
+  .separateur.est-apparu .separateur__rouge { animation: tomber 420ms var(--courbe) 700ms backwards; }
+  .ticket.est-apparu .ruban--ticket { transform-origin: left center; animation: derouler 800ms var(--courbe) 300ms backwards; }
+  .panneau.est-apparu .etapes__num { animation: rebondir 500ms var(--courbe) backwards; }
+  .panneau.est-apparu .etapes li:nth-child(1) .etapes__num { animation-delay: 350ms; }
+  .panneau.est-apparu .etapes li:nth-child(2) .etapes__num { animation-delay: 500ms; }
+  .panneau.est-apparu .etapes li:nth-child(3) .etapes__num { animation-delay: 650ms; }
+  .rui__carte.est-apparu .rui__nom { animation: reveler-clip 900ms var(--tondeuse) 200ms backwards; }
+  .profil.est-apparu .profil__logo { animation: rebondir 600ms var(--courbe) 250ms backwards; }
+  .heros__visuel::before { animation: glisser-tuile 800ms var(--courbe) 500ms backwards; }
+  .sur-coupes .vue--coupes { animation: poser 380ms var(--courbe); }
+
+  /* Survols */
+  .lien-fleche .icone, .photo__ouvrir, .vitrine__photo { transition: transform 220ms var(--courbe); }
+  .lien-fleche:hover .icone { transform: translateX(4px); }
+  .lien-fleche--retour:hover .icone { transform: translateX(-4px); }
+  .vitrine__photo:hover { transform: translateY(-3px); }
+  .vignette:hover .photo__ouvrir, .vitrine__photo:hover .photo__ouvrir { transform: scale(1.12); }
 }
+@keyframes deriver { from { transform: translate3d(-3%, -2%, 0); } to { transform: translate3d(3%, 3%, 0) scale(1.06); } }
+@keyframes tomber { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes rebondir { 0% { opacity: 0; transform: scale(.4); } 70% { opacity: 1; transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes glisser-tuile { from { opacity: 0; transform: translate(-18px, -18px); } }
 @keyframes derouler { from { transform: scaleX(0); } }
 @keyframes poser { from { opacity: 0; transform: translateY(8px); } }
 @keyframes apparaitre { from { opacity: 0; } }

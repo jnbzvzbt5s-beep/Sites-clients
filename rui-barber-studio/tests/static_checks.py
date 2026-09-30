@@ -16,8 +16,8 @@ from PIL import Image
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 NOM = "index.html"
 ACCUEIL = True
-# Hero + 3 vignettes de la vitrine + 5 photos de la vue « Les coupes »
-ATT = {"photos": 9, "hero": True, "logos": 3, "ruban": 4, "titre": "Rui’s Barber Studio — barbier à Mersch"}
+# Hero + 3 vignettes de la vitrine + 7 photos de la vue « Les coupes »
+ATT = {"photos": 11, "hero": True, "logos": 3, "ruban": 4, "titre": "Rui’s Barber Studio — barbier à Mersch"}
 print(f"== {NOM}")
 PAGE = (ROOT / NOM).read_text(encoding="utf-8")
 C = json.loads((ROOT / "data" / "contenu.json").read_text(encoding="utf-8"))

@@ -23,7 +23,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 # Plafonds de poids (Ko) par rôle, et plafonds de taille (px) : jamais au-delà de la source.
 MAX_KO = {"hero": 180, "vedette": 80, "vignette": 80, "portrait": 90}
-MAX_PX = {"hero": (1120, 1400), "vedette": (800, 1000), "vignette": (800, 1000), "portrait": (800, 1000)}
+MAX_PX = {"hero": (1120, 1400), "vedette": (800, 1000), "vignette": (400, 500), "portrait": (800, 1000)}
 NUIT = np.array([10, 28, 58], dtype=np.float32) / 255.0
 
 

@@ -79,7 +79,9 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     });
     requetesServeur = [];
     await page.goto(BASE + '?date=2026-09-29' + pg, { waitUntil: 'load' });
-    const anims = await page.evaluate(() => document.getAnimations().map(a => { const t = a.effect.getComputedTiming(); return t.delay + t.duration; }));
+    const toutes = await page.evaluate(() => document.getAnimations().map(a => { const t = a.effect.getComputedTiming(); return { fin: t.delay + t.duration, infini: t.iterations === Infinity, nappe: a.effect.target === document.body && a.effect.pseudoElement === '::before' }; }));
+    const anims = toutes.filter(a => !a.infini).map(a => a.fin);
+    verifier(M, 17, `${nomPage} ${w}px : seule la nappe de ciel boucle sans fin`, toutes.filter(a => a.infini).every(a => a.nappe), JSON.stringify(toutes.filter(a => a.infini)));
     await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 300) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 15)); } });
     await page.waitForTimeout(1600);
     verifier(M, 1, `${nomPage} ${w}px : zéro erreur ni avertissement dans la console`, erreurs.length === 0, erreurs.join(' | '));
@@ -394,7 +396,7 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
       logos.length === 3 && logos.every(l => l.n[0] === l.n[1] && l.a[0] === l.a[1] && l.alt === 'Rui’s Barber Studio' && l.fit === 'fill'), JSON.stringify(logos));
     const alts = await page.$$eval('.vue--accueil img:not(.logo__img)', is => is.map(i => i.alt));
     const alts2 = await page.$$eval('.vue--coupes img:not(.logo__img)', is => is.map(i => i.alt));
-    verifier(M, 13, 'Photos : alt précis sur chacune (accueil 4, coupes 5)', alts.length === 4 && alts2.length === 5 && [...alts, ...alts2].every(a => a.length >= 30 && /vu|vus/.test(a)), JSON.stringify(alts2));
+    verifier(M, 13, 'Photos : alt précis sur chacune (accueil 4, coupes 7)', alts.length === 4 && alts2.length === 7 && [...alts, ...alts2].every(a => a.length >= 30 && /vu|vus/.test(a)), JSON.stringify(alts2));
     await ctx.close();
   }
 
@@ -451,7 +453,7 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     await page.locator('.vitrine__photo').nth(1).click();
     await page.waitForTimeout(400);
     const r = await page.evaluate(() => ({ open: document.getElementById('visionneuse').open, c: document.getElementById('vis-compteur').textContent, hash: location.hash }));
-    verifier(M, 19, `${origine} : une coupe de l’accueil s’ouvre en grand (« 2 sur 5 »)`, r.open && r.c === '2 sur 5' && r.hash === '#les-coupes', JSON.stringify(r));
+    verifier(M, 19, `${origine} : une coupe de l’accueil s’ouvre en grand (« 2 sur 7 »)`, r.open && r.c === '2 sur 7' && r.hash === '#les-coupes', JSON.stringify(r));
     await page.keyboard.press('Escape');
     await page.waitForTimeout(200);
     const apres = { galerie: await visible('#galerie'), hash: await page.evaluate(() => location.hash) };
@@ -471,7 +473,7 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     await page.goto(url + '#photo-3');
     await page.waitForTimeout(500);
     const d = await page.evaluate(() => ({ open: document.getElementById('visionneuse').open, c: document.getElementById('vis-compteur').textContent }));
-    verifier(M, 19, `${origine} : lien direct #photo-3 → galerie et photo ouverte`, d.open && d.c === '3 sur 5' && (await visible('#galerie')), JSON.stringify(d));
+    verifier(M, 19, `${origine} : lien direct #photo-3 → galerie et photo ouverte`, d.open && d.c === '3 sur 7' && (await visible('#galerie')), JSON.stringify(d));
     await ctx.close();
   }
 
@@ -493,7 +495,7 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     await page.click('#photo-4 .photo__fermer');
     const ferme = await page.evaluate(() => [getComputedStyle(document.querySelector('#photo-4 .photo')).position, document.querySelector('#galerie').getClientRects().length > 0]);
     verifier(M, 20, 'Sans JS : la photo cliquée s’affiche en grand, suivante et fermer fonctionnent, la galerie reste affichée',
-      r.pos === 'fixed' && r.couvre && r.compteur === '3 sur 5' && suiv === '#photo-4' && ferme[0] !== 'fixed' && ferme[1], JSON.stringify({ r, suiv, ferme }));
+      r.pos === 'fixed' && r.couvre && r.compteur === '3 sur 7' && suiv === '#photo-4' && ferme[0] !== 'fixed' && ferme[1], JSON.stringify({ r, suiv, ferme }));
     await page.click('.lien-fleche--retour');
     verifier(M, 20, 'Sans JS : lien « Accueil » réaffiche l’accueil', await page.evaluate(() => document.querySelector('.heros').getClientRects().length > 0));
     await ctx.close();

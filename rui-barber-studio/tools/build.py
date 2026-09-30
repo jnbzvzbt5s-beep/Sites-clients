@@ -130,10 +130,10 @@ def separateur(rouge_pct):
         traits.append(f'<line x1="{x:.2f}" y1="1" x2="{x:.2f}" y2="7"/>')
     xr = 10 * rouge_pct
     return (f'<div class="enveloppe separateur" aria-hidden="true"><svg viewBox="0 0 1000 14" preserveAspectRatio="none" focusable="false">'
-            f'<g stroke="#C9D8EA" stroke-width="1" vector-effect="non-scaling-stroke" fill="none">'
+            f'<g class="separateur__filet" stroke="#C9D8EA" stroke-width="1" vector-effect="non-scaling-stroke" fill="none">'
             f'<line x1="0" y1="7" x2="1000" y2="7" vector-effect="non-scaling-stroke"/>'
             + "".join(t.replace("/>", ' vector-effect="non-scaling-stroke"/>') for t in traits) +
-            f'</g><line x1="{xr:.1f}" y1="1" x2="{xr:.1f}" y2="13" stroke="#D7141A" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></div>')
+            f'</g><line class="separateur__rouge" x1="{xr:.1f}" y1="1" x2="{xr:.1f}" y2="13" stroke="#D7141A" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></div>')
 
 
 def trame():

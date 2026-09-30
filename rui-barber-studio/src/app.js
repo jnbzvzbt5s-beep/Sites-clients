@@ -1,4 +1,4 @@
-/* Rui’s Barber Studio — modules indépendants (police, dates, ticket, vues, visionneuse, pastille), chacun dans son try/catch. */
+/* Rui’s Barber Studio — modules indépendants (police, dates, ticket, vues, visionneuse, pastille, apparitions), chacun dans son try/catch. */
 (function () {
   "use strict";
   var CFG = {{jsconfig}};
@@ -265,6 +265,7 @@
         index = (i + photos.length) % photos.length;
         var source = photos[index];
         img.src = source.currentSrc || source.src;
+        img.style.animation = "none"; void img.offsetWidth; img.style.animation = ""; // rejoue le fondu à chaque photo
         img.alt = source.alt;
         img.width = source.naturalWidth || source.width;
         img.height = source.naturalHeight || source.height;
@@ -349,6 +350,37 @@
         maj();
       });
       cibles.forEach(function (c) { io.observe(c); });
+    })();
+  } catch (e) {}
+
+  /* ---------- 5. Apparitions au défilement : chaque bloc monte en fondu quand il entre à l’écran ---------- */
+  try {
+    (function () {
+      var html = document.documentElement;
+      if (!("IntersectionObserver" in window) || !window.matchMedia || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var sel = [".vitrine > .etiquette", ".vitrine h2", ".vitrine > .chapo", ".vitrine__carte", ".vitrine__photos li",
+        ".panneau", ".etapes li", ".ticket", ".rui__carte", ".rui__texte p", ".langues li",
+        ".contact > .etiquette", ".contact h2", ".profil", ".separateur",
+        ".page-coupes > .etiquette", ".page-coupes__titre", ".page-coupes > .chapo", ".galerie__item", ".suite__carte"].join(",");
+      var els = Array.prototype.slice.call(document.querySelectorAll(sel));
+      if (!els.length) return;
+      els.forEach(function (el) {
+        // Décalage en cascade entre frères animés (photos, étapes, langues…)
+        var rang = Array.prototype.filter.call(el.parentElement.children, function (c) { return els.indexOf(c) >= 0; }).indexOf(el);
+        el.style.setProperty("--rang", Math.min(Math.max(rang, 0), 6));
+        el.setAttribute("data-apparition", "");
+      });
+      html.classList.add("apparitions");
+      var io = new IntersectionObserver(function (entrees) {
+        entrees.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("est-apparu"); io.unobserve(e.target); }
+        });
+      }, { rootMargin: "0px 0px -6% 0px" });
+      // On attend que la police soit prête (page visible) pour que les premières apparitions se voient.
+      (function demarrer() {
+        if (html.classList.contains("attente")) { window.setTimeout(demarrer, 40); return; }
+        els.forEach(function (el) { io.observe(el); });
+      })();
     })();
   } catch (e) {}
 })();
