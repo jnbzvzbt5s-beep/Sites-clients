@@ -130,119 +130,85 @@
     "retour_accueil": "Accueil",
     "agrandir": "Agrandir",
     "fermer": "Fermer",
-    "rdv_court": "Rendez-vous"
+    "rdv_court": "Rendez-vous",
+    "bandeau": [
+      "Dégradé à blanc",
+      "Taper",
+      "Coupe au bol",
+      "Chignon",
+      "Boucles",
+      "Mersch",
+      "Coupe complète 15 €"
+    ]
   },
   "portrait": "À COMPLÉTER",
   "photos": [
     {
       "fichier": "hero",
-      "source": "p4.jpg",
+      "source": "p13.jpg",
       "role": "hero",
+      "galerie": true,
       "recadrage": [
-        162,
-        370,
-        602,
-        920
+        244,
+        560,
+        884,
+        1360
       ],
-      "alt": "Dégradé à blanc sur la nuque et les côtés, dessus court, vu de dos de trois quarts",
+      "alt": "Dessus bouclé, dégradé bas à blanc sur la nuque et derrière l’oreille, vu de dos de trois quarts",
       "legende": "À COMPLÉTER"
     },
     {
       "fichier": "vedette",
-      "source": "p7.jpg",
+      "source": "p17.jpg",
       "role": "vedette",
       "recadrage": [
-        215,
-        455,
-        535,
-        855
+        253,
+        557,
+        893,
+        1357
       ],
-      "alt": "Dessus bouclé et dégradé bas à la nuque, vu de dos de trois quarts",
+      "alt": "Coupe au bol lisse, contour net et nuque dégradée, vue de profil arrière",
       "legende": "À COMPLÉTER"
     },
     {
       "fichier": "coupe-1",
-      "source": "p10.jpg",
+      "source": "p15.jpg",
       "role": "vignette",
       "recadrage": [
-        202,
-        444,
-        532,
-        856
+        249,
+        459,
+        889,
+        1259
       ],
-      "alt": "Dégradé haut à blanc sur la nuque et les côtés, dessus court, vu de dos de trois quarts",
+      "alt": "Dessus épais et lisse, dégradé bas à la nuque et autour de l’oreille, vu de dos de trois quarts",
       "legende": "À COMPLÉTER"
     },
     {
       "fichier": "coupe-2",
-      "source": "p8.jpg",
+      "source": "p14.jpg",
       "role": "vignette",
       "recadrage": [
-        205,
-        364,
-        535,
-        776
+        110,
+        512,
+        750,
+        1312
       ],
-      "alt": "Dessus long et lisse, dégradé bas à la nuque, vu de dos de trois quarts",
+      "alt": "Cheveux longs attachés en chignon, côtés et nuque dégradés, vus de profil arrière",
       "legende": "À COMPLÉTER"
     },
     {
       "fichier": "coupe-3",
-      "source": "p6.jpg",
+      "source": "p16.jpg",
       "role": "vignette",
       "recadrage": [
-        75,
-        404,
-        405,
-        816
-      ],
-      "alt": "Cheveux longs attachés en chignon, côtés et nuque dégradés, vu de profil arrière",
-      "legende": "À COMPLÉTER"
-    },
-    {
-      "fichier": "coupe-4",
-      "source": "p5.jpg",
-      "role": "vignette",
-      "recadrage": [
-        241,
-        390,
-        609,
-        850
-      ],
-      "alt": "Cheveux afro réguliers et nuque nette, vus de dos de trois quarts",
-      "legende": "À COMPLÉTER"
-    },
-    {
-      "fichier": "coupe-5",
-      "source": "p11.jpg",
-      "role": "vignette",
-      "recadrage": [
-        195,
-        395,
-        755,
-        1095
+        255,
+        500,
+        895,
+        1300
       ],
       "alt": "Dessus bouclé et épais, dégradé bas à la nuque et derrière l’oreille, vu de profil arrière",
       "legende": "À COMPLÉTER"
-    },
-    {
-      "fichier": "coupe-6",
-      "source": "p12.jpg",
-      "role": "vignette",
-      "recadrage": [
-        205,
-        505,
-        765,
-        1205
-      ],
-      "alt": "Coupe au bol lisse, contour net et nuque dégradée, vue de profil arrière",
-      "legende": "À COMPLÉTER"
     }
   ],
-  "ecartees": [
-    {
-      "source": "p9.jpg",
-      "raison": "la plus faible des photos envoyées : miroir, produits et flacon jaune dans le cadre"
-    }
-  ]
+  "ecartees": []
 }

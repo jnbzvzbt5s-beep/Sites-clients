@@ -1,4 +1,4 @@
-/* Rui’s Barber Studio — modules indépendants (police, dates, ticket, vues, visionneuse, pastille, apparitions), chacun dans son try/catch. */
+/* Rui’s Barber Studio — modules indépendants (police, dates, ticket, vues, visionneuse, pastille, apparitions, mouvements), chacun dans son try/catch. */
 (function () {
   "use strict";
   var CFG = {{jsconfig}};
@@ -358,7 +358,7 @@
     (function () {
       var html = document.documentElement;
       if (!("IntersectionObserver" in window) || !window.matchMedia || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      var sel = [".vitrine > .etiquette", ".vitrine h2", ".vitrine > .chapo", ".vitrine__carte", ".vitrine__photos li",
+      var sel = [".bandeau", ".vitrine > .etiquette", ".vitrine h2", ".vitrine > .chapo", ".vitrine__carte", ".vitrine__photos li",
         ".panneau", ".etapes li", ".ticket", ".rui__carte", ".rui__texte p", ".langues li",
         ".contact > .etiquette", ".contact h2", ".profil", ".separateur",
         ".page-coupes > .etiquette", ".page-coupes__titre", ".page-coupes > .chapo", ".galerie__item", ".suite__carte"].join(",");
@@ -381,6 +381,47 @@
         if (html.classList.contains("attente")) { window.setTimeout(demarrer, 40); return; }
         els.forEach(function (el) { io.observe(el); });
       })();
+    })();
+  } catch (e) {}
+
+  /* ---------- 6. Mouvements liés au défilement et au pointeur : barre de lecture, profondeur du hero, inclinaison des photos ---------- */
+  try {
+    (function () {
+      if (!window.matchMedia || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var barre = document.querySelector(".progression");
+      var visuel = document.querySelector(".heros__visuel");
+      var attendu = false;
+      function maj() {
+        attendu = false;
+        var y = window.scrollY || window.pageYOffset || 0;
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        if (barre) {
+          barre.style.setProperty("--progres", h > 0 ? Math.min(1, y / h).toFixed(4) : 0);
+          barre.classList.toggle("est-visible", y > 120);
+        }
+        if (visuel) {
+          var r = visuel.getBoundingClientRect();
+          if (r.bottom > 0 && r.top < window.innerHeight) {
+            // −1 quand le visuel entre par le bas, +1 quand il sort par le haut
+            var p = ((r.top + r.height / 2) / window.innerHeight - 0.5) * -2;
+            visuel.style.setProperty("--parallaxe", Math.max(-1, Math.min(1, p)).toFixed(3));
+          }
+        }
+      }
+      window.addEventListener("scroll", function () { if (!attendu) { attendu = true; window.requestAnimationFrame(maj); } }, { passive: true });
+      window.addEventListener("resize", maj);
+      maj();
+
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+      Array.prototype.forEach.call(document.querySelectorAll(".galerie .photo, .vitrine__photo"), function (el) {
+        el.addEventListener("pointermove", function (e) {
+          var r = el.getBoundingClientRect();
+          var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+          el.style.setProperty("--ry", (x * 8).toFixed(2) + "deg");
+          el.style.setProperty("--rx", (y * -8).toFixed(2) + "deg");
+        });
+        el.addEventListener("pointerleave", function () { el.style.removeProperty("--rx"); el.style.removeProperty("--ry"); });
+      });
     })();
   } catch (e) {}
 })();

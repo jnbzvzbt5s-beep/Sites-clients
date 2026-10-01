@@ -72,10 +72,17 @@ def main():
         mw, mh = MAX_PX[p["role"]]
         if im.width > mw:
             im = im.resize((mw, mh), Image.LANCZOS)
-        data, q = exporter(im, MAX_KO[p["role"]])
-        (OUT / f"{p['fichier']}.webp").write_bytes(data)
-        manifeste[p["fichier"]] = {"w": im.width, "h": im.height, "ko": round(len(data) / 1024, 1), "q": q}
-        print(f"{p['fichier']:9} {p['source']} {im.width}×{im.height} {len(data) / 1024:.1f} Ko (q {q})")
+        variantes = [("", im, MAX_KO[p["role"]])]
+        # Miniature pour la vitrine de l’accueil (affichée ≈ 100–270 px) : pas de doublon lourd dans le fichier unique
+        variantes.append(("-mini", im.resize((280, 350), Image.LANCZOS), 40))
+        if p["role"] == "hero" and p.get("galerie"):
+            variantes.append(("-vignette", im.resize(MAX_PX["vignette"], Image.LANCZOS), MAX_KO["vignette"]))
+        for suffixe, v, max_ko in variantes:
+            data, q = exporter(v, max_ko)
+            nom = p["fichier"] + suffixe
+            (OUT / f"{nom}.webp").write_bytes(data)
+            manifeste[nom] = {"w": v.width, "h": v.height, "ko": round(len(data) / 1024, 1), "q": q}
+            print(f"{nom:16} {p['source']} {v.width}×{v.height} {len(data) / 1024:.1f} Ko (q {q})")
     (OUT / "manifest.json").write_text(json.dumps(manifeste, indent=2))
 
 

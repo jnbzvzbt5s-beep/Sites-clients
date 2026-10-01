@@ -175,9 +175,10 @@ def logotype(site):
     return f'<span class="logotype" aria-hidden="true"><b>{e(site["nom_court"])}</b> {e(site["nom_suite"])}</span>'
 
 
-def image(photo, manifeste, hero=False):
-    m = manifeste[photo["fichier"]]
-    attrs = (f'src="{data_uri(BUILD / "img" / (photo["fichier"] + ".webp"), "image/webp")}" alt="{e(photo["alt"])}" '
+def image(photo, manifeste, hero=False, variante=""):
+    nom = photo["fichier"] + variante
+    m = manifeste[nom]
+    attrs = (f'src="{data_uri(BUILD / "img" / (nom + ".webp"), "image/webp")}" alt="{e(photo["alt"])}" '
              f'width="{m["w"]}" height="{m["h"]}" decoding="async"')
     attrs += ' fetchpriority="high"' if hero else ' loading="lazy"'
     return f"<img {attrs}>"
@@ -185,7 +186,8 @@ def image(photo, manifeste, hero=False):
 
 def galerie(photos, manifeste, t):
     """Galerie de la vue « Les coupes ». Chaque photo est un lien #photo-N : sans JS, :target l’agrandit ; avec JS, la visionneuse s’ouvre."""
-    serie = [p for p in photos if p["role"] == "vedette"] + [p for p in photos if p["role"] == "vignette"]
+    serie = ([p for p in photos if p["role"] == "vedette"] + [p for p in photos if p["role"] == "vignette"]
+             + [p for p in photos if p["role"] == "hero" and p.get("galerie")])
     n = len(serie)
     out = ['<ul class="galerie">']
     for k, p in enumerate(serie, start=1):
@@ -193,7 +195,7 @@ def galerie(photos, manifeste, t):
         vedette = k == 1
         index = "" if vedette else f'<span class="photo__index" aria-hidden="true">{k:02d}</span>'
         figure = (f'<figure class="photo"><a class="vignette" href="#photo-{k}" aria-label="{e(t["agrandir"])} : {e(p["alt"])}">'
-                  f'{image(p, manifeste)}<span class="photo__ouvrir" aria-hidden="true">{icone("fleche-ouvrir")}</span></a>{index}'
+                  f'{image(p, manifeste, variante="-vignette" if p["role"] == "hero" else "")}<span class="photo__ouvrir" aria-hidden="true">{icone("fleche-ouvrir")}</span></a>{index}'
                   f'<span class="photo__cible" aria-hidden="true">'
                   f'<a class="photo__fermer" href="#galerie" tabindex="-1">{icone("fermer")}<span>{e(t["fermer"])}</span></a>'
                   f'<a class="photo__prec" href="#photo-{prec}" tabindex="-1">{icone("chevron-gauche")}</a>'
@@ -214,9 +216,16 @@ def vitrine(photos, manifeste, t):
     """Accueil : trois coupes qui mènent chacune à sa photo dans la vue « Les coupes »."""
     serie = ([p for p in photos if p["role"] == "vedette"] + [p for p in photos if p["role"] == "vignette"])[:3]
     items = "".join(f'<li><a class="vitrine__photo" href="#photo-{k}" aria-label="{e(t["agrandir"])} : {e(p["alt"])}">'
-                    f'{image(p, manifeste)}<span class="photo__ouvrir" aria-hidden="true">{icone("fleche-ouvrir")}</span></a></li>'
+                    f'{image(p, manifeste, variante="-mini")}<span class="photo__ouvrir" aria-hidden="true">{icone("fleche-ouvrir")}</span></a></li>'
                     for k, p in enumerate(serie, start=1))
     return f'<ul class="vitrine__photos">{items}</ul>'
+
+
+def bandeau(mots):
+    """Bandeau défilant décoratif (aria-hidden) : la liste est doublée pour boucler sans couture."""
+    items = "".join(f'<span class="bandeau__mot{" bandeau__mot--creux" if i % 2 else ""}">{e(m)}</span><span class="bandeau__point"></span>'
+                    for i, m in enumerate(mots))
+    return f'<div class="bandeau" aria-hidden="true"><div class="bandeau__piste">{items}{items}</div></div>'
 
 
 def moments(t):
@@ -315,6 +324,8 @@ def main():
                                            for i, x in enumerate(t["etapes"], start=1)),
         "{{moments}}": moments(t),
         "{{apercu}}": apercu(t),
+        "{{accroche_mots}}": " ".join(f'<span class="mot"><span>{e(m)}</span></span>' for m in t["accroche"].split(" ")),
+        "{{bandeau}}": bandeau(t["bandeau"]),
         "{{rui_texte}}": "\n        ".join(f"<p>{e(p)}</p>" for p in t["rui_texte"]),
         "{{langues}}": "\n          ".join(
             f'<li lang="{l["lang"]}"><span class="langues__texte">{e(l["texte"])}</span><span class="etiquette" lang="fr">{l["code"]}</span></li>'

@@ -442,6 +442,46 @@ h2 {
   .etiquette-prix { top: auto; bottom: -12px; left: -12px; }
 }
 
+/* ---------- Titre du hero : mots posés un à un ---------- */
+.heros h1 .mot { display: inline-block; overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; vertical-align: top; }
+.heros h1 .mot > span { display: inline-block; }
+
+/* ---------- Bandeau défilant (décor) ---------- */
+.bandeau {
+  overflow: hidden;
+  margin-block: 4px 18px;
+  padding-block: 14px;
+  border-block: 1px solid var(--filet);
+  background: linear-gradient(90deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, .35) 50%, rgba(255, 255, 255, .7));
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.bandeau__piste { display: flex; align-items: center; width: max-content; }
+.bandeau__mot, .bandeau__point { margin-right: 22px; } /* marges plutôt que gap : la boucle à −50 % tombe pile */
+.bandeau__mot {
+  font-size: clamp(22px, 18px + 1.6vw, 40px);
+  font-weight: 700;
+  font-stretch: 118%;
+  letter-spacing: -.01em;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--roi);
+}
+.bandeau__mot--creux { color: transparent; -webkit-text-stroke: 1.2px var(--roi); }
+.bandeau__point { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--ciel); box-shadow: 0 0 0 4px rgba(125, 176, 232, .25); }
+
+/* ---------- Barre de lecture (apparaît après l’en-tête, avec JS) ---------- */
+.progression { position: fixed; z-index: 40; top: 0; left: 0; right: 0; height: 3px; pointer-events: none; opacity: 0; transition: opacity 200ms linear; }
+.progression.est-visible { opacity: 1; }
+.progression__barre {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #13305F, #1F54A6 50%, #7DB0E8);
+  transform-origin: left center;
+  transform: scaleX(var(--progres, 0));
+}
+.no-js .progression { display: none; }
+
 /* ---------- M2b Séparateurs ---------- */
 .separateur { display: block; margin-block: 8px; }
 .separateur svg { display: block; width: 100%; height: 14px; overflow: visible; }
@@ -637,7 +677,7 @@ h2 {
 .repere--haut { left: 5px; top: 5px; }
 .repere--bas { right: -14px; bottom: -14px; }
 @media (min-width: 1024px) {
-  .galerie { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; } /* vedette 2×2 + 6 vignettes : aucune case vide */
+  .galerie { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; } /* vedette 2×2 + 4 vignettes : aucune case vide */
   .galerie__item--vedette { grid-column: 1 / span 2; grid-row: span 2; margin: 0 14px 14px 0; }
   .galerie__item--vedette .photo { height: 100%; aspect-ratio: auto; }
   .galerie__item--vedette .cadre { height: 100%; }
@@ -1053,7 +1093,10 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
   .entete__barre { animation: poser 420ms var(--courbe) 80ms backwards; }
   .heros__lieu { animation: poser 420ms var(--courbe) 150ms backwards; }
   .heros__moien { animation: poser 420ms var(--courbe) 220ms backwards; }
-  .heros h1 { animation: poser 420ms var(--courbe) 290ms backwards; }
+  .heros h1 .mot > span { animation: monter 620ms var(--courbe) backwards; animation-delay: calc(260ms + var(--m, 0) * 70ms); }
+  .heros h1 .mot:nth-child(1) > span { --m: 0; } .heros h1 .mot:nth-child(2) > span { --m: 1; }
+  .heros h1 .mot:nth-child(3) > span { --m: 2; } .heros h1 .mot:nth-child(4) > span { --m: 3; }
+  .heros h1 .mot:nth-child(5) > span { --m: 4; } .heros h1 .mot:nth-child(n+6) > span { --m: 5; }
   .heros__chapo { animation: poser 420ms var(--courbe) 360ms backwards; }
   .heros__actions { animation: poser 420ms var(--courbe) 430ms backwards; }
   .heros__photo img { animation: reveler-clip 900ms var(--tondeuse) 200ms backwards; }
@@ -1090,14 +1133,32 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
   .heros__visuel::before { animation: glisser-tuile 800ms var(--courbe) 500ms backwards; }
   .sur-coupes .vue--coupes { animation: poser 380ms var(--courbe); }
 
+  /* Bandeau : défilement continu, ralenti au survol */
+  .bandeau__piste { animation: defiler 34s linear infinite; }
+  .bandeau:hover .bandeau__piste { animation-play-state: paused; }
+  /* Profondeur du hero : la tuile bleue et l’étiquette prix glissent à des vitesses différentes (variable posée par app.js) */
+  .heros__visuel::before { translate: 0 calc(var(--parallaxe, 0) * -40px); }
+  .etiquette-prix { translate: 0 calc(var(--parallaxe, 0) * 26px); }
+  /* Étapes : le pointillé se trace entre les numéros */
+  .panneau.est-apparu .etapes li:not(:last-child)::after { animation: tracer-lien 700ms var(--courbe) backwards; }
+  .panneau.est-apparu .etapes li:nth-child(1)::after { animation-delay: 450ms; }
+  .panneau.est-apparu .etapes li:nth-child(2)::after { animation-delay: 600ms; }
+  /* Choix dans le ticket : petit rebond */
+  .tuile input:checked + .tuile__corps, .puce input:checked + span { animation: choisir 280ms var(--courbe); }
+  /* Inclinaison des photos sous le pointeur (variables posées par app.js) */
+  .js .galerie .photo, .js .vitrine__photo { transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 260ms var(--courbe); }
+
   /* Survols */
   .lien-fleche .icone, .photo__ouvrir, .vitrine__photo { transition: transform 220ms var(--courbe); }
   .lien-fleche:hover .icone { transform: translateX(4px); }
   .lien-fleche--retour:hover .icone { transform: translateX(-4px); }
-  .vitrine__photo:hover { transform: translateY(-3px); }
   .vignette:hover .photo__ouvrir, .vitrine__photo:hover .photo__ouvrir { transform: scale(1.12); }
 }
 @keyframes deriver { from { transform: translate3d(-3%, -2%, 0); } to { transform: translate3d(3%, 3%, 0) scale(1.06); } }
+@keyframes monter { from { transform: translateY(110%); } }
+@keyframes defiler { to { transform: translateX(-50%); } }
+@keyframes tracer-lien { from { clip-path: inset(0 100% 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes choisir { 0% { transform: scale(.92); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
 @keyframes tomber { from { opacity: 0; transform: translateY(-8px); } }
 @keyframes rebondir { 0% { opacity: 0; transform: scale(.4); } 70% { opacity: 1; transform: scale(1.12); } 100% { transform: scale(1); } }
 @keyframes glisser-tuile { from { opacity: 0; transform: translate(-18px, -18px); } }
