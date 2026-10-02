@@ -50,10 +50,10 @@ def etalonner(im):
     return out.filter(ImageFilter.UnsharpMask(radius=1.0, percent=30, threshold=3))
 
 
-def exporter(im, max_ko):
+def exporter(im, max_ko, q0=80):
     propre = Image.new("RGB", im.size)  # nouvelle image : ni EXIF, ni GPS, ni ICC, ni XMP
     propre.paste(im)
-    for q in range(80, 40, -3):  # 80 : net à la taille affichée, poids contenu
+    for q in range(q0, 40, -3):  # 80 : net à la taille affichée ; 70 pour les vignettes (fichier unique : chaque Ko compte)
         buf = io.BytesIO()
         propre.save(buf, "WEBP", quality=q, method=6)
         if buf.tell() <= max_ko * 1024:
@@ -72,13 +72,13 @@ def main():
         mw, mh = MAX_PX[p["role"]]
         if im.width > mw:
             im = im.resize((mw, mh), Image.LANCZOS)
-        variantes = [("", im, MAX_KO[p["role"]])]
+        variantes = [("", im, MAX_KO[p["role"]], 70 if p["role"] == "vignette" else 80)]
         # Miniature pour la vitrine de l’accueil (affichée ≈ 100–270 px) : pas de doublon lourd dans le fichier unique
-        variantes.append(("-mini", im.resize((280, 350), Image.LANCZOS), 40))
+        variantes.append(("-mini", im.resize((280, 350), Image.LANCZOS), 40, 72))
         if p["role"] == "hero" and p.get("galerie"):
-            variantes.append(("-vignette", im.resize(MAX_PX["vignette"], Image.LANCZOS), MAX_KO["vignette"]))
-        for suffixe, v, max_ko in variantes:
-            data, q = exporter(v, max_ko)
+            variantes.append(("-vignette", im.resize(MAX_PX["vignette"], Image.LANCZOS), MAX_KO["vignette"], 70))
+        for suffixe, v, max_ko, q0 in variantes:
+            data, q = exporter(v, max_ko, q0)
             nom = p["fichier"] + suffixe
             (OUT / f"{nom}.webp").write_bytes(data)
             manifeste[nom] = {"w": v.width, "h": v.height, "ko": round(len(data) / 1024, 1), "q": q}

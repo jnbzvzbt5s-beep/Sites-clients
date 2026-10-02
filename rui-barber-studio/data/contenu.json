@@ -147,7 +147,6 @@
       "fichier": "hero",
       "source": "p13.jpg",
       "role": "hero",
-      "galerie": true,
       "recadrage": [
         244,
         560,
@@ -184,6 +183,19 @@
       "legende": "À COMPLÉTER"
     },
     {
+      "fichier": "coupe-4",
+      "source": "p18.jpg",
+      "role": "vignette",
+      "recadrage": [
+        276,
+        652,
+        916,
+        1452
+      ],
+      "alt": "Dessus court, dégradé bas à blanc sur les côtés et la nuque, barbe taillée, vu de profil arrière",
+      "legende": "À COMPLÉTER"
+    },
+    {
       "fichier": "coupe-2",
       "source": "p14.jpg",
       "role": "vignette",
@@ -197,6 +209,19 @@
       "legende": "À COMPLÉTER"
     },
     {
+      "fichier": "coupe-5",
+      "source": "p20.jpg",
+      "role": "vignette",
+      "recadrage": [
+        201,
+        530,
+        761,
+        1230
+      ],
+      "alt": "Dessus court, dégradé haut à blanc sur les côtés et la nuque, vu de dos de trois quarts",
+      "legende": "À COMPLÉTER"
+    },
+    {
       "fichier": "coupe-3",
       "source": "p16.jpg",
       "role": "vignette",
@@ -207,6 +232,19 @@
         1300
       ],
       "alt": "Dessus bouclé et épais, dégradé bas à la nuque et derrière l’oreille, vu de profil arrière",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-6",
+      "source": "p19.jpg",
+      "role": "vignette",
+      "recadrage": [
+        300,
+        535,
+        940,
+        1335
+      ],
+      "alt": "Cheveux afro réguliers et contour net à la nuque, vus de dos de trois quarts",
       "legende": "À COMPLÉTER"
     }
   ],

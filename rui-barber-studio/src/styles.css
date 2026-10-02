@@ -677,7 +677,7 @@ h2 {
 .repere--haut { left: 5px; top: 5px; }
 .repere--bas { right: -14px; bottom: -14px; }
 @media (min-width: 1024px) {
-  .galerie { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; } /* vedette 2×2 + 4 vignettes : aucune case vide */
+  .galerie { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; } /* vedette 2×2 + 6 vignettes : aucune case vide */
   .galerie__item--vedette { grid-column: 1 / span 2; grid-row: span 2; margin: 0 14px 14px 0; }
   .galerie__item--vedette .photo { height: 100%; aspect-ratio: auto; }
   .galerie__item--vedette .cadre { height: 100%; }
