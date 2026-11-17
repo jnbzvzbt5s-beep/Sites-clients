@@ -120,13 +120,23 @@ paires = [
     ("brume", panneau_bas, "note, coin bas droit", 4.5),
     ("encre", "#FFFFFF", "étiquette prix", 4.5), ("blanc", "#13305F", "numéro d’index dans le panneau", 4.5), ("roi", ciel_page, "numéro d’index sous le halo", 4.5),
 ]
+verre_haut = melange(V["roi"], V["abysse"], .16)                # haut des cartes en verre sombre
+fond_nuit_max = melange(V["roi"], "#071531", .34)               # page : lueur roi la plus dense
+paires += [
+    ("porcelaine", "abysse", "titres, texte fort sur la page nuit", 4.5), ("porcelaine", fond_nuit_max, "titres sous une lueur", 4.5),
+    ("brume", "abysse", "texte courant sur la page nuit", 4.5), ("brume", fond_nuit_max, "texte sous une lueur", 4.5),
+    ("platine", fond_nuit_max, "étiquettes sous une lueur", 4.5), ("gris-clair", fond_nuit_max, "texte secondaire sous une lueur", 4.5),
+    ("ciel", fond_nuit_max, "accents italiques, liens", 4.5), ("gris-clair", "#030914", "pied de page", 4.5),
+    ("brume", verre_haut, "texte des cartes en verre", 4.5), ("abysse", "porcelaine", "boutons clairs", 4.5),
+    ("porcelaine", "#071531", "étiquette prix", 4.5),
+]
 for t, f, usage, seuil in paires:
     ct, cf = V.get(t, t), V.get(f, f) if isinstance(f, str) else f
     r = ratio(ct, cf)
     verifier(15, f"Contraste {t} sur {f if isinstance(f, str) else 'rgb' + str(f)} ≥ {seuil} ({usage})", r >= seuil, f"{r:.2f}:1")
-verifier(15, "--ciel jamais en texte hors des fonds nuit (panneau, écrin du hero, carte)",
-         all(any(k in sel for k in ("panneau", "etapes", "visionneuse", "heros", "carte")) for sel, corps in re.findall(r"([^{}]+)\{([^{}]*)\}", CSS)
-             if re.search(r"(?<![-\w])color:\s*var\(--ciel\)", corps)))
+verifier(15, "--ciel jamais en texte sur les surfaces blanches (ticket, tuiles, puces, aperçu)",
+         not any(any(k in sel for k in ("ticket", "tuile", "puce", "apercu")) for sel, corps in re.findall(r"([^{}]+)\{([^{}]*)\}", CSS)
+                 if re.search(r"(?<![-\w])color:\s*var\(--ciel\)", corps)))
 
 # ---------- 13. Photos, logo, métadonnées ----------
 imgs = re.findall(r"<img\s[^>]*>", PAGE)
@@ -159,8 +169,8 @@ titre = html.unescape(re.search(r"<title>(.*?)</title>", PAGE).group(1))
 desc = html.unescape(re.search(r'<meta name="description" content="([^"]+)"', PAGE).group(1))
 verifier(16, f"Titre « {ATT['titre']} »", titre == ATT["titre"], titre)
 verifier(16, "Meta description exacte", desc == "Coupe complète à 15 € à Mersch. Proposez un créneau sur Instagram, Rui vous confirme.", desc)
-verifier(16, "theme-color #F5F8FC, favicon et apple-touch-icon en data URI",
-         'name="theme-color" content="#E2EDFA"' in PAGE and 'rel="icon" type="image/png" sizes="64x64" href="data:image/png' in PAGE
+verifier(16, "theme-color #050D1E, favicon et apple-touch-icon en data URI",
+         'name="theme-color" content="#050D1E"' in PAGE and 'rel="icon" type="image/png" sizes="64x64" href="data:image/png' in PAGE
          and 'rel="apple-touch-icon" sizes="180x180" href="data:image/png' in PAGE)
 verifier(16, "Open Graph titre et description ; og:image et og:url absents tant que l’URL est inconnue",
          'property="og:title"' in PAGE and 'property="og:description"' in PAGE and "og:image" not in PAGE and "og:url" not in PAGE)

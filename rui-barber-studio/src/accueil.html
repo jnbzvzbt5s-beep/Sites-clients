@@ -10,7 +10,7 @@
     <div class="heros__grain" aria-hidden="true"></div>
     <div class="heros__texte">
       <p class="etiquette heros__lieu">{{textes.lieu}}</p>
-      <p class="heros__moien" lang="lb">{{textes.moien}}</p>
+      <p class="heros__moien" lang="lb"><em>{{textes.moien}}</em></p>
       <h1 id="accroche">{{accroche_mots}}</h1>
       <p class="chapo heros__chapo">{{textes.chapo}}</p>
       <div class="heros__actions">
@@ -27,7 +27,7 @@
       <p class="etiquette-prix">
         <span class="ruban ruban--prix" aria-hidden="true"></span>
         <span class="etiquette">{{textes.prix_etiquette}}</span>
-        <strong class="etiquette-prix__montant chiffres" data-prix>{{site.prestation.affichage}}</strong>
+        <strong class="etiquette-prix__montant serif chiffres" data-prix>{{site.prestation.affichage}}</strong>
       </p>
     </div>
   </section>
@@ -38,7 +38,7 @@
 
   <section class="vitrine enveloppe" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
     <p class="etiquette">{{textes.coupes_index}}</p>
-    <h2 id="coupes-titre">{{textes.coupes_titre}}</h2>
+    <h2 id="coupes-titre">{{accent:coupes_titre}}</h2>
     <p class="chapo">{{textes.coupes_phrase}}</p>
     <div class="vitrine__carte">
       <div class="vitrine__trame" aria-hidden="true">{{trame:blanc}}</div>
@@ -53,7 +53,7 @@
       <div class="panneau__grain" aria-hidden="true"></div>
       <div class="panneau__intro">
         <p class="etiquette">{{textes.rdv_index}}</p>
-        <h2 id="rdv-titre">{{textes.rdv_titre}}</h2>
+        <h2 id="rdv-titre">{{accent:rdv_titre}}</h2>
         <ol class="etapes">
           {{etapes}}
         </ol>
@@ -119,7 +119,7 @@
 
   <section class="acces enveloppe" id="acces" aria-labelledby="acces-titre" tabindex="-1">
     <p class="etiquette">{{textes.acces_index}}</p>
-    <h2 id="acces-titre">{{textes.acces_titre}}</h2>
+    <h2 id="acces-titre">{{accent:acces_titre}}</h2>
     <div class="acces__grille">
       <figure class="carte" role="img" aria-label="{{textes.acces_carte_alt}}">
         {{carte}}
@@ -161,7 +161,7 @@
   <section class="page-coupes enveloppe" aria-labelledby="galerie-titre">
     <a class="lien-fleche lien-fleche--retour" href="#haut">{{icone:chevron-gauche}}{{textes.retour_accueil}}</a>
     <p class="etiquette">{{textes.coupes_index}}</p>
-    <h2 class="page-coupes__titre" id="galerie-titre">{{textes.coupes_titre}}</h2>
+    <h2 class="page-coupes__titre" id="galerie-titre">{{accent:coupes_titre}}</h2>
     <p class="chapo">{{textes.coupes_phrase}}</p>
     <div class="coupes__zone" id="galerie">
       <div class="halo halo--coupes" aria-hidden="true"></div>
@@ -175,7 +175,7 @@
     <div class="suite__carte" data-masque-pastille>
       <div class="vitrine__trame" aria-hidden="true">{{trame:blanc}}</div>
       <p class="etiquette">{{textes.rdv_court}}</p>
-      <h2 id="suite-titre">{{textes.rdv_titre}}</h2>
+      <h2 id="suite-titre">{{accent:rdv_titre}}</h2>
       <a class="bouton bouton--rouge" href="#rendez-vous">{{textes.cta}}</a>
     </div>
   </section>

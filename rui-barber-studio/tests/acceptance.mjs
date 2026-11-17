@@ -373,7 +373,8 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     const ticket = await page.locator('#ticket').isVisible();
     const texte = (await page.locator('#apercu').innerText()).trim();
     const lien = page.locator('#envoyer');
-    const libelle = (await lien.innerText()).trim();
+    // Texte des seules parties affichées, tel qu’écrit (pas son rendu en capitales)
+    const libelle = await lien.evaluate(a => [...a.querySelectorAll('span')].filter(s => getComputedStyle(s).display !== 'none').map(s => s.textContent).join('').trim());
     const phrase = await page.locator('.ticket__sansjs').isVisible();
     const champs = await page.locator('.ticket__champ').evaluateAll(ls => ls.every(l => getComputedStyle(l).display === 'none'));
     const pastille = await page.locator('#pastille').evaluate(p => getComputedStyle(p).display);

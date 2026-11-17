@@ -37,7 +37,7 @@
   "meta": {
     "titre": "Rui’s Barber Studio — barbier à Mersch",
     "description": "Coupe complète à 15 € à Mersch. Proposez un créneau sur Instagram, Rui vous confirme.",
-    "theme": "#E2EDFA"
+    "theme": "#050D1E"
   },
   "textes": {
     "lieu": "Mersch · Luxembourg",
@@ -167,7 +167,13 @@
     ],
     "acces_plans": "Ouvrir dans Plans",
     "acces_google": "Google Maps",
-    "acces_carte_alt": "Schéma : Mersch au centre du Luxembourg, Luxembourg-Ville environ 15 km au sud"
+    "acces_carte_alt": "Schéma : Mersch au centre du Luxembourg, Luxembourg-Ville environ 15 km au sud",
+    "accents": {
+      "accroche": "nette",
+      "coupes_titre": "coupes",
+      "rdv_titre": "créneau",
+      "acces_titre": "cœur"
+    }
   },
   "portrait": "À COMPLÉTER",
   "photos": [

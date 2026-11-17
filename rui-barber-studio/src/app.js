@@ -9,7 +9,7 @@
   try {
     var afficherPage = function () { document.documentElement.classList.remove("attente"); };
     window.setTimeout(afficherPage, 700);
-    if (document.fonts && document.fonts.load) document.fonts.load('640 20px "Archivo"').then(afficherPage, afficherPage);
+    if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('640 20px "Archivo"'), document.fonts.load('400 20px "Bodoni Moda"'), document.fonts.load('italic 400 20px "Bodoni Moda"')]).then(afficherPage, afficherPage);
     else afficherPage();
   } catch (e) { document.documentElement.classList.remove("attente"); }
 

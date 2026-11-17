@@ -779,7 +779,7 @@ h2 {
 }
 .panneau__trame { position: absolute; z-index: -1; top: 0; right: 0; width: 264px; height: 264px; color: var(--ciel); opacity: .28; }
 .panneau__trame svg, .rui__trame svg { display: block; width: 100%; height: 100%; }
-.panneau__grain, .heros__grain { position: absolute; inset: 0; z-index: -1; background-image: url("{{grain}}"); opacity: .05; }
+.panneau__grain, .heros__grain { position: absolute; inset: 0; z-index: -1; opacity: .05; }
 .panneau .etiquette { color: var(--ciel); }
 .ticket .etiquette { color: var(--gris); }
 .panneau h2 { margin-top: 10px; color: var(--blanc); max-width: 14ch; }
@@ -1005,15 +1005,6 @@ h2 {
   line-height: .86;
   letter-spacing: -.035em;
   color: var(--encre);
-}
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .rui__nom {
-    background: linear-gradient(120deg, #0A1C3A 0%, #1F54A6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-  }
 }
 .rui__trame { position: absolute; z-index: -1; right: 0; top: 50%; width: 264px; height: 264px; transform: translateY(-50%); color: #C6DCF5; }
 .rui__mots { margin-top: 18px; }
@@ -1283,4 +1274,183 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* =====================================================================
+   V6 « Écrin nuit » — direction luxe
+   Toute la page passe en bleu abysse ; titres en Bodoni Moda (Didone, OFL),
+   accents en italique ; filets platine ; angles vifs ; rouge réservé à l’action.
+   ===================================================================== */
+@font-face {
+  font-family: "Bodoni Moda";
+  src: url("{{serif}}") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Bodoni Moda";
+  src: url("{{serif_italique}}") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: block;
+}
+:root {
+  --abysse: #050D1E;
+  --platine: #C9D6E8;
+  --gris-clair: #A9B6CB;
+  --filet-nuit: rgba(201, 214, 232, .16);
+  --verre: linear-gradient(160deg, rgba(31, 84, 166, .16) 0%, rgba(10, 28, 58, .55) 100%);
+  --serif: "Bodoni Moda", "Didot", "Bodoni 72", "Bodoni MT", Georgia, serif;
+  color-scheme: dark;
+}
+body { background: linear-gradient(180deg, #050D1E 0%, #071531 45%, #050D1E 100%); background-color: var(--abysse); color: var(--brume); }
+body::before {
+  background:
+    radial-gradient(42% 36% at 88% 10%, rgba(31, 84, 166, .34) 0%, rgba(31, 84, 166, 0) 70%),
+    radial-gradient(38% 32% at 8% 52%, rgba(31, 84, 166, .26) 0%, rgba(31, 84, 166, 0) 70%),
+    radial-gradient(40% 34% at 82% 92%, rgba(125, 176, 232, .10) 0%, rgba(125, 176, 232, 0) 70%);
+}
+/* Grain sur toute la page (même tuile que le panneau : une seule copie dans le fichier) */
+body::after { content: ""; position: fixed; inset: 0; z-index: 80; pointer-events: none; opacity: .045; }
+body::after, .panneau__grain, .heros__grain { background-image: url("{{grain}}"); }
+a { color: var(--ciel); }
+:focus-visible { outline-color: var(--ciel); }
+
+/* Typographie */
+h1, h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-stretch: 100%;
+  letter-spacing: -.012em;
+  color: var(--porcelaine);
+}
+h1 { font-size: clamp(3rem, 1.9rem + 5.2vw, 6.6rem); line-height: .98; }
+h2 { font-size: clamp(2.4rem, 1.7rem + 3vw, 4.4rem); line-height: 1.02; }
+h1 em, h2 em { font-style: italic; color: var(--ciel); }
+.chapo { color: var(--brume); }
+.etiquette { color: var(--platine); letter-spacing: .3em; }
+.etiquette__num, .panneau .etiquette__num { color: var(--ciel); }
+.serif { font-family: var(--serif); font-weight: 400; }
+
+/* Boutons : rectangles nets, capitales espacées */
+.bouton { min-height: 52px; padding: 0 26px; border-radius: 3px; font-size: 13.5px; font-weight: 600; font-stretch: 112%; letter-spacing: .14em; text-transform: uppercase; }
+.bouton--nuit, .bouton--blanc { background: var(--porcelaine); color: var(--abysse); box-shadow: none; }
+.bouton--contour { background: transparent; border-color: rgba(201, 214, 232, .45); color: var(--porcelaine); }
+.entete__cta.bouton--nuit { background: transparent; border-color: rgba(201, 214, 232, .45); color: var(--porcelaine); }
+.lien-fleche { color: var(--porcelaine); font-size: 13.5px; font-stretch: 112%; letter-spacing: .14em; text-transform: uppercase; text-decoration-color: rgba(201, 214, 232, .4); text-underline-offset: .45em; }
+.lien-fleche--retour { color: var(--ciel); }
+@media (hover: hover) and (pointer: fine) {
+  .bouton--contour:hover, .entete__cta.bouton--nuit:hover { border-color: var(--porcelaine); }
+}
+
+/* En-tête */
+.logotype { color: var(--gris-clair); }
+.logotype b { color: var(--porcelaine); }
+.logo__img { box-shadow: 0 0 0 1px rgba(201, 214, 232, .35); }
+.entete__nav a { color: var(--brume); font-size: 12.5px; font-stretch: 112%; letter-spacing: .16em; text-transform: uppercase; }
+@media (hover: hover) and (pointer: fine) { .entete__nav a:hover { color: var(--porcelaine); } }
+.sur-coupes .entete__nav a[href="#les-coupes"] { color: var(--ciel); }
+@media (min-width: 1024px) {
+  .entete { background: rgba(5, 13, 30, .94); border-bottom-color: var(--filet-nuit); }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .entete { background: rgba(5, 13, 30, .74); }
+  }
+}
+.entete__ig { color: var(--porcelaine); }
+
+/* Hero : pleine largeur, photo en arche, cadre filet */
+.heros {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 18px max(var(--marge), env(safe-area-inset-left)) 52px;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+  overflow-x: clip; /* halo et cadre décalé restent dans la page */
+}
+@supports not (overflow-x: clip) { .heros { overflow-x: hidden; } }
+.heros__trame { opacity: .14; }
+.heros__grain { display: none; }
+.heros__moien { font-family: var(--serif); font-weight: 400; font-size: 22px; }
+.heros__moien em { font-style: italic; }
+.heros__chapo { color: var(--brume); }
+.heros__photo { border-radius: 999px 999px 4px 4px; box-shadow: 0 50px 90px -40px rgba(0, 0, 0, .8); }
+.heros__photo::after { background: linear-gradient(to top, rgba(5, 13, 30, .45), rgba(5, 13, 30, 0) 35%); }
+.heros__visuel::before { inset: 14px -14px -14px 14px; border: 1px solid rgba(201, 214, 232, .35); border-radius: 999px 999px 4px 4px; }
+.heros .halo--heros { background: radial-gradient(closest-side, rgba(31, 84, 166, .45), rgba(31, 84, 166, 0)); }
+.etiquette-prix { gap: 4px; padding: 12px 20px 12px 24px; border: 1px solid rgba(201, 214, 232, .4); border-radius: 3px; background: #071531; box-shadow: 0 24px 48px -24px rgba(0, 0, 0, .8); }
+.etiquette-prix .etiquette { color: var(--platine); }
+.etiquette-prix__montant { font-size: 36px; line-height: 1; color: var(--porcelaine); }
+@media (min-width: 1024px) {
+  .heros { padding: 40px 48px 96px; }
+  .heros h1 { max-width: 12.5ch; }
+  .heros__chapo { margin-top: 22px; }
+}
+
+/* Bandeau, séparateurs, halos */
+.bandeau { background: rgba(255, 255, 255, .02); border-block-color: var(--filet-nuit); }
+.bandeau__mot { color: var(--platine); }
+.bandeau__mot--creux { color: var(--porcelaine); font-family: var(--serif); font-style: italic; }
+.bandeau__mot--creux, .bandeau__mot--creux em { font-weight: 400; font-stretch: 100%; letter-spacing: .06em; text-transform: none; font-size: clamp(17px, 15px + .6vw, 22px); }
+.separateur__filet { stroke: rgba(201, 214, 232, .28); }
+.halo { background: radial-gradient(closest-side, rgba(31, 84, 166, .4), rgba(31, 84, 166, 0)); }
+
+/* Cartes en verre sombre, filet platine, angles nets */
+.vitrine__carte, .rui__carte, .suite__carte, .profil {
+  border: 1px solid var(--filet-nuit);
+  border-radius: 6px;
+  background: var(--verre);
+  box-shadow: 0 40px 80px -50px rgba(0, 0, 0, .9);
+}
+.vitrine__trame, .suite__carte .vitrine__trame { color: var(--ciel); opacity: .16; }
+.vitrine__photo, .photo { border-radius: 3px; }
+.vitrine__photo { box-shadow: 0 0 0 1px var(--filet-nuit); }
+.galerie__item--vedette .photo { border-radius: 4px; }
+.galerie .photo { box-shadow: 0 0 0 1px var(--filet-nuit), 0 30px 60px -40px rgba(0, 0, 0, .9); }
+.repere { background:
+    linear-gradient(rgba(201, 214, 232, .5), rgba(201, 214, 232, .5)) center / 1px 100% no-repeat,
+    linear-gradient(rgba(201, 214, 232, .5), rgba(201, 214, 232, .5)) center / 100% 1px no-repeat; }
+.suite__carte::before { width: 2px; background: linear-gradient(180deg, #7DB0E8, #1F54A6); }
+
+/* Panneau de rendez-vous : un cran plus clair que la page, filet */
+.panneau { border: 1px solid var(--filet-nuit); border-radius: 6px; }
+.ticket::before { box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .9); }
+
+/* Rui */
+.rui__nom { font-weight: 400; font-stretch: 100%; letter-spacing: -.02em; line-height: .9; font-size: clamp(7rem, 3rem + 16vw, 14rem); }
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .rui__nom { background: linear-gradient(120deg, #FFFFFF 0%, #C9D6E8 45%, #7DB0E8 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+}
+.rui__trame { color: var(--ciel); opacity: .14; }
+.rui__texte p { color: var(--brume); }
+.langues, .langues li { border-color: var(--filet-nuit); }
+.langues li::before { width: 5px; height: 5px; border-radius: 0; background: var(--ciel); transform: rotate(45deg); }
+.langues .etiquette { color: var(--gris-clair); }
+
+/* Localisation */
+.carte { border: 1px solid var(--filet-nuit); border-radius: 6px; }
+.faits, .faits div { border-color: var(--filet-nuit); }
+.faits dt { color: var(--gris-clair); }
+.faits dd { color: var(--porcelaine); }
+
+/* Contact */
+.profil::before { height: 2px; background: linear-gradient(90deg, rgba(125, 176, 232, 0), #7DB0E8, rgba(125, 176, 232, 0)); }
+.profil__logo { box-shadow: 0 0 0 1px rgba(201, 214, 232, .5), 0 0 0 8px rgba(201, 214, 232, .06); }
+.profil__pseudo { color: var(--porcelaine); }
+.profil__nom, .profil__lieu { color: var(--gris-clair); }
+
+/* Pied de page */
+.pied { background: #030914; border-top-color: var(--filet-nuit); color: var(--gris-clair); }
+.pied a { color: var(--gris-clair); }
+mark.a-completer { background: var(--marine); color: var(--porcelaine); }
+
+/* V6 — ajustements */
+.cadre::before { border-color: rgba(201, 214, 232, .3); border-radius: 4px; }
+.halo--coupes { height: 100%; top: 0; }
+.ticket .bouton { white-space: normal; padding: 10px 16px; font-size: 12.5px; letter-spacing: .1em; }
+@media (min-width: 1024px) {
+  .heros h1 { max-width: none; font-size: clamp(4rem, 2rem + 3.4vw, 5.6rem); }
 }

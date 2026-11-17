@@ -54,9 +54,9 @@ def main():
     for chemin_page in pages:
         w = chemin_page.stem
         rouge, rose, violet, sombre = parts(chemin_page)
-        ok = rouge <= .025 and sombre <= .30
+        ok = rouge <= .025 and sombre >= .45  # V6 « Écrin nuit » : la page doit rester majoritairement sombre
         echecs += not ok
-        print(f"{'OK ' if ok else 'ÉCHEC'} {w} (page entière) : rouge {rouge:.2%} (≤ 2,5 %) · sombre {sombre:.1%} (≤ 30 %) · rose {rose:.3%} · violet {violet:.3%}")
+        print(f"{'OK ' if ok else 'ÉCHEC'} {w} (page entière) : rouge {rouge:.2%} (≤ 2,5 %) · sombre {sombre:.1%} (≥ 45 %, thème nuit) · rose {rose:.3%} · violet {violet:.3%}")
     print(f"Pires écrans 390×844 : rouge {pire['rouge']:.2%} (≤ 6 %) · rose {pire['rose']:.3%} (≤ 0,05 %) · violet {pire['violet']:.3%} (≤ 0,02 %)")
     print(f"\n{len(ecrans) + len(pages) - echecs}/{len(ecrans) + len(pages)} contrôles de budget réussis.")
     sys.exit(1 if echecs else 0)
