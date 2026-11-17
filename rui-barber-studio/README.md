@@ -1,6 +1,6 @@
 # Rui’s Barber Studio — site vitrine (V5 « le dégradé net »)
 
-Livrable : `index.html`, un seul fichier autonome. Il contient l’accueil et la vue « Les coupes » (ancre `#les-coupes`), affichée par JS ou, sans JS, par `:target`.
+Livrable : `index.html`, un seul fichier autonome. Il contient l’accueil (dont la section Localisation, `#acces` : schéma de situation en SVG, liens Plans et Google Maps, aucune carte chargée depuis le réseau) et la vue « Les coupes » (ancre `#les-coupes`), affichée par JS ou, sans JS, par `:target`.
 Planche de tokens : `tokens.html`. Captures : `livraison/`.
 
 ## Construire

@@ -40,6 +40,7 @@ ICONES = {
     "chevron-droite": '<path d="M9.5 6l6 6-6 6"/>',
     "fleche-droite": '<path d="M5 12h14M13.5 6.5 19 12l-5.5 5.5"/>',
     "fleche-ouvrir": '<path d="M8 16 16 8M10 8h6v6"/>',
+    "repere": '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
 }
 
 
@@ -150,6 +151,14 @@ def trame():
             + "".join(cercles) + "</svg>")
 
 
+TRAME_USE = '<svg viewBox="0 0 264 264" focusable="false" fill="currentColor"><use href="#motif-trame"/></svg>'
+
+
+def trame_sprite():
+    corps = trame().split(">", 1)[1].rsplit("</svg>", 1)[0]
+    return f'<svg class="sprite" aria-hidden="true" focusable="false"><defs><g id="motif-trame">{corps}</g></defs></svg>'
+
+
 def grain():
     """Tuile 96×96 de bruit monochrome (utilisée à 5 % d’opacité sur le panneau nuit)."""
     rng = np.random.default_rng(23)
@@ -228,6 +237,24 @@ def bandeau(mots):
     return f'<div class="bandeau" aria-hidden="true"><div class="bandeau__piste">{items}{items}</div></div>'
 
 
+def carte(site, t):
+    """Schéma de situation (pas une carte à l’échelle) : Mersch au centre, Luxembourg-Ville ≈ 15 km au sud (10 px/km)."""
+    grille = "".join(f'<line x1="{x}" y1="0" x2="{x}" y2="300"/>' for x in range(20, 400, 20))
+    grille += "".join(f'<line x1="0" y1="{y}" x2="400" y2="{y}"/>' for y in range(20, 300, 20))
+    coord = next(f["valeur"] for f in t["acces_faits"] if f["terme"] == "Coordonnées")
+    return ('<svg class="carte__svg" viewBox="0 0 400 300" aria-hidden="true" focusable="false">'
+            f'<g class="carte__grille">{grille}</g>'
+            '<g class="carte__anneaux"><circle cx="200" cy="96" r="90"/><circle cx="200" cy="96" r="54"/><circle cx="200" cy="96" r="26"/></g>'
+            '<path class="carte__route" d="M200 96 L219 249" pathLength="1"/>'
+            '<text class="carte__distance" x="224" y="176">≈ 15 km</text>'
+            '<circle class="carte__ville" cx="219" cy="249" r="4.5"/>'
+            '<text class="carte__nom carte__nom--ville" x="231" y="253">Luxembourg-Ville</text>'
+            '<circle class="carte__pouls" cx="200" cy="96" r="8"/><circle class="carte__point" cx="200" cy="96" r="7"/>'
+            f'<text class="carte__nom" x="216" y="91">{e(site["ville"]).upper()}</text>'
+            '<g class="carte__nord"><path d="M370 66V38M363 46l7-8 7 8"/><text x="370" y="30">N</text></g>'
+            f'<text class="carte__coord" x="20" y="284">{e(coord)}</text></svg>')
+
+
 def moments(t):
     out = []
     for m in t["moments"]:
@@ -256,6 +283,7 @@ def jsonld(c):
         "address": {"@type": "PostalAddress", "addressLocality": s["ville"], "addressCountry": s["pays"]},
         "priceRange": s["prestation"]["affichage"],
         "sameAs": [s["instagram"]["profil"]],
+        "hasMap": s["cartes"]["google"],
     }
     if rempli(s.get("url")):
         d["url"] = s["url"]
@@ -317,15 +345,18 @@ def main():
         "{{separateur:60}}": separateur(60),
         "{{galerie}}": galerie(c["photos"], manifeste, t),
         "{{vitrine}}": vitrine(c["photos"], manifeste, t),
-        "{{trame:ciel}}": trame(),
-        "{{trame:brume}}": trame(),
-        "{{trame:blanc}}": trame(),
+        # Motif de points défini une fois (#motif-trame), réutilisé par <use> : pas de copie par section
+        "{{trame:ciel}}": TRAME_USE,
+        "{{trame:brume}}": TRAME_USE,
+        "{{trame:blanc}}": TRAME_USE,
         "{{etapes}}": "\n          ".join(f'<li><span class="etapes__num" aria-hidden="true">{i}</span>{e(x)}</li>'
                                            for i, x in enumerate(t["etapes"], start=1)),
         "{{moments}}": moments(t),
         "{{apercu}}": apercu(t),
         "{{accroche_mots}}": " ".join(f'<span class="mot"><span>{e(m)}</span></span>' for m in t["accroche"].split(" ")),
         "{{bandeau}}": bandeau(t["bandeau"]),
+        "{{carte}}": carte(site, t),
+        "{{acces_faits}}": "\n          ".join(f'<div><dt>{e(f["terme"])}</dt><dd>{e(f["valeur"])}</dd></div>' for f in t["acces_faits"]),
         "{{rui_texte}}": "\n        ".join(f"<p>{e(p)}</p>" for p in t["rui_texte"]),
         "{{langues}}": "\n          ".join(
             f'<li lang="{l["lang"]}"><span class="langues__texte">{e(l["texte"])}</span><span class="etiquette" lang="fr">{l["code"]}</span></li>'
@@ -365,6 +396,7 @@ def main():
         page = re.sub(r'(<p class="etiquette"[^>]*>)(\d{2}) — ', r'\1<span class="etiquette__num">\2</span> — ', page)
         for k, v in blocs.items():
             page = page.replace(k, v)
+        page = page.replace('<body id="haut">', '<body id="haut">\n' + trame_sprite(), 1)
         page = page.replace("{{css}}", css.strip()).replace("{{js}}", js.strip())
         reste = re.findall(r"\{\{[^}]*\}\}", page)
         if reste:

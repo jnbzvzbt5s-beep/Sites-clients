@@ -41,6 +41,7 @@
 /* Le temps qu’Archivo soit prête (≈ 0,2 s, 0,7 s au plus) : rien ne se décale sous les yeux. Sans JS, rien n’est masqué. */
 .attente body { visibility: hidden; }
 [hidden] { display: none !important; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 
 html, body { overflow-x: clip; }
 @supports not (overflow-x: clip) {
@@ -106,16 +107,16 @@ svg.icone {
 .panneau__intro :focus-visible, .panneau__note :focus-visible, .visionneuse :focus-visible { outline-color: var(--ciel); }
 [tabindex="-1"]:focus { outline: none; }
 
-h1, h2 { font-stretch: 112%; text-wrap: balance; color: var(--encre); }
+h1, h2 { font-stretch: 120%; text-wrap: balance; color: var(--encre); }
 h1 {
   font-size: clamp(2.5rem, 1.6rem + 4.2vw, 5rem);
-  font-weight: 640;
+  font-weight: 540;
   line-height: 1.02;
   letter-spacing: -.02em;
 }
 h2 {
   font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
-  font-weight: 620;
+  font-weight: 520;
   line-height: 1.05;
   letter-spacing: -.015em;
 }
@@ -129,7 +130,7 @@ h2 {
   font-size: 12px;
   font-weight: 600;
   font-stretch: 78%;
-  letter-spacing: .16em;
+  letter-spacing: .24em;
   line-height: 1.4;
   text-transform: uppercase;
   color: var(--gris);
@@ -178,8 +179,8 @@ h2 {
   text-decoration: none;
 }
 .logo__img { flex: none; border-radius: 22%; box-shadow: 0 0 0 1px rgba(10, 28, 58, .08); }
-.logotype { display: flex; flex-direction: column; font-size: 15px; line-height: 1.12; white-space: nowrap; }
-.logotype b { font-weight: 700; font-stretch: 104%; color: var(--roi); }
+.logotype { display: flex; flex-direction: column; gap: 3px; font-size: 10.5px; font-weight: 500; font-stretch: 112%; letter-spacing: .28em; line-height: 1.12; text-transform: uppercase; white-space: nowrap; color: var(--gris); }
+.logotype b { font-size: 17px; font-weight: 650; font-stretch: 125%; letter-spacing: .14em; color: var(--encre); }
 
 /* ---------- Boutons ---------- */
 .bouton {
@@ -303,9 +304,9 @@ h2 {
 }
 
 /* ---------- D4 Halos : contenus par leur section (overflow-x: clip) ---------- */
-.heros, .page-coupes, .vitrine, .rui, .contact, .suite { overflow-x: clip; }
+.page-coupes, .vitrine, .rui, .acces, .contact, .suite { overflow-x: clip; }
 @supports not (overflow-x: clip) {
-  .heros, .page-coupes, .vitrine, .rui, .contact, .suite { overflow-x: hidden; }
+  .page-coupes, .vitrine, .rui, .acces, .contact, .suite { overflow-x: hidden; }
 }
 .halo {
   position: absolute;
@@ -442,6 +443,79 @@ h2 {
   .etiquette-prix { top: auto; bottom: -12px; left: -12px; }
 }
 
+/* ---------- Hero en écrin bleu nuit (même matière que le panneau de rendez-vous) ---------- */
+.heros {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: calc(100% - 24px);
+  max-width: 1180px;
+  margin: 4px auto 0;
+  padding: 30px 20px 40px;
+  border-radius: 28px;
+  color: var(--blanc);
+  background:
+    radial-gradient(70% 50% at 100% 0%, rgba(125, 176, 232, .30) 0%, rgba(125, 176, 232, 0) 65%),
+    radial-gradient(60% 50% at 0% 100%, rgba(31, 84, 166, .55) 0%, rgba(31, 84, 166, 0) 70%),
+    linear-gradient(160deg, #0A1C3A 0%, #13305F 60%, #1B4589 100%);
+  box-shadow: 0 40px 80px -48px rgba(10, 28, 58, .6);
+}
+.heros__trame { position: absolute; z-index: -1; top: 0; right: 0; width: 264px; height: 264px; color: var(--ciel); opacity: .2; }
+.heros__trame svg { display: block; width: 100%; height: 100%; }
+.heros h1 { color: var(--blanc); max-width: 14ch; }
+.heros__lieu { color: var(--ciel); }
+.heros__moien { color: var(--ciel); }
+.heros__chapo { color: var(--brume); }
+.heros .lien-fleche { color: var(--blanc); }
+.heros :focus-visible { outline-color: var(--ciel); }
+.heros .halo--heros { background: radial-gradient(closest-side, rgba(125, 176, 232, .32), rgba(125, 176, 232, 0)); }
+.heros__visuel::before { background: none; border: 1px solid rgba(255, 255, 255, .3); inset: 16px -12px -14px 16px; }
+.heros__photo { box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .6); }
+.etiquette-prix .etiquette { color: var(--gris); }
+@media (min-width: 1024px) {
+  .heros { padding: 64px 56px; }
+}
+
+/* ---------- 04 Localisation : schéma de situation + faits ---------- */
+.acces { padding-block: 48px 24px; }
+.acces h2 { margin-top: 10px; max-width: 16ch; }
+.acces__grille { display: grid; gap: 28px; margin-top: 28px; }
+.carte {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 24px;
+  background:
+    radial-gradient(55% 55% at 50% 32%, rgba(125, 176, 232, .26) 0%, rgba(125, 176, 232, 0) 70%),
+    linear-gradient(160deg, #0A1C3A 0%, #13305F 60%, #1B4589 100%);
+  box-shadow: var(--ombre-2);
+}
+.carte__svg { display: block; width: 100%; height: 100%; font-family: var(--police); }
+.carte__grille line { stroke: rgba(255, 255, 255, .07); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.carte__anneaux circle { fill: none; stroke: rgba(125, 176, 232, .5); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.carte__anneaux circle:first-child { stroke: rgba(125, 176, 232, .3); stroke-dasharray: 2 6; }
+.carte__route { fill: none; stroke: #FFFFFF; stroke-width: 1.5; stroke-dasharray: .025 .018; stroke-linecap: round; }
+.carte__point { fill: #FFFFFF; }
+.carte__pouls { fill: none; stroke: #FFFFFF; stroke-width: 1.5; opacity: 0; }
+.carte__ville { fill: #7DB0E8; }
+.carte__nom { fill: #FFFFFF; font-size: 15px; font-weight: 650; font-stretch: 125%; letter-spacing: .22em; }
+.carte__nom--ville { fill: #DDE9F6; font-size: 12px; font-weight: 500; font-stretch: 100%; letter-spacing: .04em; }
+.carte__distance { fill: #7DB0E8; font-size: 12px; font-weight: 600; letter-spacing: .06em; }
+.carte__coord { fill: #DDE9F6; font-size: 11px; font-weight: 500; letter-spacing: .14em; }
+.carte__nord path { fill: none; stroke: #DDE9F6; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.carte__nord text { fill: #DDE9F6; font-size: 12px; font-weight: 650; text-anchor: middle; }
+.faits { margin: 22px 0 0; border-top: 1px solid var(--filet); }
+.faits div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--filet); }
+.faits dt { flex: none; font-size: 12px; font-weight: 600; font-stretch: 78%; letter-spacing: .2em; text-transform: uppercase; color: var(--gris); }
+.faits dd { margin: 0; font-weight: 500; text-align: right; }
+.acces__boutons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+@media (min-width: 1024px) {
+  .acces__grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; align-items: center; }
+  .carte { grid-column: 1 / span 7; }
+  .acces__infos { grid-column: 9 / -1; }
+}
+
 /* ---------- Titre du hero : mots posés un à un ---------- */
 .heros h1 .mot { display: inline-block; overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; vertical-align: top; }
 .heros h1 .mot > span { display: inline-block; }
@@ -450,25 +524,26 @@ h2 {
 .bandeau {
   overflow: hidden;
   margin-block: 4px 18px;
-  padding-block: 14px;
+  padding-block: 18px;
   border-block: 1px solid var(--filet);
   background: linear-gradient(90deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, .35) 50%, rgba(255, 255, 255, .7));
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 .bandeau__piste { display: flex; align-items: center; width: max-content; }
-.bandeau__mot, .bandeau__point { margin-right: 22px; } /* marges plutôt que gap : la boucle à −50 % tombe pile */
+.bandeau__mot, .bandeau__point { margin-right: 34px; } /* marges plutôt que gap : la boucle à −50 % tombe pile */
 .bandeau__mot {
-  font-size: clamp(22px, 18px + 1.6vw, 40px);
-  font-weight: 700;
-  font-stretch: 118%;
-  letter-spacing: -.01em;
+  font-size: clamp(13px, 11px + .5vw, 17px);
+  font-weight: 560;
+  font-stretch: 125%;
+  letter-spacing: .32em;
+  text-transform: uppercase;
   line-height: 1.1;
   white-space: nowrap;
   color: var(--roi);
 }
-.bandeau__mot--creux { color: transparent; -webkit-text-stroke: 1.2px var(--roi); }
-.bandeau__point { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--ciel); box-shadow: 0 0 0 4px rgba(125, 176, 232, .25); }
+.bandeau__mot--creux { color: var(--encre); }
+.bandeau__point { flex: none; width: 6px; height: 6px; background: var(--ciel); transform: rotate(45deg); }
 
 /* ---------- Barre de lecture (apparaît après l’en-tête, avec JS) ---------- */
 .progression { position: fixed; z-index: 40; top: 0; left: 0; right: 0; height: 3px; pointer-events: none; opacity: 0; transition: opacity 200ms linear; }
@@ -510,7 +585,7 @@ h2 {
 .vitrine__trame svg { display: block; width: 100%; height: 100%; }
 .vitrine__photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .vitrine__photo { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 14px; background: var(--brume); }
-.vitrine__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 300ms var(--courbe); }
+.vitrine__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 900ms var(--courbe); }
 .vitrine__bouton { justify-self: start; }
 @media (hover: hover) and (pointer: fine) {
   .vitrine__photo:hover img { transform: scale(1.04); }
@@ -530,10 +605,10 @@ h2 {
   place-items: center;
   width: 30px;
   height: 30px;
+  border: 1px solid rgba(255, 255, 255, .35);
   border-radius: 999px;
-  background: var(--blanc);
-  color: var(--roi);
-  box-shadow: 0 4px 10px -4px rgba(10, 28, 58, .4);
+  background: rgba(10, 28, 58, .72);
+  color: var(--blanc);
 }
 .photo__ouvrir .icone { width: 16px; height: 16px; }
 
@@ -582,20 +657,22 @@ h2 {
   background: var(--brume);
 }
 .galerie__item--vedette .photo { border-radius: 20px; box-shadow: var(--ombre-1); }
-.photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 300ms var(--courbe); }
+.photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 900ms var(--courbe); }
 .photo__index {
   position: absolute;
   left: 8px;
   bottom: 8px;
   z-index: 1;
   padding: 3px 8px;
+  border: 1px solid rgba(255, 255, 255, .3);
   border-radius: 999px;
-  background: var(--blanc);
+  background: rgba(10, 28, 58, .72);
   font-size: 10.5px;
   font-weight: 500;
-  font-stretch: 75%;
+  font-stretch: 112%;
+  letter-spacing: .12em;
   line-height: 1.2;
-  color: var(--roi);
+  color: var(--blanc);
 }
 .vignette {
   display: block;
@@ -702,7 +779,7 @@ h2 {
 }
 .panneau__trame { position: absolute; z-index: -1; top: 0; right: 0; width: 264px; height: 264px; color: var(--ciel); opacity: .28; }
 .panneau__trame svg, .rui__trame svg { display: block; width: 100%; height: 100%; }
-.panneau__grain { position: absolute; inset: 0; z-index: -1; background-image: url("{{grain}}"); opacity: .05; }
+.panneau__grain, .heros__grain { position: absolute; inset: 0; z-index: -1; background-image: url("{{grain}}"); opacity: .05; }
 .panneau .etiquette { color: var(--ciel); }
 .ticket .etiquette { color: var(--gris); }
 .panneau h2 { margin-top: 10px; color: var(--blanc); max-width: 14ch; }
@@ -1000,7 +1077,8 @@ h2 {
 .pied__grille { display: grid; gap: 6px; padding-block: 24px 20px; align-items: center; }
 .pied__logo { display: flex; align-items: center; gap: 10px; }
 .pied__logo .logo__img { width: 32px; height: 32px; }
-.pied .logotype { font-size: 13px; color: var(--encre); }
+.pied .logotype { font-size: 9.5px; }
+.pied .logotype b { font-size: 14px; }
 .pied a { color: var(--gris); }
 .pied__credit a { display: inline-flex; align-items: center; min-height: 44px; }
 .pied__mentions summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; }
@@ -1134,7 +1212,7 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
   .sur-coupes .vue--coupes { animation: poser 380ms var(--courbe); }
 
   /* Bandeau : défilement continu, ralenti au survol */
-  .bandeau__piste { animation: defiler 34s linear infinite; }
+  .bandeau__piste { animation: defiler 60s linear infinite; }
   .bandeau:hover .bandeau__piste { animation-play-state: paused; }
   /* Profondeur du hero : la tuile bleue et l’étiquette prix glissent à des vitesses différentes (variable posée par app.js) */
   .heros__visuel::before { translate: 0 calc(var(--parallaxe, 0) * -40px); }
@@ -1143,10 +1221,14 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
   .panneau.est-apparu .etapes li:not(:last-child)::after { animation: tracer-lien 700ms var(--courbe) backwards; }
   .panneau.est-apparu .etapes li:nth-child(1)::after { animation-delay: 450ms; }
   .panneau.est-apparu .etapes li:nth-child(2)::after { animation-delay: 600ms; }
+  /* Carte : anneaux qui s’ouvrent, trajet tracé, trois pulsations sur Mersch */
+  .carte.est-apparu .carte__anneaux circle { transform-box: fill-box; transform-origin: center; animation: anneau 1100ms var(--courbe) backwards; }
+  .carte.est-apparu .carte__anneaux circle:nth-child(2) { animation-delay: 120ms; }
+  .carte.est-apparu .carte__anneaux circle:nth-child(3) { animation-delay: 240ms; }
+  .carte.est-apparu .carte__route { transform-box: fill-box; transform-origin: top center; animation: deplier 1000ms var(--courbe) 500ms backwards; }
+  .carte.est-apparu .carte__pouls { transform-box: fill-box; transform-origin: center; animation: pouls 2400ms ease-out 1300ms 3; }
   /* Choix dans le ticket : petit rebond */
   .tuile input:checked + .tuile__corps, .puce input:checked + span { animation: choisir 280ms var(--courbe); }
-  /* Inclinaison des photos sous le pointeur (variables posées par app.js) */
-  .js .galerie .photo, .js .vitrine__photo { transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 260ms var(--courbe); }
 
   /* Survols */
   .lien-fleche .icone, .photo__ouvrir, .vitrine__photo { transition: transform 220ms var(--courbe); }
@@ -1158,9 +1240,12 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
 @keyframes monter { from { transform: translateY(110%); } }
 @keyframes defiler { to { transform: translateX(-50%); } }
 @keyframes tracer-lien { from { clip-path: inset(0 100% 100% 0); } to { clip-path: inset(0 0 0 0); } }
-@keyframes choisir { 0% { transform: scale(.92); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+@keyframes choisir { from { transform: scale(.96); } }
+@keyframes anneau { from { opacity: 0; transform: scale(.55); } }
+@keyframes deplier { from { opacity: 0; transform: scaleY(0); } }
+@keyframes pouls { from { opacity: .8; transform: scale(1); } to { opacity: 0; transform: scale(3.4); } }
 @keyframes tomber { from { opacity: 0; transform: translateY(-8px); } }
-@keyframes rebondir { 0% { opacity: 0; transform: scale(.4); } 70% { opacity: 1; transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes rebondir { from { opacity: 0; transform: scale(.7); } }
 @keyframes glisser-tuile { from { opacity: 0; transform: translate(-18px, -18px); } }
 @keyframes derouler { from { transform: scaleX(0); } }
 @keyframes poser { from { opacity: 0; transform: translateY(8px); } }

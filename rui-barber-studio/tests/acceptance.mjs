@@ -321,7 +321,9 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     let vue = 0, cachee = 0;
     for (let y = 0; y < H; y += 350) {
       await page.evaluate(y => window.scrollTo({ top: y, behavior: 'instant' }), y);
-      await page.waitForTimeout(260);
+      await page.waitForTimeout(120);
+      // État stable : apparitions et fondu de la pastille terminés (seules les boucles décoratives continuent)
+      await page.waitForFunction(() => document.getAnimations().every(a => a.playState !== 'running' || a.effect.getComputedTiming().iterations === Infinity), null, { timeout: 4000 }).catch(() => {});
       const r = await page.evaluate(() => {
         const h = window.innerHeight;
         const attendu = ![...document.querySelectorAll('[data-masque-pastille]')].some(el => { const b = el.getBoundingClientRect(); return b.bottom > 0 && b.top < h; });
@@ -485,18 +487,20 @@ for (const [M, type] of [['chromium', chromium], ['webkit', webkit]]) {
     await page.click('.heros .lien-fleche');
     const vue = await page.evaluate(() => [document.querySelector('#galerie').getClientRects().length > 0, document.querySelector('.heros').getClientRects().length > 0]);
     verifier(M, 20, 'Sans JS : « Voir les coupes » affiche la galerie et masque l’accueil', vue[0] && !vue[1], JSON.stringify(vue));
-    await page.locator('.galerie .vignette').nth(2).click();
+    // Chromium ≥ 153 sans JS : le contrôle de stabilité de Playwright n’aboutit jamais ; on vérifie la visibilité puis on clique sans lui
+    await page.locator('.galerie .vignette').nth(2).waitFor({ state: 'visible' });
+    await page.locator('.galerie .vignette').nth(2).click({ force: true });
     const r = await page.evaluate(() => {
       const f = document.querySelector('#photo-3 .photo'), cs = getComputedStyle(f), b = f.getBoundingClientRect();
       return { pos: cs.position, couvre: b.width >= window.innerWidth - 1 && b.height >= window.innerHeight - 1, compteur: document.querySelector('#photo-3 .photo__compteur').textContent };
     });
-    await page.click('#photo-3 .photo__suiv');
+    await page.click('#photo-3 .photo__suiv', { force: true });
     const suiv = await page.evaluate(() => location.hash);
-    await page.click('#photo-4 .photo__fermer');
+    await page.click('#photo-4 .photo__fermer', { force: true });
     const ferme = await page.evaluate(() => [getComputedStyle(document.querySelector('#photo-4 .photo')).position, document.querySelector('#galerie').getClientRects().length > 0]);
     verifier(M, 20, 'Sans JS : la photo cliquée s’affiche en grand, suivante et fermer fonctionnent, la galerie reste affichée',
       r.pos === 'fixed' && r.couvre && r.compteur === '3 sur 7' && suiv === '#photo-4' && ferme[0] !== 'fixed' && ferme[1], JSON.stringify({ r, suiv, ferme }));
-    await page.click('.lien-fleche--retour');
+    await page.click('.lien-fleche--retour', { force: true });
     verifier(M, 20, 'Sans JS : lien « Accueil » réaffiche l’accueil', await page.evaluate(() => document.querySelector('.heros').getClientRects().length > 0));
     await ctx.close();
   }

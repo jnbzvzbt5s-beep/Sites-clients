@@ -124,8 +124,8 @@ for t, f, usage, seuil in paires:
     ct, cf = V.get(t, t), V.get(f, f) if isinstance(f, str) else f
     r = ratio(ct, cf)
     verifier(15, f"Contraste {t} sur {f if isinstance(f, str) else 'rgb' + str(f)} ≥ {seuil} ({usage})", r >= seuil, f"{r:.2f}:1")
-verifier(15, "--ciel jamais en texte hors du panneau nuit",
-         all(any(k in sel for k in ("panneau", "etapes", "visionneuse")) for sel, corps in re.findall(r"([^{}]+)\{([^{}]*)\}", CSS)
+verifier(15, "--ciel jamais en texte hors des fonds nuit (panneau, écrin du hero, carte)",
+         all(any(k in sel for k in ("panneau", "etapes", "visionneuse", "heros", "carte")) for sel, corps in re.findall(r"([^{}]+)\{([^{}]*)\}", CSS)
              if re.search(r"(?<![-\w])color:\s*var\(--ciel\)", corps)))
 
 # ---------- 13. Photos, logo, métadonnées ----------

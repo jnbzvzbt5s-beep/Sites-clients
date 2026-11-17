@@ -28,6 +28,10 @@
       "texte": "Site : Studio Marcus",
       "url": "https://studio-marcus.netlify.app",
       "affichage": "studio-marcus.netlify.app"
+    },
+    "cartes": {
+      "plans": "https://maps.apple.com/?q=Mersch%2C%20Luxembourg",
+      "google": "https://www.google.com/maps/search/?api=1&query=Mersch%2C%20Luxembourg"
     }
   },
   "meta": {
@@ -117,7 +121,7 @@
         "code": "PT"
       }
     ],
-    "contact_index": "04 — Contact",
+    "contact_index": "05 — Contact",
     "contact_titre": "Contact",
     "contact_sous_titre": "Rui’s Barber Studio · Mersch",
     "contact_seul_moyen": "Instagram est le seul moyen de me joindre.",
@@ -139,7 +143,31 @@
       "Boucles",
       "Mersch",
       "Coupe complète 15 €"
-    ]
+    ],
+    "acces_index": "04 — Localisation",
+    "acces_titre": "Mersch, au cœur du Luxembourg.",
+    "acces_texte": "Je coupe à Mersch, au centre du pays. L’adresse exacte vous est envoyée sur Instagram, avec la confirmation du rendez-vous.",
+    "acces_faits": [
+      {
+        "terme": "Ville",
+        "valeur": "Mersch"
+      },
+      {
+        "terme": "Pays",
+        "valeur": "Luxembourg"
+      },
+      {
+        "terme": "Coordonnées",
+        "valeur": "49°45′ N · 6°06′ E"
+      },
+      {
+        "terme": "Luxembourg-Ville",
+        "valeur": "≈ 15 km au sud, à vol d’oiseau"
+      }
+    ],
+    "acces_plans": "Ouvrir dans Plans",
+    "acces_google": "Google Maps",
+    "acces_carte_alt": "Schéma : Mersch au centre du Luxembourg, Luxembourg-Ville environ 15 km au sud"
   },
   "portrait": "À COMPLÉTER",
   "photos": [
