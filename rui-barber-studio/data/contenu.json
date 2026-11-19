@@ -1,0 +1,286 @@
+{
+  "site": {
+    "nom": "Rui’s Barber Studio",
+    "nom_court": "Rui’s",
+    "nom_suite": "Barber Studio",
+    "barbier": "Rui",
+    "ville": "Mersch",
+    "pays": "LU",
+    "depuis": "juillet 2023",
+    "instagram": {
+      "pseudo": "ruis_barber_studio",
+      "affichage": "@ruis_barber_studio",
+      "message": "https://ig.me/m/ruis_barber_studio",
+      "profil": "https://www.instagram.com/ruis_barber_studio/"
+    },
+    "prestation": {
+      "nom": "Coupe complète",
+      "prix": 15,
+      "devise": "EUR",
+      "affichage": "15 €",
+      "comprend": "À COMPLÉTER",
+      "duree": "À COMPLÉTER"
+    },
+    "paiement": "À COMPLÉTER",
+    "url": "À COMPLÉTER",
+    "mentions_legales": "À COMPLÉTER : exploitant, adresse, numéro d’autorisation d’établissement, numéro de TVA s’il existe",
+    "credit": {
+      "texte": "Site : Studio Marcus",
+      "url": "https://studio-marcus.netlify.app",
+      "affichage": "studio-marcus.netlify.app"
+    },
+    "cartes": {
+      "plans": "https://maps.apple.com/?q=Mersch%2C%20Luxembourg",
+      "google": "https://www.google.com/maps/search/?api=1&query=Mersch%2C%20Luxembourg"
+    }
+  },
+  "meta": {
+    "titre": "Rui’s Barber Studio — barbier à Mersch",
+    "description": "Coupe complète à 15 € à Mersch. Proposez un créneau sur Instagram, Rui vous confirme.",
+    "theme": "#050D1E"
+  },
+  "textes": {
+    "lieu": "Mersch · Luxembourg",
+    "moien": "Moien !",
+    "accroche": "Une coupe nette, sans vous presser.",
+    "chapo": "Je suis Rui, barbier à Mersch depuis juillet 2023.",
+    "cta": "Prendre rendez-vous",
+    "voir_coupes": "Voir les coupes",
+    "prix_etiquette": "Coupe complète",
+    "coupes_index": "01 — Les coupes",
+    "coupes_titre": "Les coupes",
+    "coupes_phrase": "Quelques coupes faites par moi.",
+    "rdv_index": "02 — Rendez-vous",
+    "rdv_titre": "Proposez un créneau, je vous confirme.",
+    "etapes": [
+      "Vous proposez un créneau.",
+      "Je vous confirme sur Instagram.",
+      "Vous passez au fauteuil."
+    ],
+    "rdv_note": "Je réponds sur Instagram avec l’heure exacte et l’adresse, ou je vous propose un autre moment.",
+    "ticket_titre": "Rendez-vous · Rui’s Barber Studio",
+    "ticket_prestation": "Coupe complète · 15 €",
+    "ticket_jour": "Jour",
+    "ticket_moment": "Moment",
+    "ticket_prenom": "Prénom",
+    "ticket_facultatif": "(facultatif)",
+    "ticket_apercu": "Aperçu du message",
+    "moments": [
+      "Le matin",
+      "À midi",
+      "L’après-midi",
+      "En fin de journée",
+      "Je suis flexible"
+    ],
+    "peu_importe": "Peu importe",
+    "a_convenir": "à convenir",
+    "bouton_copier_ouvrir": "Copier et ouvrir Instagram",
+    "bouton_copier_seul": "Copier le message seulement",
+    "bouton_sans_js": "Écrire à Rui sur Instagram",
+    "phrase_sans_js": "Écrivez-moi le jour et le moment qui vous arrangent.",
+    "statut_ok": "Message copié. Dans Instagram, appuyez longuement dans le champ, puis Coller.",
+    "statut_echec": "La copie automatique n’a pas marché : le message est sélectionné, copiez-le.",
+    "message": {
+      "salut": "Bonjour Rui ! Je voudrais un rendez-vous pour une coupe complète.",
+      "fin": "Merci !"
+    },
+    "rui_index": "03 — Rui",
+    "rui_nom": "Rui",
+    "rui_mots": "Concentré · Serviable · Engagé",
+    "rui_texte": [
+      "Je coupe les cheveux depuis juillet 2023 : plus de 100 coupes à ce jour.",
+      "Je suis jeune et je progresse encore, alors chaque coupe compte pour moi.",
+      "Je prends le temps qu’il faut pour vos cheveux, sans vous presser.",
+      "Ce que mes clients me disent le plus : une coupe nette, un prix doux, un accueil sympa."
+    ],
+    "langues_titre": "Langues",
+    "langues": [
+      {
+        "texte": "Ech schwätze Lëtzebuergesch.",
+        "lang": "lb",
+        "code": "LB"
+      },
+      {
+        "texte": "Je parle français.",
+        "lang": "fr",
+        "code": "FR"
+      },
+      {
+        "texte": "Ich spreche Deutsch.",
+        "lang": "de",
+        "code": "DE"
+      },
+      {
+        "texte": "I speak English.",
+        "lang": "en",
+        "code": "EN"
+      },
+      {
+        "texte": "Falo português.",
+        "lang": "pt",
+        "code": "PT"
+      }
+    ],
+    "contact_index": "05 — Contact",
+    "contact_titre": "Contact",
+    "contact_sous_titre": "Rui’s Barber Studio · Mersch",
+    "contact_seul_moyen": "Instagram est le seul moyen de me joindre.",
+    "contact_ecrire": "M’écrire",
+    "contact_profil": "Voir mon profil",
+    "contact_lieu": "Je coupe à Mersch. L’adresse exacte vous est envoyée à la confirmation.",
+    "pied_cookies": "Ce site ne dépose aucun cookie.",
+    "pied_mentions": "Mentions légales",
+    "voir_toutes": "Voir toutes les coupes",
+    "retour_accueil": "Accueil",
+    "agrandir": "Agrandir",
+    "fermer": "Fermer",
+    "rdv_court": "Rendez-vous",
+    "bandeau": [
+      "Dégradé à blanc",
+      "Taper",
+      "Coupe au bol",
+      "Chignon",
+      "Boucles",
+      "Mersch",
+      "Coupe complète 15 €"
+    ],
+    "acces_index": "04 — Localisation",
+    "acces_titre": "Mersch, au cœur du Luxembourg.",
+    "acces_texte": "Je coupe à Mersch, au centre du pays. L’adresse exacte vous est envoyée sur Instagram, avec la confirmation du rendez-vous.",
+    "acces_faits": [
+      {
+        "terme": "Ville",
+        "valeur": "Mersch"
+      },
+      {
+        "terme": "Pays",
+        "valeur": "Luxembourg"
+      },
+      {
+        "terme": "Coordonnées",
+        "valeur": "49°45′ N · 6°06′ E"
+      },
+      {
+        "terme": "Luxembourg-Ville",
+        "valeur": "≈ 15 km au sud, à vol d’oiseau"
+      }
+    ],
+    "acces_plans": "Ouvrir dans Plans",
+    "acces_google": "Google Maps",
+    "acces_carte_alt": "Schéma : Mersch au centre du Luxembourg, Luxembourg-Ville environ 15 km au sud",
+    "accents": {
+      "accroche": "nette",
+      "coupes_titre": "coupes",
+      "rdv_titre": "créneau",
+      "acces_titre": "cœur"
+    }
+  },
+  "portrait": "À COMPLÉTER",
+  "photos": [
+    {
+      "fichier": "hero",
+      "source": "p13.jpg",
+      "role": "hero",
+      "recadrage": [
+        244,
+        560,
+        884,
+        1360
+      ],
+      "alt": "Dessus bouclé, dégradé bas à blanc sur la nuque et derrière l’oreille, vu de dos de trois quarts",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "vedette",
+      "source": "p17.jpg",
+      "role": "vedette",
+      "recadrage": [
+        253,
+        557,
+        893,
+        1357
+      ],
+      "alt": "Coupe au bol lisse, contour net et nuque dégradée, vue de profil arrière",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-1",
+      "source": "p15.jpg",
+      "role": "vignette",
+      "recadrage": [
+        249,
+        459,
+        889,
+        1259
+      ],
+      "alt": "Dessus épais et lisse, dégradé bas à la nuque et autour de l’oreille, vu de dos de trois quarts",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-4",
+      "source": "p18.jpg",
+      "role": "vignette",
+      "recadrage": [
+        276,
+        652,
+        916,
+        1452
+      ],
+      "alt": "Dessus court, dégradé bas à blanc sur les côtés et la nuque, barbe taillée, vu de profil arrière",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-2",
+      "source": "p14.jpg",
+      "role": "vignette",
+      "recadrage": [
+        110,
+        512,
+        750,
+        1312
+      ],
+      "alt": "Cheveux longs attachés en chignon, côtés et nuque dégradés, vus de profil arrière",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-5",
+      "source": "p20.jpg",
+      "role": "vignette",
+      "recadrage": [
+        201,
+        530,
+        761,
+        1230
+      ],
+      "alt": "Dessus court, dégradé haut à blanc sur les côtés et la nuque, vu de dos de trois quarts",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-3",
+      "source": "p16.jpg",
+      "role": "vignette",
+      "recadrage": [
+        255,
+        500,
+        895,
+        1300
+      ],
+      "alt": "Dessus bouclé et épais, dégradé bas à la nuque et derrière l’oreille, vu de profil arrière",
+      "legende": "À COMPLÉTER"
+    },
+    {
+      "fichier": "coupe-6",
+      "source": "p19.jpg",
+      "role": "vignette",
+      "recadrage": [
+        300,
+        535,
+        940,
+        1335
+      ],
+      "alt": "Cheveux afro réguliers et contour net à la nuque, vus de dos de trois quarts",
+      "legende": "À COMPLÉTER"
+    }
+  ],
+  "ecartees": []
+}

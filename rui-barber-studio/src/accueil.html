@@ -1,0 +1,186 @@
+{{> tete}}<body id="haut">
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+{{> entete}}
+<main id="contenu" tabindex="-1">
+<div class="vue vue--accueil">
+
+  <section class="heros" aria-labelledby="accroche">
+    <div class="heros__trame" aria-hidden="true">{{trame:ciel}}</div>
+    <div class="heros__grain" aria-hidden="true"></div>
+    <div class="heros__texte">
+      <p class="etiquette heros__lieu">{{textes.lieu}}</p>
+      <p class="heros__moien" lang="lb"><em>{{textes.moien}}</em></p>
+      <h1 id="accroche">{{accroche_mots}}</h1>
+      <p class="chapo heros__chapo">{{textes.chapo}}</p>
+      <div class="heros__actions">
+        <a class="bouton bouton--rouge" id="cta-heros" data-masque-pastille href="#rendez-vous">{{textes.cta}}</a>
+        <a class="lien-fleche" href="#les-coupes">{{textes.voir_coupes}}{{icone:fleche-droite}}</a>
+      </div>
+    </div>
+    <div class="heros__visuel">
+      <div class="halo halo--heros" aria-hidden="true"></div>
+      <figure class="heros__photo">
+        {{img:hero}}
+        {{regle}}
+      </figure>
+      <p class="etiquette-prix">
+        <span class="ruban ruban--prix" aria-hidden="true"></span>
+        <span class="etiquette">{{textes.prix_etiquette}}</span>
+        <strong class="etiquette-prix__montant serif chiffres" data-prix>{{site.prestation.affichage}}</strong>
+      </p>
+    </div>
+  </section>
+
+  {{bandeau}}
+
+  {{separateur:25}}
+
+  <section class="vitrine enveloppe" id="coupes" aria-labelledby="coupes-titre" tabindex="-1">
+    <p class="etiquette">{{textes.coupes_index}}</p>
+    <h2 id="coupes-titre">{{accent:coupes_titre}}</h2>
+    <p class="chapo">{{textes.coupes_phrase}}</p>
+    <div class="vitrine__carte">
+      <div class="vitrine__trame" aria-hidden="true">{{trame:blanc}}</div>
+      {{vitrine}}
+      <a class="bouton bouton--blanc vitrine__bouton" href="#les-coupes">{{textes.voir_toutes}}{{icone:fleche-droite}}</a>
+    </div>
+  </section>
+
+  <section class="rdv" id="rendez-vous" aria-labelledby="rdv-titre" tabindex="-1">
+    <div class="panneau" data-masque-pastille>
+      <div class="panneau__trame" aria-hidden="true">{{trame:ciel}}</div>
+      <div class="panneau__grain" aria-hidden="true"></div>
+      <div class="panneau__intro">
+        <p class="etiquette">{{textes.rdv_index}}</p>
+        <h2 id="rdv-titre">{{accent:rdv_titre}}</h2>
+        <ol class="etapes">
+          {{etapes}}
+        </ol>
+      </div>
+      <div class="panneau__ticket">
+        <form class="ticket" id="ticket" novalidate aria-labelledby="ticket-titre">
+          <div class="ticket__haut">
+            <div class="ruban ruban--ticket" aria-hidden="true"></div>
+            <p class="etiquette" id="ticket-titre">{{textes.ticket_titre}}</p>
+            <p class="ticket__prestation">{{textes.ticket_prestation}}</p>
+            <p class="ticket__sansjs">{{textes.phrase_sans_js}}</p>
+            <fieldset class="ticket__champ ticket__champ--jour">
+              <legend><span class="ticket__num" aria-hidden="true">1</span>{{textes.ticket_jour}}</legend>
+              <div class="tuiles" id="tuiles"></div>
+            </fieldset>
+            <fieldset class="ticket__champ">
+              <legend><span class="ticket__num" aria-hidden="true">2</span>{{textes.ticket_moment}}</legend>
+              <div class="puces">
+                {{moments}}
+              </div>
+            </fieldset>
+            <div class="ticket__champ ticket__champ--prenom">
+              <label for="prenom"><span class="ticket__num" aria-hidden="true">3</span>{{textes.ticket_prenom}} <span class="ticket__facultatif">{{textes.ticket_facultatif}}</span></label>
+              <input id="prenom" name="prenom" type="text" maxlength="30" autocomplete="given-name" autocapitalize="words" spellcheck="false" enterkeyhint="done">
+            </div>
+          </div>
+          <div class="ticket__bas">
+            <p class="etiquette" id="apercu-titre">{{textes.ticket_apercu}}</p>
+            {{apercu}}
+            <a class="bouton bouton--rouge bouton--large" id="envoyer" href="{{site.instagram.message}}" rel="noopener">{{icone:instagram}}<span class="si-js">{{textes.bouton_copier_ouvrir}}</span><span class="si-nojs">{{textes.bouton_sans_js}}</span></a>
+            <button class="lien-bouton si-js" id="copier" type="button">{{textes.bouton_copier_seul}}</button>
+            <p class="ticket__statut" id="statut" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+        <p class="panneau__note">{{textes.rdv_note}}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="rui enveloppe" id="rui" aria-labelledby="rui-titre">
+    <div class="rui__carte">
+    <p class="etiquette">{{textes.rui_index}}</p>
+    <div class="rui__tete">
+      <h2 class="rui__nom" id="rui-titre">{{textes.rui_nom}}</h2>
+      <div class="rui__trame" aria-hidden="true">{{trame:brume}}</div>
+    </div>
+    <p class="etiquette rui__mots">{{textes.rui_mots}}</p>
+    <div class="rui__corps">
+      <div class="rui__texte">
+        {{rui_texte}}
+      </div>
+      <div class="rui__langues">
+        <p class="etiquette">{{textes.langues_titre}}</p>
+        <ul class="langues">
+          {{langues}}
+        </ul>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  {{separateur:60}}
+
+  <section class="acces enveloppe" id="acces" aria-labelledby="acces-titre" tabindex="-1">
+    <p class="etiquette">{{textes.acces_index}}</p>
+    <h2 id="acces-titre">{{accent:acces_titre}}</h2>
+    <div class="acces__grille">
+      <figure class="carte" role="img" aria-label="{{textes.acces_carte_alt}}">
+        {{carte}}
+      </figure>
+      <div class="acces__infos">
+        <p class="chapo">{{textes.acces_texte}}</p>
+        <dl class="faits">
+          {{acces_faits}}
+        </dl>
+        <div class="acces__boutons">
+          <a class="bouton bouton--nuit" href="{{site.cartes.plans}}" rel="noopener">{{icone:repere}}{{textes.acces_plans}}</a>
+          <a class="bouton bouton--contour" href="{{site.cartes.google}}" rel="noopener">{{textes.acces_google}}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact enveloppe" id="contact" aria-labelledby="contact-titre">
+    <p class="etiquette">{{textes.contact_index}}</p>
+    <h2 id="contact-titre">{{textes.contact_titre}}</h2>
+    <div class="contact__zone">
+      <div class="halo halo--contact" aria-hidden="true"></div>
+      <div class="profil">
+        {{logo_tuile:120}}
+        <p class="profil__pseudo" translate="no">{{site.instagram.affichage}}</p>
+        <p class="profil__nom">{{textes.contact_sous_titre}}</p>
+        <p class="profil__seul" data-contact="seul_moyen">{{textes.contact_seul_moyen}}</p>
+        <div class="profil__boutons" data-masque-pastille>
+          <a class="bouton bouton--nuit" href="{{site.instagram.message}}" rel="noopener">{{icone:instagram}}{{textes.contact_ecrire}}</a>
+          <a class="bouton bouton--contour" href="{{site.instagram.profil}}" rel="noopener">{{textes.contact_profil}}</a>
+        </div>
+        <p class="profil__lieu" data-contact="lieu">{{textes.contact_lieu}}</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="vue vue--coupes" id="les-coupes" tabindex="-1">
+  <section class="page-coupes enveloppe" aria-labelledby="galerie-titre">
+    <a class="lien-fleche lien-fleche--retour" href="#haut">{{icone:chevron-gauche}}{{textes.retour_accueil}}</a>
+    <p class="etiquette">{{textes.coupes_index}}</p>
+    <h2 class="page-coupes__titre" id="galerie-titre">{{accent:coupes_titre}}</h2>
+    <p class="chapo">{{textes.coupes_phrase}}</p>
+    <div class="coupes__zone" id="galerie">
+      <div class="halo halo--coupes" aria-hidden="true"></div>
+      {{galerie}}
+    </div>
+  </section>
+
+  {{separateur:40}}
+
+  <section class="suite enveloppe" aria-labelledby="suite-titre">
+    <div class="suite__carte" data-masque-pastille>
+      <div class="vitrine__trame" aria-hidden="true">{{trame:blanc}}</div>
+      <p class="etiquette">{{textes.rdv_court}}</p>
+      <h2 id="suite-titre">{{accent:rdv_titre}}</h2>
+      <a class="bouton bouton--rouge" href="#rendez-vous">{{textes.cta}}</a>
+    </div>
+  </section>
+</div>
+</main>
+
+{{> pied}}
+{{> fin}}

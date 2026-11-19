@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr" class="js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rui’s Barber Studio — planche de tokens</title>
+<style>
+{{css}}
+/* Planche uniquement : états forcés pour la revue */
+.planche { padding-block: 32px 64px; }
+.planche h2 { margin: 48px 0 16px; font-size: 28px; }
+.planche h2:first-child { margin-top: 0; }
+.grille-planche { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.pastille-couleur { border: 1px solid var(--filet); border-radius: 12px; overflow: hidden; background: var(--blanc); font-size: 12px; }
+.pastille-couleur i { display: block; height: 64px; }
+.pastille-couleur p { padding: 8px 10px; line-height: 1.35; }
+.pastille-couleur b { display: block; font-size: 13px; }
+.echantillon { position: relative; min-height: 150px; border: 1px solid var(--filet); border-radius: 20px; overflow: hidden; }
+.echantillon span { position: absolute; left: 12px; bottom: 10px; }
+.rangee { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.force-survol::after { opacity: .08 !important; }
+.force-appui { transform: translateY(1px); }
+.bouton--rouge.force-appui { background: linear-gradient(180deg, #D7141A 0%, #A30E1B 100%); }
+.demo-photo { position: relative; width: 220px; aspect-ratio: 4 / 5; border-radius: 20px; background: linear-gradient(160deg, #13305F, #5B6579); }
+.demo-cadre { width: 200px; margin: 0 20px 20px 0; }
+.demo-cadre .photo { background: linear-gradient(160deg, #C9D8EA, #7DB0E8); }
+.demo-prix { position: relative; height: 90px; }
+.demo-prix .etiquette-prix { top: 0; left: 0; }
+.demo-panneau, .echantillon.panneau { display: block !important; padding: 28px !important; }
+.echantillon.demo-photo { width: auto; aspect-ratio: auto; }
+</style>
+</head>
+<body>
+<div class="ruban ruban--page" aria-hidden="true"></div>
+<main class="enveloppe planche">
+  <h2>Palette et rôles</h2>
+  <div class="grille-planche">
+    {{palette}}
+  </div>
+
+  <h2>Dégradés (4 recettes)</h2>
+  <div class="grille-planche">
+    <div class="echantillon" style="background: radial-gradient(120% 55% at 90% 0%, #DDE9F6 0%, rgba(221,233,246,0) 62%), radial-gradient(80% 45% at 0% 38%, #E6EEF9 0%, rgba(230,238,249,0) 70%), linear-gradient(180deg, #FFFFFF 0%, #F5F8FC 35%, #FFFFFF 62%, #EEF4FB 100%)"><span class="etiquette">D1 ciel de page</span></div>
+    <div class="echantillon panneau" style="width:auto;margin:0;border-radius:20px"><div class="panneau__grain" aria-hidden="true"></div><span class="etiquette">D2 panneau nuit</span></div>
+    <div class="echantillon" style="display:grid;place-items:center"><a class="bouton bouton--rouge" href="#">Rouge laqué</a><span class="etiquette">D3</span></div>
+    <div class="echantillon" style="isolation:isolate"><div class="halo" style="inset:-20% -40% -20% 0"></div><span class="etiquette">D4 halo</span></div>
+  </div>
+
+  <h2>Motifs (5 familles)</h2>
+  <div class="grille-planche">
+    <div class="echantillon" style="min-height:90px"><div class="ruban" style="height:8px"></div><span class="etiquette">M1 ruban</span></div>
+    <div class="echantillon" style="min-height:90px;padding:30px 12px 0">{{separateur}}<span class="etiquette">M2b séparateur</span></div>
+    <div class="echantillon demo-photo" style="min-height:0">{{regle}}<span class="etiquette" style="color:#DDE9F6">M2a règle</span></div>
+    <div class="echantillon panneau" style="width:auto;margin:0;border-radius:20px"><div class="panneau__trame" style="opacity:.28" aria-hidden="true">{{trame}}</div><span class="etiquette">M3 trame</span></div>
+    <div class="echantillon" style="padding:18px"><div class="cadre demo-cadre"><div class="photo"></div><span class="repere repere--haut"></span><span class="repere repere--bas"></span></div><span class="etiquette">M4 cadre</span></div>
+    <div class="echantillon" style="padding:18px"><p class="heros__moien" style="margin:0">Moien !</p><ul class="langues" style="border:0"><li style="border:0">Point --roi</li></ul><span class="etiquette">M5 points</span></div>
+  </div>
+
+  <h2>Boutons : repos, survol, appui</h2>
+  <div class="rangee">
+    <a class="bouton bouton--rouge" href="#">Prendre rendez-vous</a>
+    <a class="bouton bouton--rouge force-survol" href="#">Survol</a>
+    <a class="bouton bouton--rouge force-appui" href="#">Appui</a>
+  </div>
+  <div class="rangee" style="margin-top:12px">
+    <a class="bouton bouton--nuit" href="#">M’écrire</a>
+    <a class="bouton bouton--nuit force-survol" href="#">Survol</a>
+    <a class="bouton bouton--contour" href="#">Voir mon profil</a>
+    <a class="bouton bouton--contour force-survol" href="#">Survol</a>
+    <a class="lien-fleche" href="#">Voir les coupes</a>
+  </div>
+
+  <h2>Tuiles et puces : repos, choisie</h2>
+  <div class="rangee">
+    <div class="tuiles" style="width:320px">
+      <label class="tuile"><input type="radio" name="d"><span class="tuile__corps"><span class="tuile__haut">Aujourd’hui</span><span class="tuile__num">29</span><span class="tuile__mois">sept.</span></span></label>
+      <label class="tuile"><input type="radio" name="d" checked><span class="tuile__corps"><span class="tuile__haut">Demain</span><span class="tuile__num">30</span><span class="tuile__mois">sept.</span></span></label>
+      <label class="tuile"><input type="radio" name="d"><span class="tuile__corps"><span class="tuile__haut">jeu.</span><span class="tuile__num">1er</span><span class="tuile__mois">oct.</span></span></label>
+      <label class="tuile tuile--seule"><input type="radio" name="d"><span class="tuile__corps"><span class="tuile__seul">Peu importe</span></span></label>
+    </div>
+    <div class="puces">
+      <label class="puce"><input type="radio" name="m"><span>Le matin</span></label>
+      <label class="puce"><input type="radio" name="m" checked><span>L’après-midi</span></label>
+    </div>
+  </div>
+
+  <h2>Étiquette prix et ticket</h2>
+  <div class="rangee" style="align-items:flex-start">
+    <div class="demo-prix" style="width:180px"><p class="etiquette-prix"><span class="ruban ruban--prix"></span><span class="etiquette">Coupe complète</span><strong class="etiquette-prix__montant chiffres">15&nbsp;€</strong></p></div>
+    <div class="panneau demo-panneau" style="width:420px;margin:0">
+      <div class="ticket">
+        <div class="ticket__haut"><div class="ruban ruban--ticket"></div><p class="etiquette">Rendez-vous · Rui’s Barber Studio</p><p class="ticket__prestation">Coupe complète · 15&nbsp;€</p></div>
+        <div class="ticket__bas"><p class="etiquette">Aperçu du message</p>
+          <div class="apercu"><span class="apercu__ligne">Bonjour Rui&#8239;! Je voudrais un rendez-vous pour une coupe complète.</span><span class="apercu__ligne">Jour&nbsp;: <b>jeudi 1er octobre</b></span><span class="apercu__ligne">Moment&nbsp;: <b>l’après-midi</b></span><span class="apercu__ligne">Merci&#8239;!</span></div>
+          <a class="bouton bouton--rouge bouton--large" href="#">Copier et ouvrir Instagram</a>
+          <button class="lien-bouton" type="button">Copier le message seulement</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
