@@ -28,10 +28,6 @@
       "texte": "Site : Studio Marcus",
       "url": "https://studio-marcus.netlify.app",
       "affichage": "studio-marcus.netlify.app"
-    },
-    "cartes": {
-      "plans": "https://maps.apple.com/?q=Mersch%2C%20Luxembourg",
-      "google": "https://www.google.com/maps/search/?api=1&query=Mersch%2C%20Luxembourg"
     }
   },
   "meta": {
@@ -121,7 +117,7 @@
         "code": "PT"
       }
     ],
-    "contact_index": "05 — Contact",
+    "contact_index": "04 — Contact",
     "contact_titre": "Contact",
     "contact_sous_titre": "Rui’s Barber Studio · Mersch",
     "contact_seul_moyen": "Instagram est le seul moyen de me joindre.",
@@ -144,36 +140,12 @@
       "Mersch",
       "Coupe complète 15 €"
     ],
-    "acces_index": "04 — Localisation",
-    "acces_titre": "Mersch, au cœur du Luxembourg.",
-    "acces_texte": "Je coupe à Mersch, au centre du pays. L’adresse exacte vous est envoyée sur Instagram, avec la confirmation du rendez-vous.",
-    "acces_faits": [
-      {
-        "terme": "Ville",
-        "valeur": "Mersch"
-      },
-      {
-        "terme": "Pays",
-        "valeur": "Luxembourg"
-      },
-      {
-        "terme": "Coordonnées",
-        "valeur": "49°45′ N · 6°06′ E"
-      },
-      {
-        "terme": "Luxembourg-Ville",
-        "valeur": "≈ 15 km au sud, à vol d’oiseau"
-      }
-    ],
-    "acces_plans": "Ouvrir dans Plans",
-    "acces_google": "Google Maps",
-    "acces_carte_alt": "Schéma : Mersch au centre du Luxembourg, Luxembourg-Ville environ 15 km au sud",
     "accents": {
       "accroche": "nette",
       "coupes_titre": "coupes",
-      "rdv_titre": "créneau",
-      "acces_titre": "cœur"
-    }
+      "rdv_titre": "créneau"
+    },
+    "rail": "Mersch · Luxembourg · Depuis juillet 2023"
   },
   "portrait": "À COMPLÉTER",
   "photos": [
@@ -188,7 +160,8 @@
         1360
       ],
       "alt": "Dessus bouclé, dégradé bas à blanc sur la nuque et derrière l’oreille, vu de dos de trois quarts",
-      "legende": "À COMPLÉTER"
+      "legende": "À COMPLÉTER",
+      "nom": "Boucles, dégradé bas"
     },
     {
       "fichier": "vedette",
@@ -201,7 +174,8 @@
         1357
       ],
       "alt": "Coupe au bol lisse, contour net et nuque dégradée, vue de profil arrière",
-      "legende": "À COMPLÉTER"
+      "legende": "À COMPLÉTER",
+      "nom": "Coupe au bol"
     },
     {
       "fichier": "coupe-1",
@@ -214,7 +188,8 @@
         1259
       ],
       "alt": "Dessus épais et lisse, dégradé bas à la nuque et autour de l’oreille, vu de dos de trois quarts",
-      "legende": "À COMPLÉTER"
+      "legende": "À COMPLÉTER",
+      "nom": "Taper bas"
     },
     {
       "fichier": "coupe-4",
@@ -227,7 +202,8 @@
         1452
       ],
       "alt": "Dessus court, dégradé bas à blanc sur les côtés et la nuque, barbe taillée, vu de profil arrière",
-      "legende": "À COMPLÉTER"
+      "legende": "À COMPLÉTER",
+      "nom": "Dégradé à blanc"
     },
     {
       "fichier": "coupe-2",
@@ -240,7 +216,8 @@
         1312
       ],
       "alt": "Cheveux longs attachés en chignon, côtés et nuque dégradés, vus de profil arrière",
-      "legende": "À COMPLÉTER"
+      "legende": "À COMPLÉTER",
+      "nom": "Chignon, côtés dégradés"
     },
     {
       "fichier": "coupe-5",
@@ -253,7 +230,8 @@
         1230
       ],
       "alt": "Dessus court, dégradé haut à blanc sur les côtés et la nuque, vu de dos de trois quarts",
-      "legende": "À COMPLÉTER"
+      "legende": "À COMPLÉTER",
+      "nom": "Dégradé haut"
     },
     {
       "fichier": "coupe-3",
@@ -266,7 +244,8 @@
         1300
       ],
       "alt": "Dessus bouclé et épais, dégradé bas à la nuque et derrière l’oreille, vu de profil arrière",
-      "legende": "À COMPLÉTER"
+      "legende": "À COMPLÉTER",
+      "nom": "Boucles, nuque dégradée"
     },
     {
       "fichier": "coupe-6",
@@ -279,7 +258,8 @@
         1335
       ],
       "alt": "Cheveux afro réguliers et contour net à la nuque, vus de dos de trois quarts",
-      "legende": "À COMPLÉTER"
+      "legende": "À COMPLÉTER",
+      "nom": "Afro, contour net"
     }
   ],
   "ecartees": []

@@ -304,9 +304,9 @@ h2 {
 }
 
 /* ---------- D4 Halos : contenus par leur section (overflow-x: clip) ---------- */
-.page-coupes, .vitrine, .rui, .acces, .contact, .suite { overflow-x: clip; }
+.page-coupes, .vitrine, .rui, .contact, .suite { overflow-x: clip; }
 @supports not (overflow-x: clip) {
-  .page-coupes, .vitrine, .rui, .acces, .contact, .suite { overflow-x: hidden; }
+  .page-coupes, .vitrine, .rui, .contact, .suite { overflow-x: hidden; }
 }
 .halo {
   position: absolute;
@@ -476,45 +476,6 @@ h2 {
   .heros { padding: 64px 56px; }
 }
 
-/* ---------- 04 Localisation : schéma de situation + faits ---------- */
-.acces { padding-block: 48px 24px; }
-.acces h2 { margin-top: 10px; max-width: 16ch; }
-.acces__grille { display: grid; gap: 28px; margin-top: 28px; }
-.carte {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  border-radius: 24px;
-  background:
-    radial-gradient(55% 55% at 50% 32%, rgba(125, 176, 232, .26) 0%, rgba(125, 176, 232, 0) 70%),
-    linear-gradient(160deg, #0A1C3A 0%, #13305F 60%, #1B4589 100%);
-  box-shadow: var(--ombre-2);
-}
-.carte__svg { display: block; width: 100%; height: 100%; font-family: var(--police); }
-.carte__grille line { stroke: rgba(255, 255, 255, .07); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.carte__anneaux circle { fill: none; stroke: rgba(125, 176, 232, .5); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.carte__anneaux circle:first-child { stroke: rgba(125, 176, 232, .3); stroke-dasharray: 2 6; }
-.carte__route { fill: none; stroke: #FFFFFF; stroke-width: 1.5; stroke-dasharray: .025 .018; stroke-linecap: round; }
-.carte__point { fill: #FFFFFF; }
-.carte__pouls { fill: none; stroke: #FFFFFF; stroke-width: 1.5; opacity: 0; }
-.carte__ville { fill: #7DB0E8; }
-.carte__nom { fill: #FFFFFF; font-size: 15px; font-weight: 650; font-stretch: 125%; letter-spacing: .22em; }
-.carte__nom--ville { fill: #DDE9F6; font-size: 12px; font-weight: 500; font-stretch: 100%; letter-spacing: .04em; }
-.carte__distance { fill: #7DB0E8; font-size: 12px; font-weight: 600; letter-spacing: .06em; }
-.carte__coord { fill: #DDE9F6; font-size: 11px; font-weight: 500; letter-spacing: .14em; }
-.carte__nord path { fill: none; stroke: #DDE9F6; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
-.carte__nord text { fill: #DDE9F6; font-size: 12px; font-weight: 650; text-anchor: middle; }
-.faits { margin: 22px 0 0; border-top: 1px solid var(--filet); }
-.faits div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--filet); }
-.faits dt { flex: none; font-size: 12px; font-weight: 600; font-stretch: 78%; letter-spacing: .2em; text-transform: uppercase; color: var(--gris); }
-.faits dd { margin: 0; font-weight: 500; text-align: right; }
-.acces__boutons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-@media (min-width: 1024px) {
-  .acces__grille { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; align-items: center; }
-  .carte { grid-column: 1 / span 7; }
-  .acces__infos { grid-column: 9 / -1; }
-}
 
 /* ---------- Titre du hero : mots posés un à un ---------- */
 .heros h1 .mot { display: inline-block; overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; vertical-align: top; }
@@ -707,7 +668,7 @@ h2 {
   object-fit: contain;
   transform: none;
 }
-.no-js .galerie__item:target .photo__ouvrir, .no-js .galerie__item:target .photo__index { display: none; }
+.no-js .galerie__item:target .photo__ouvrir, .no-js .galerie__item:target .photo__index, .no-js .galerie__item:target .photo__cartel { display: none; }
 .no-js .galerie__item:target .photo__cible { display: block; }
 .photo__fermer, .photo__prec, .photo__suiv {
   position: fixed;
@@ -1212,12 +1173,6 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
   .panneau.est-apparu .etapes li:not(:last-child)::after { animation: tracer-lien 700ms var(--courbe) backwards; }
   .panneau.est-apparu .etapes li:nth-child(1)::after { animation-delay: 450ms; }
   .panneau.est-apparu .etapes li:nth-child(2)::after { animation-delay: 600ms; }
-  /* Carte : anneaux qui s’ouvrent, trajet tracé, trois pulsations sur Mersch */
-  .carte.est-apparu .carte__anneaux circle { transform-box: fill-box; transform-origin: center; animation: anneau 1100ms var(--courbe) backwards; }
-  .carte.est-apparu .carte__anneaux circle:nth-child(2) { animation-delay: 120ms; }
-  .carte.est-apparu .carte__anneaux circle:nth-child(3) { animation-delay: 240ms; }
-  .carte.est-apparu .carte__route { transform-box: fill-box; transform-origin: top center; animation: deplier 1000ms var(--courbe) 500ms backwards; }
-  .carte.est-apparu .carte__pouls { transform-box: fill-box; transform-origin: center; animation: pouls 2400ms ease-out 1300ms 3; }
   /* Choix dans le ticket : petit rebond */
   .tuile input:checked + .tuile__corps, .puce input:checked + span { animation: choisir 280ms var(--courbe); }
 
@@ -1232,9 +1187,6 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
 @keyframes defiler { to { transform: translateX(-50%); } }
 @keyframes tracer-lien { from { clip-path: inset(0 100% 100% 0); } to { clip-path: inset(0 0 0 0); } }
 @keyframes choisir { from { transform: scale(.96); } }
-@keyframes anneau { from { opacity: 0; transform: scale(.55); } }
-@keyframes deplier { from { opacity: 0; transform: scaleY(0); } }
-@keyframes pouls { from { opacity: .8; transform: scale(1); } to { opacity: 0; transform: scale(3.4); } }
 @keyframes tomber { from { opacity: 0; transform: translateY(-8px); } }
 @keyframes rebondir { from { opacity: 0; transform: scale(.7); } }
 @keyframes glisser-tuile { from { opacity: 0; transform: translate(-18px, -18px); } }
@@ -1283,14 +1235,14 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
    ===================================================================== */
 @font-face {
   font-family: "Bodoni Moda";
-  src: url("{{serif}}") format("woff2");
+  src: url("{{serif:droit}}") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: block;
 }
 @font-face {
   font-family: "Bodoni Moda";
-  src: url("{{serif_italique}}") format("woff2");
+  src: url("{{serif:italique}}") format("woff2");
   font-weight: 400;
   font-style: italic;
   font-display: block;
@@ -1430,11 +1382,6 @@ h1 em, h2 em { font-style: italic; color: var(--ciel); }
 .langues li::before { width: 5px; height: 5px; border-radius: 0; background: var(--ciel); transform: rotate(45deg); }
 .langues .etiquette { color: var(--gris-clair); }
 
-/* Localisation */
-.carte { border: 1px solid var(--filet-nuit); border-radius: 6px; }
-.faits, .faits div { border-color: var(--filet-nuit); }
-.faits dt { color: var(--gris-clair); }
-.faits dd { color: var(--porcelaine); }
 
 /* Contact */
 .profil::before { height: 2px; background: linear-gradient(90deg, rgba(125, 176, 232, 0), #7DB0E8, rgba(125, 176, 232, 0)); }
@@ -1454,3 +1401,90 @@ mark.a-completer { background: var(--marine); color: var(--porcelaine); }
 @media (min-width: 1024px) {
   .heros h1 { max-width: none; font-size: clamp(4rem, 2rem + 3.4vw, 5.6rem); }
 }
+
+/* =====================================================================
+   V6.1 — plus premium : cartels, mention verticale, signature, filets, rythme
+   ===================================================================== */
+/* Cartel de musée sur chaque photo de la galerie */
+.photo__cartel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: grid;
+  gap: 2px;
+  padding: 36px 14px 12px;
+  background: linear-gradient(to top, rgba(5, 13, 30, .92) 0%, rgba(5, 13, 30, .6) 55%, rgba(5, 13, 30, 0) 100%);
+  pointer-events: none;
+}
+.photo__num { font-size: 11px; letter-spacing: .24em; color: var(--platine); }
+.photo__cartel em { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 17px; line-height: 1.15; color: var(--porcelaine); }
+.galerie__item--vedette .photo__cartel { padding: 64px 22px 20px; }
+.galerie__item--vedette .photo__cartel em { font-size: clamp(22px, 18px + 1vw, 30px); }
+.photo__ouvrir { top: 10px; right: 10px; bottom: auto; }
+
+/* Mention verticale le long du hero (grands écrans) */
+.heros__rail { display: none; }
+@media (min-width: 1280px) {
+  .heros__rail {
+    display: block;
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    margin: 0;
+    transform: translateY(-50%) rotate(180deg);
+    writing-mode: vertical-rl;
+    font-size: 10.5px;
+    font-weight: 500;
+    font-stretch: 112%;
+    letter-spacing: .4em;
+    text-transform: uppercase;
+    color: var(--gris-clair);
+  }
+}
+
+/* Filet devant les titres de section numérotés */
+.etiquette__filet { display: inline-block; width: 44px; height: 1px; margin: 0 14px; vertical-align: middle; overflow: hidden; font-size: 0; color: transparent; background: linear-gradient(90deg, rgba(201, 214, 232, .8), rgba(201, 214, 232, .15)); }
+
+/* Survol des boutons à contour : le fond monte comme un rideau */
+.bouton--contour, .entete__cta.bouton--nuit {
+  background-image: linear-gradient(var(--porcelaine), var(--porcelaine));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0;
+  transition: background-size 420ms var(--courbe), color 420ms var(--courbe), border-color 420ms var(--courbe);
+}
+@media (hover: hover) and (pointer: fine) {
+  .bouton--contour:hover, .entete__cta.bouton--nuit:hover { background-size: 100% 100%; color: var(--abysse); }
+}
+
+/* Signature en pied de page */
+.pied__marque {
+  margin: 0 auto;
+  padding-top: 56px;
+  font-size: clamp(2.6rem, 1rem + 7.4vw, 8.5rem);
+  line-height: 1;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(201, 214, 232, .28);
+}
+.pied { overflow-x: clip; }
+
+/* Rythme : plus d’air entre les sections sur grand écran */
+@media (min-width: 1024px) {
+  .vitrine { padding-block: 104px 120px; }
+  .rdv { padding-block: 48px 72px; }
+  .rui { padding-block: 104px 72px; }
+  .contact { padding-block: 104px 136px; }
+  .page-coupes { padding-block: 48px 96px; }
+}
+
+/* Bodoni « texte » (taille optique 14) pour les petits corps : déliés lisibles */
+@font-face { font-family: "Bodoni Moda Texte"; src: url("{{serif:texte}}") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: "Bodoni Moda Texte"; src: url("{{serif:texte-italique}}") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
+.serif-texte, .photo__cartel em, .heros__moien em, .bandeau__mot--creux em { font-family: "Bodoni Moda Texte", var(--serif); font-weight: 400; }
+em.serif-texte { font-style: italic; }
+.photo__num { font-size: 12px; letter-spacing: .2em; }

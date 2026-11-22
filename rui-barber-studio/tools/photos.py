@@ -34,7 +34,7 @@ def ouvrir(path):
 
 
 def etalonner(im):
-    """Même balance des blancs neutre partout ; ombres refroidies vers --nuit (8 % au plus) ; aucun filtre."""
+    """Même balance des blancs neutre partout ; ombres refroidies vers --nuit (8 % au plus) ; grade « cinéma » V6."""
     a = np.asarray(im).astype(np.float32) / 255.0
     lum = a.mean(axis=2)
     mid = (lum > 0.15) & (lum < 0.85)
@@ -46,6 +46,16 @@ def etalonner(im):
     q25 = np.quantile(lum, 0.25)
     poids = 0.08 * np.clip(1 - lum / max(q25, 1e-3), 0, 1)  # quart le plus sombre seulement
     a = a * (1 - poids) + NUIT * poids
+    # V6 « cinéma » : couleurs retenues (saturation 82 %) et vignettage vers --nuit, centré un peu au-dessus
+    # du milieu (là où est la coupe) : le décor de garage recule, la coupe reste intacte au centre.
+    lum = a.mean(axis=2, keepdims=True)
+    a = lum + 0.82 * (a - lum)
+    h, w = a.shape[:2]
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    r = np.sqrt(((xx - w / 2) / (w / 2)) ** 2 + ((yy - 0.44 * h) / (0.62 * h)) ** 2)
+    t = np.clip((r - 0.55) / 0.6, 0, 1)
+    v = (0.55 * t * t * (3 - 2 * t))[..., None]
+    a = a * (1 - v) + NUIT * v
     out = Image.fromarray((np.clip(a, 0, 1) * 255 + 0.5).astype(np.uint8), "RGB")
     return out.filter(ImageFilter.UnsharpMask(radius=1.0, percent=30, threshold=3))
 

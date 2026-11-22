@@ -43,7 +43,6 @@ ICONES = {
     "chevron-droite": '<path d="M9.5 6l6 6-6 6"/>',
     "fleche-droite": '<path d="M5 12h14M13.5 6.5 19 12l-5.5 5.5"/>',
     "fleche-ouvrir": '<path d="M8 16 16 8M10 8h6v6"/>',
-    "repere": '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
 }
 
 
@@ -119,10 +118,11 @@ def minifier_css(css):
     return css.replace(";}", "}").strip()
 
 
-def police_serif(style, texte):
-    """Bodoni Moda (OFL), figée en opsz 96 / wght 400, réduite aux seuls caractères des titres de la page."""
+def police_serif(style, texte, opsz=96, nom=None):
+    """Bodoni Moda (OFL), figée en wght 400 et à une taille optique (96 : titrage ; 14 : petits corps),
+    réduite aux seuls caractères qui l’utilisent dans la page."""
     from fontTools import subset
-    f = instancer.instantiateVariableFont(TTFont(SERIF_SRC[style]), {"wght": 400, "opsz": 96})
+    f = instancer.instantiateVariableFont(TTFont(SERIF_SRC[style]), {"wght": 400, "opsz": opsz})
     options = subset.Options()
     options.flavor = "woff2"
     options.layout_features = ["kern", "liga"]
@@ -130,19 +130,21 @@ def police_serif(style, texte):
     sous.populate(text="".join(sorted(set(texte + SERIF_TOUJOURS))))
     sous.subset(f)
     f.flavor = "woff2"
-    out = BUILD / f"bodoni-{style}.woff2"
+    out = BUILD / f"bodoni-{nom or style}.woff2"
     f.save(out)
     return out
 
 
 def textes_serif(page):
-    """Texte composé en Bodoni : titres h1/h2 et éléments .serif ; l’italique : les <em>."""
-    def nu(x):
-        return html.unescape(re.sub(r"<[^>]+>", "", x))
-    morceaux = re.findall(r"<h[12][^>]*>(.*?)</h[12]>", page, re.S)
-    morceaux += re.findall(r'class="[^"]*\bserif\b[^"]*"[^>]*>(.*?)</', page, re.S)
-    italique = re.findall(r"<em>(.*?)</em>", page, re.S)
-    return "".join(nu(m) for m in morceaux), "".join(nu(m) for m in italique)
+    """Texte composé en Bodoni. Titrage : h1/h2 et .serif (droit), <em> nus (italique).
+    Petits corps : .serif-texte (droit), <em class="serif-texte"> (italique)."""
+    def nu(morceaux):
+        return "".join(html.unescape(re.sub(r"<[^>]+>", "", x)) for x in morceaux)
+    titrage = re.findall(r"<h[12][^>]*>(.*?)</h[12]>", page, re.S)
+    titrage += re.findall(r'class="[^"]*\bserif(?![-\w])[^"]*"[^>]*>(.*?)</', page, re.S)
+    texte = re.findall(r'<span class="[^"]*\bserif-texte\b[^"]*"[^>]*>(.*?)</span>', page, re.S)
+    return {"droit": nu(titrage), "italique": nu(re.findall(r"<em>(.*?)</em>", page, re.S)),
+            "texte": nu(texte), "texte-italique": nu(re.findall(r'<em class="serif-texte">(.*?)</em>', page, re.S))}
 
 
 def accent(texte, mot):
@@ -255,7 +257,9 @@ def galerie(photos, manifeste, t):
     for k, p in enumerate(serie, start=1):
         prec, suiv = (k - 2) % n + 1, k % n + 1
         vedette = k == 1
-        index = "" if vedette else f'<span class="photo__index" aria-hidden="true">{k:02d}</span>'
+        # Cartel de musée : numéro en Bodoni, nom de la coupe en italique (décor : l’alt décrit déjà la photo)
+        index = (f'<span class="photo__cartel" aria-hidden="true"><span class="photo__num serif-texte">Nº {k:02d}</span>'
+                 f'<em class="serif-texte">{e(p["nom"])}</em></span>')
         figure = (f'<figure class="photo"><a class="vignette" href="#photo-{k}" aria-label="{e(t["agrandir"])} : {e(p["alt"])}">'
                   f'{image(p, manifeste, variante="-vignette" if p["role"] == "hero" else "")}<span class="photo__ouvrir" aria-hidden="true">{icone("fleche-ouvrir")}</span></a>{index}'
                   f'<span class="photo__cible" aria-hidden="true">'
@@ -285,28 +289,10 @@ def vitrine(photos, manifeste, t):
 
 def bandeau(mots):
     """Bandeau défilant décoratif (aria-hidden) : la liste est doublée pour boucler sans couture."""
-    items = "".join((f'<span class="bandeau__mot bandeau__mot--creux"><em>{e(m)}</em></span>' if i % 2 else f'<span class="bandeau__mot">{e(m)}</span>')
+    items = "".join((f'<span class="bandeau__mot bandeau__mot--creux"><em class="serif-texte">{e(m)}</em></span>' if i % 2 else f'<span class="bandeau__mot">{e(m)}</span>')
                     + '<span class="bandeau__point"></span>'
                     for i, m in enumerate(mots))
     return f'<div class="bandeau" aria-hidden="true"><div class="bandeau__piste">{items}{items}</div></div>'
-
-
-def carte(site, t):
-    """Schéma de situation (pas une carte à l’échelle) : Mersch au centre, Luxembourg-Ville ≈ 15 km au sud (10 px/km)."""
-    grille = "".join(f'<line x1="{x}" y1="0" x2="{x}" y2="300"/>' for x in range(20, 400, 20))
-    grille += "".join(f'<line x1="0" y1="{y}" x2="400" y2="{y}"/>' for y in range(20, 300, 20))
-    coord = next(f["valeur"] for f in t["acces_faits"] if f["terme"] == "Coordonnées")
-    return ('<svg class="carte__svg" viewBox="0 0 400 300" aria-hidden="true" focusable="false">'
-            f'<g class="carte__grille">{grille}</g>'
-            '<g class="carte__anneaux"><circle cx="200" cy="96" r="90"/><circle cx="200" cy="96" r="54"/><circle cx="200" cy="96" r="26"/></g>'
-            '<path class="carte__route" d="M200 96 L219 249" pathLength="1"/>'
-            '<text class="carte__distance" x="224" y="176">≈ 15 km</text>'
-            '<circle class="carte__ville" cx="219" cy="249" r="4.5"/>'
-            '<text class="carte__nom carte__nom--ville" x="231" y="253">Luxembourg-Ville</text>'
-            '<circle class="carte__pouls" cx="200" cy="96" r="8"/><circle class="carte__point" cx="200" cy="96" r="7"/>'
-            f'<text class="carte__nom" x="216" y="91">{e(site["ville"]).upper()}</text>'
-            '<g class="carte__nord"><path d="M370 66V38M363 46l7-8 7 8"/><text x="370" y="30">N</text></g>'
-            f'<text class="carte__coord" x="20" y="284">{e(coord)}</text></svg>')
 
 
 def moments(t):
@@ -337,7 +323,6 @@ def jsonld(c):
         "address": {"@type": "PostalAddress", "addressLocality": s["ville"], "addressCountry": s["pays"]},
         "priceRange": s["prestation"]["affichage"],
         "sameAs": [s["instagram"]["profil"]],
-        "hasMap": s["cartes"]["google"],
     }
     if rempli(s.get("url")):
         d["url"] = s["url"]
@@ -411,8 +396,6 @@ def main():
         "{{apercu}}": apercu(t),
         "{{accroche_mots}}": mots_accroche(t["accroche"], t["accents"].get("accroche")),
         "{{bandeau}}": bandeau(t["bandeau"]),
-        "{{carte}}": carte(site, t),
-        "{{acces_faits}}": "\n          ".join(f'<div><dt>{e(f["terme"])}</dt><dd>{e(f["valeur"])}</dd></div>' for f in t["acces_faits"]),
         "{{rui_texte}}": "\n        ".join(f"<p>{e(p)}</p>" for p in t["rui_texte"]),
         "{{langues}}": "\n          ".join(
             f'<li lang="{l["lang"]}"><span class="langues__texte">{e(l["texte"])}</span><span class="etiquette" lang="fr">{l["code"]}</span></li>'
@@ -450,13 +433,16 @@ def main():
         page = re.sub(r"\{\{accent:([a-z_]+)\}\}", lambda m: accent(t[m.group(1)], t["accents"].get(m.group(1))), page)
         page = re.sub(r"\{\{((?:site|meta|textes)(?:\.[a-z_]+)+)\}\}", lambda m: e(chemin(c, m.group(1))), page)
         # Index de section « 01 — Les coupes » : le numéro en bleu roi
-        page = re.sub(r'(<p class="etiquette"[^>]*>)(\d{2}) — ', r'\1<span class="etiquette__num">\2</span> — ', page)
+        page = re.sub(r'(<p class="etiquette"[^>]*>)(\d{2}) — ', r'\1<span class="etiquette__num">\2</span><span class="etiquette__filet"> — </span>', page)
         for k, v in blocs.items():
             page = page.replace(k, v)
         page = page.replace('<body id="haut">', '<body id="haut">\n' + trame_sprite(), 1)
-        droit, italique = textes_serif(page)
-        serifs = {"droit": police_serif("droit", droit), "italique": police_serif("italique", italique or "a")}
-        css = css.replace("{{serif}}", data_uri(serifs["droit"], "font/woff2")).replace("{{serif_italique}}", data_uri(serifs["italique"], "font/woff2"))
+        tx = textes_serif(page)
+        serifs = {"droit": police_serif("droit", tx["droit"]), "italique": police_serif("italique", tx["italique"] or "a"),
+                  "texte": police_serif("droit", tx["texte"] or "a", 14, "texte"),
+                  "texte-italique": police_serif("italique", tx["texte-italique"] or "a", 14, "texte-italique")}
+        for cle, v in serifs.items():
+            css = css.replace("{{serif:" + cle + "}}", data_uri(v, "font/woff2"))
         page = page.replace("{{css}}", minifier_css(css)).replace("{{js}}", js.strip())
         reste = re.findall(r"\{\{[^}]*\}\}", page)
         if reste:

@@ -9,7 +9,7 @@
   try {
     var afficherPage = function () { document.documentElement.classList.remove("attente"); };
     window.setTimeout(afficherPage, 700);
-    if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('640 20px "Archivo"'), document.fonts.load('400 20px "Bodoni Moda"'), document.fonts.load('italic 400 20px "Bodoni Moda"')]).then(afficherPage, afficherPage);
+    if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('640 20px "Archivo"'), document.fonts.load('400 20px "Bodoni Moda"'), document.fonts.load('italic 400 20px "Bodoni Moda"'), document.fonts.load('400 12px "Bodoni Moda Texte"'), document.fonts.load('italic 400 17px "Bodoni Moda Texte"')]).then(afficherPage, afficherPage);
     else afficherPage();
   } catch (e) { document.documentElement.classList.remove("attente"); }
 
@@ -360,7 +360,6 @@
       if (!("IntersectionObserver" in window) || !window.matchMedia || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       var sel = [".bandeau", ".vitrine > .etiquette", ".vitrine h2", ".vitrine > .chapo", ".vitrine__carte", ".vitrine__photos li",
         ".panneau", ".etapes li", ".ticket", ".rui__carte", ".rui__texte p", ".langues li",
-        ".acces > .etiquette", ".acces h2", ".carte", ".acces__infos > .chapo", ".faits div", ".acces__boutons",
         ".contact > .etiquette", ".contact h2", ".profil", ".separateur",
         ".page-coupes > .etiquette", ".page-coupes__titre", ".page-coupes > .chapo", ".galerie__item", ".suite__carte"].join(",");
       var els = Array.prototype.slice.call(document.querySelectorAll(sel));

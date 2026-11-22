@@ -8,9 +8,10 @@
   <section class="heros" aria-labelledby="accroche">
     <div class="heros__trame" aria-hidden="true">{{trame:ciel}}</div>
     <div class="heros__grain" aria-hidden="true"></div>
+    <p class="heros__rail" aria-hidden="true">{{textes.rail}}</p>
     <div class="heros__texte">
       <p class="etiquette heros__lieu">{{textes.lieu}}</p>
-      <p class="heros__moien" lang="lb"><em>{{textes.moien}}</em></p>
+      <p class="heros__moien" lang="lb"><em class="serif-texte">{{textes.moien}}</em></p>
       <h1 id="accroche">{{accroche_mots}}</h1>
       <p class="chapo heros__chapo">{{textes.chapo}}</p>
       <div class="heros__actions">
@@ -116,26 +117,6 @@
   </section>
 
   {{separateur:60}}
-
-  <section class="acces enveloppe" id="acces" aria-labelledby="acces-titre" tabindex="-1">
-    <p class="etiquette">{{textes.acces_index}}</p>
-    <h2 id="acces-titre">{{accent:acces_titre}}</h2>
-    <div class="acces__grille">
-      <figure class="carte" role="img" aria-label="{{textes.acces_carte_alt}}">
-        {{carte}}
-      </figure>
-      <div class="acces__infos">
-        <p class="chapo">{{textes.acces_texte}}</p>
-        <dl class="faits">
-          {{acces_faits}}
-        </dl>
-        <div class="acces__boutons">
-          <a class="bouton bouton--nuit" href="{{site.cartes.plans}}" rel="noopener">{{icone:repere}}{{textes.acces_plans}}</a>
-          <a class="bouton bouton--contour" href="{{site.cartes.google}}" rel="noopener">{{textes.acces_google}}</a>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <section class="contact enveloppe" id="contact" aria-labelledby="contact-titre">
     <p class="etiquette">{{textes.contact_index}}</p>

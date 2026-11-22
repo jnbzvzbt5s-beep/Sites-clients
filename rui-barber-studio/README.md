@@ -2,7 +2,7 @@
 
 Direction : page bleu abysse, titres en Bodoni Moda (OFL, `fonts/OFL-bodoni-moda.txt`, sous-ensemble limité aux caractères des titres), accents en italique bleu ciel, filets platine, angles nets ; rouge réservé à l’action.
 
-Livrable : `index.html`, un seul fichier autonome. Il contient l’accueil (dont la section Localisation, `#acces` : schéma de situation en SVG, liens Plans et Google Maps, aucune carte chargée depuis le réseau) et la vue « Les coupes » (ancre `#les-coupes`), affichée par JS ou, sans JS, par `:target`.
+Livrable : `index.html`, un seul fichier autonome. Il contient l’accueil et la vue « Les coupes » (ancre `#les-coupes`), affichée par JS ou, sans JS, par `:target`.
 Planche de tokens : `tokens.html`. Captures : `livraison/`.
 
 ## Construire
