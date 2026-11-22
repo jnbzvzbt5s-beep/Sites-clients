@@ -11,7 +11,7 @@
     <p class="heros__rail" aria-hidden="true">{{textes.rail}}</p>
     <div class="heros__texte">
       <p class="etiquette heros__lieu">{{textes.lieu}}</p>
-      <p class="heros__moien" lang="lb"><em class="serif-texte">{{textes.moien}}</em></p>
+      <p class="heros__moien" lang="lb">{{textes.moien}}</p>
       <h1 id="accroche">{{accroche_mots}}</h1>
       <p class="chapo heros__chapo">{{textes.chapo}}</p>
       <div class="heros__actions">
@@ -28,7 +28,7 @@
       <p class="etiquette-prix">
         <span class="ruban ruban--prix" aria-hidden="true"></span>
         <span class="etiquette">{{textes.prix_etiquette}}</span>
-        <strong class="etiquette-prix__montant serif chiffres" data-prix>{{site.prestation.affichage}}</strong>
+        <strong class="etiquette-prix__montant chiffres" data-prix>{{site.prestation.affichage}}</strong>
       </p>
     </div>
   </section>
@@ -91,28 +91,6 @@
         </form>
         <p class="panneau__note">{{textes.rdv_note}}</p>
       </div>
-    </div>
-  </section>
-
-  <section class="rui enveloppe" id="rui" aria-labelledby="rui-titre">
-    <div class="rui__carte">
-    <p class="etiquette">{{textes.rui_index}}</p>
-    <div class="rui__tete">
-      <h2 class="rui__nom" id="rui-titre">{{textes.rui_nom}}</h2>
-      <div class="rui__trame" aria-hidden="true">{{trame:brume}}</div>
-    </div>
-    <p class="etiquette rui__mots">{{textes.rui_mots}}</p>
-    <div class="rui__corps">
-      <div class="rui__texte">
-        {{rui_texte}}
-      </div>
-      <div class="rui__langues">
-        <p class="etiquette">{{textes.langues_titre}}</p>
-        <ul class="langues">
-          {{langues}}
-        </ul>
-      </div>
-    </div>
     </div>
   </section>
 

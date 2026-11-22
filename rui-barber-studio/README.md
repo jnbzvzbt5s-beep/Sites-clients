@@ -1,6 +1,6 @@
 # Rui’s Barber Studio — site vitrine (V6 « Écrin nuit »)
 
-Direction : page bleu abysse, titres en Bodoni Moda (OFL, `fonts/OFL-bodoni-moda.txt`, sous-ensemble limité aux caractères des titres), accents en italique bleu ciel, filets platine, angles nets ; rouge réservé à l’action.
+Direction : page bleu abysse, une seule police partout (Archivo, titres élargis), mots d’accent en bleu ciel, filets platine, angles nets ; rouge réservé à l’action.
 
 Livrable : `index.html`, un seul fichier autonome. Il contient l’accueil et la vue « Les coupes » (ancre `#les-coupes`), affichée par JS ou, sans JS, par `:target`.
 Planche de tokens : `tokens.html`. Captures : `livraison/`.

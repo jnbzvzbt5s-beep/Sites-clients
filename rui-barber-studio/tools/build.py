@@ -25,9 +25,6 @@ SRC = ROOT / "src"
 BUILD = ROOT / "build"
 PAGES = {"accueil.html": ROOT / "index.html"}
 FONT_SRC = ROOT / "fonts" / "archivo-latin-wdth-normal.woff2"
-SERIF_SRC = {"droit": ROOT / "fonts" / "bodoni-moda-latin-standard-normal.woff2",
-             "italique": ROOT / "fonts" / "bodoni-moda-latin-standard-italic.woff2"}
-SERIF_TOUJOURS = "0123456789 \u00a0\u202f€.,:;!?’'«»—–-"
 A_COMPLETER = "À COMPLÉTER"
 UNICODES = ("U+0020-007E,U+00A0-00FF,U+0152-0153,U+2013-2014,U+2019,U+201C-201E,"
             "U+2026,U+2009,U+202F,U+20AC")
@@ -116,35 +113,6 @@ def minifier_css(css):
     css = re.sub(r"\s+", " ", css)
     css = re.sub(r"\s*([{};])\s*", r"\1", css)
     return css.replace(";}", "}").strip()
-
-
-def police_serif(style, texte, opsz=96, nom=None):
-    """Bodoni Moda (OFL), figée en wght 400 et à une taille optique (96 : titrage ; 14 : petits corps),
-    réduite aux seuls caractères qui l’utilisent dans la page."""
-    from fontTools import subset
-    f = instancer.instantiateVariableFont(TTFont(SERIF_SRC[style]), {"wght": 400, "opsz": opsz})
-    options = subset.Options()
-    options.flavor = "woff2"
-    options.layout_features = ["kern", "liga"]
-    sous = subset.Subsetter(options)
-    sous.populate(text="".join(sorted(set(texte + SERIF_TOUJOURS))))
-    sous.subset(f)
-    f.flavor = "woff2"
-    out = BUILD / f"bodoni-{nom or style}.woff2"
-    f.save(out)
-    return out
-
-
-def textes_serif(page):
-    """Texte composé en Bodoni. Titrage : h1/h2 et .serif (droit), <em> nus (italique).
-    Petits corps : .serif-texte (droit), <em class="serif-texte"> (italique)."""
-    def nu(morceaux):
-        return "".join(html.unescape(re.sub(r"<[^>]+>", "", x)) for x in morceaux)
-    titrage = re.findall(r"<h[12][^>]*>(.*?)</h[12]>", page, re.S)
-    titrage += re.findall(r'class="[^"]*\bserif(?![-\w])[^"]*"[^>]*>(.*?)</', page, re.S)
-    texte = re.findall(r'<span class="[^"]*\bserif-texte\b[^"]*"[^>]*>(.*?)</span>', page, re.S)
-    return {"droit": nu(titrage), "italique": nu(re.findall(r"<em>(.*?)</em>", page, re.S)),
-            "texte": nu(texte), "texte-italique": nu(re.findall(r'<em class="serif-texte">(.*?)</em>', page, re.S))}
 
 
 def accent(texte, mot):
@@ -257,9 +225,9 @@ def galerie(photos, manifeste, t):
     for k, p in enumerate(serie, start=1):
         prec, suiv = (k - 2) % n + 1, k % n + 1
         vedette = k == 1
-        # Cartel de musée : numéro en Bodoni, nom de la coupe en italique (décor : l’alt décrit déjà la photo)
-        index = (f'<span class="photo__cartel" aria-hidden="true"><span class="photo__num serif-texte">Nº {k:02d}</span>'
-                 f'<em class="serif-texte">{e(p["nom"])}</em></span>')
+        # Cartel de musée : numéro en capitales, nom de la coupe (décor : l’alt décrit déjà la photo)
+        index = (f'<span class="photo__cartel" aria-hidden="true"><span class="photo__num">Nº {k:02d}</span>'
+                 f'<em>{e(p["nom"])}</em></span>')
         figure = (f'<figure class="photo"><a class="vignette" href="#photo-{k}" aria-label="{e(t["agrandir"])} : {e(p["alt"])}">'
                   f'{image(p, manifeste, variante="-vignette" if p["role"] == "hero" else "")}<span class="photo__ouvrir" aria-hidden="true">{icone("fleche-ouvrir")}</span></a>{index}'
                   f'<span class="photo__cible" aria-hidden="true">'
@@ -289,7 +257,7 @@ def vitrine(photos, manifeste, t):
 
 def bandeau(mots):
     """Bandeau défilant décoratif (aria-hidden) : la liste est doublée pour boucler sans couture."""
-    items = "".join((f'<span class="bandeau__mot bandeau__mot--creux"><em class="serif-texte">{e(m)}</em></span>' if i % 2 else f'<span class="bandeau__mot">{e(m)}</span>')
+    items = "".join((f'<span class="bandeau__mot bandeau__mot--creux"><em>{e(m)}</em></span>' if i % 2 else f'<span class="bandeau__mot">{e(m)}</span>')
                     + '<span class="bandeau__point"></span>'
                     for i, m in enumerate(mots))
     return f'<div class="bandeau" aria-hidden="true"><div class="bandeau__piste">{items}{items}</div></div>'
@@ -320,7 +288,7 @@ def jsonld(c):
         "@type": "HairSalon",
         "name": s["nom"],
         "image": data_uri(BUILD / "logo" / "logo-88.webp", "image/webp"),
-        "address": {"@type": "PostalAddress", "addressLocality": s["ville"], "addressCountry": s["pays"]},
+        "address": {"@type": "PostalAddress", "addressCountry": s["pays"]},
         "priceRange": s["prestation"]["affichage"],
         "sameAs": [s["instagram"]["profil"]],
     }
@@ -396,10 +364,6 @@ def main():
         "{{apercu}}": apercu(t),
         "{{accroche_mots}}": mots_accroche(t["accroche"], t["accents"].get("accroche")),
         "{{bandeau}}": bandeau(t["bandeau"]),
-        "{{rui_texte}}": "\n        ".join(f"<p>{e(p)}</p>" for p in t["rui_texte"]),
-        "{{langues}}": "\n          ".join(
-            f'<li lang="{l["lang"]}"><span class="langues__texte">{e(l["texte"])}</span><span class="etiquette" lang="fr">{l["code"]}</span></li>'
-            for l in t["langues"]),
         "{{mentions}}": mentions_html,
         "{{favicon}}": data_uri(BUILD / "logo" / "logo-64.png", "image/png"),
         "{{apple_touch}}": data_uri(BUILD / "logo" / "logo-180.png", "image/png"),
@@ -437,12 +401,6 @@ def main():
         for k, v in blocs.items():
             page = page.replace(k, v)
         page = page.replace('<body id="haut">', '<body id="haut">\n' + trame_sprite(), 1)
-        tx = textes_serif(page)
-        serifs = {"droit": police_serif("droit", tx["droit"]), "italique": police_serif("italique", tx["italique"] or "a"),
-                  "texte": police_serif("droit", tx["texte"] or "a", 14, "texte"),
-                  "texte-italique": police_serif("italique", tx["texte-italique"] or "a", 14, "texte-italique")}
-        for cle, v in serifs.items():
-            css = css.replace("{{serif:" + cle + "}}", data_uri(v, "font/woff2"))
         page = page.replace("{{css}}", minifier_css(css)).replace("{{js}}", js.strip())
         reste = re.findall(r"\{\{[^}]*\}\}", page)
         if reste:
@@ -450,8 +408,7 @@ def main():
         sortie.write_text(page, encoding="utf-8")
         print(f"{sortie.name} : {sortie.stat().st_size / 1024:.1f} Ko" + (" — BROUILLON" if brouillon else ""))
     planche(css)
-    print(f"police : {police_fichier.stat().st_size / 1024:.1f} Ko · Bodoni : "
-          + " + ".join(f"{v.stat().st_size / 1024:.1f} Ko" for v in serifs.values()))
+    print(f"police : {police_fichier.stat().st_size / 1024:.1f} Ko")
     if manquants:
         print("À COMPLÉTER restants :\n  " + "\n  ".join(manquants))
 

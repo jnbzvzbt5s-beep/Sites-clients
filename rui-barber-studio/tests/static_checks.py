@@ -17,7 +17,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 NOM = "index.html"
 ACCUEIL = True
 # Hero + 3 miniatures de la vitrine + 7 photos de la vue « Les coupes »
-ATT = {"photos": 11, "hero": True, "logos": 3, "ruban": 4, "titre": "Rui’s Barber Studio — barbier à Mersch"}
+ATT = {"photos": 11, "hero": True, "logos": 3, "ruban": 4, "titre": "Rui’s Barber Studio — barbier au Luxembourg"}
 print(f"== {NOM}")
 PAGE = (ROOT / NOM).read_text(encoding="utf-8")
 C = json.loads((ROOT / "data" / "contenu.json").read_text(encoding="utf-8"))
@@ -76,7 +76,7 @@ verifier(18, "Rouge uniquement dans le ruban, le point de « Moien ! », le sép
 REGLES = re.findall(r"([^{}]+)\{([^{}]*)\}", CSS_SANS_DATA)
 sel_clip = [sel.strip() for sel, corps in REGLES if re.search(r"(?<![-\w])background-clip:\s*text", corps)]
 sel_flou = [sel.strip() for sel, corps in REGLES if re.search(r"(?<![-\w])backdrop-filter:\s*blur", corps)]
-verifier(18, "Aucun dégradé texte hors du grand « Rui »", sel_clip == [".rui__nom"], str(sel_clip))
+verifier(18, "Aucun dégradé texte", sel_clip == [], str(sel_clip))
 verifier(18, "Flou d’arrière-plan seulement dans l’en-tête", sel_flou == [".entete"], str(sel_flou))
 
 # ---------- 15. Contrastes AA, y compris aux extrémités des dégradés ----------
@@ -168,16 +168,16 @@ verifier(13, "Poids : hero ≤ 180 Ko, autres photos ≤ 80 Ko ; toutes en 4:5",
 titre = html.unescape(re.search(r"<title>(.*?)</title>", PAGE).group(1))
 desc = html.unescape(re.search(r'<meta name="description" content="([^"]+)"', PAGE).group(1))
 verifier(16, f"Titre « {ATT['titre']} »", titre == ATT["titre"], titre)
-verifier(16, "Meta description exacte", desc == "Coupe complète à 15 € à Mersch. Proposez un créneau sur Instagram, Rui vous confirme.", desc)
+verifier(16, "Meta description exacte", desc == "Coupe complète à 15 €. Proposez un créneau sur Instagram, Rui vous confirme.", desc)
 verifier(16, "theme-color #050D1E, favicon et apple-touch-icon en data URI",
          'name="theme-color" content="#050D1E"' in PAGE and 'rel="icon" type="image/png" sizes="64x64" href="data:image/png' in PAGE
          and 'rel="apple-touch-icon" sizes="180x180" href="data:image/png' in PAGE)
 verifier(16, "Open Graph titre et description ; og:image et og:url absents tant que l’URL est inconnue",
          'property="og:title"' in PAGE and 'property="og:description"' in PAGE and "og:image" not in PAGE and "og:url" not in PAGE)
 ld = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', PAGE, re.S).group(1))
-verifier(16, "JSON-LD HairSalon : name, image, adresse Mersch/LU, priceRange 15 €, sameAs ; ni téléphone, ni email, ni horaires",
+verifier(16, "JSON-LD HairSalon : name, image, pays LU (aucune ville), priceRange 15 €, sameAs ; ni téléphone, ni email, ni horaires",
          ld["@type"] == "HairSalon" and ld["name"] == "Rui’s Barber Studio" and ld["image"].startswith("data:image/")
-         and ld["address"]["addressLocality"] == "Mersch" and ld["address"]["addressCountry"] == "LU"
+         and "addressLocality" not in ld["address"] and ld["address"]["addressCountry"] == "LU"
          and ld["priceRange"] == "15 €" and ld["sameAs"] == [C["site"]["instagram"]["profil"]]
          and not any(k in ld for k in ("telephone", "email", "openingHours", "openingHoursSpecification")))
 liens_ig = set(re.findall(r'href="(https://[^"]*(?:ig\.me|instagram\.com)[^"]*)"', PAGE))
@@ -196,7 +196,7 @@ visible = html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)\b.*?</\
 interdits = ["bienvenue", "passion", "excellence", "premium", "expérience unique", "n° 1", "le meilleur", "pas cher", "votre satisfaction"]
 verifier(14, "Aucun mot interdit", not [m for m in interdits if m in visible.lower()])
 if ACCUEIL:
-    verifier(14, "« Plus de 100 coupes » écrit dans le texte, jamais en compteur", "plus de 100 coupes" in visible.lower())
+    verifier(14, "Ni « Mersch » ni présentation de Rui dans la page", "mersch" not in visible.lower() and "je suis rui" not in visible.lower() and 'id="rui"' not in PAGE)
 mauvais = re.findall(r"\S[  ][;!?]|\S [:»]|« ", visible)
 verifier(14, "Fine insécable avant ; ! ?, insécable avant :, apostrophe ’", not mauvais and "'" not in visible, str(mauvais[:4]))
 verifier(14, "Prix écrit « 15 € » avec insécable", (not ACCUEIL or "15 €" in visible) and "15 €" not in visible)

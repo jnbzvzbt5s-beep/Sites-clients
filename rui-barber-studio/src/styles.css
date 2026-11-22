@@ -304,9 +304,9 @@ h2 {
 }
 
 /* ---------- D4 Halos : contenus par leur section (overflow-x: clip) ---------- */
-.page-coupes, .vitrine, .rui, .contact, .suite { overflow-x: clip; }
+.page-coupes, .vitrine, .contact, .suite { overflow-x: clip; }
 @supports not (overflow-x: clip) {
-  .page-coupes, .vitrine, .rui, .contact, .suite { overflow-x: hidden; }
+  .page-coupes, .vitrine, .contact, .suite { overflow-x: hidden; }
 }
 .halo {
   position: absolute;
@@ -942,45 +942,6 @@ h2 {
 .js .si-nojs, .js .ticket__sansjs { display: none; }
 .no-js .si-js, .no-js .ticket__champ, .no-js .pastille { display: none !important; }
 
-/* ---------- 03 Rui ---------- */
-.rui { padding-block: 48px 40px; }
-.rui__carte {
-  position: relative;
-  isolation: isolate;
-  padding: 28px 20px 32px;
-  border-radius: 28px;
-  background:
-    radial-gradient(70% 60% at 100% 0%, #C6DCF5 0%, rgba(198, 220, 245, 0) 70%),
-    linear-gradient(160deg, #F2F7FD 0%, #E3EEFA 100%);
-  border: 1px solid #D3E2F4;
-}
-@media (min-width: 1024px) {
-  .rui__carte { padding: 48px 56px 56px; }
-}
-.rui__tete { position: relative; isolation: isolate; margin-top: 8px; }
-.rui__nom {
-  display: inline-block;
-  font-size: clamp(6rem, 3rem + 14vw, 12.5rem);
-  font-weight: 700;
-  font-stretch: 125%;
-  line-height: .86;
-  letter-spacing: -.035em;
-  color: var(--encre);
-}
-.rui__trame { position: absolute; z-index: -1; right: 0; top: 50%; width: 264px; height: 264px; transform: translateY(-50%); color: #C6DCF5; }
-.rui__mots { margin-top: 18px; }
-.rui__corps { display: grid; gap: 32px; margin-top: 28px; }
-.rui__texte { display: grid; gap: 12px; max-width: 38rem; }
-.langues { margin-top: 10px; border-top: 1px solid var(--filet); }
-.langues li { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--filet); }
-.langues li::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--roi); }
-.langues__texte { flex: 1; }
-@media (min-width: 1024px) {
-  .rui__corps { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; }
-  .rui__texte { grid-column: 1 / span 7; }
-  .rui__langues { grid-column: 9 / -1; }
-}
-
 /* ---------- 04 Contact ---------- */
 .contact { padding-block: 48px 88px; }
 .contact h2 { margin-top: 10px; }
@@ -1158,7 +1119,6 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
   .panneau.est-apparu .etapes li:nth-child(1) .etapes__num { animation-delay: 350ms; }
   .panneau.est-apparu .etapes li:nth-child(2) .etapes__num { animation-delay: 500ms; }
   .panneau.est-apparu .etapes li:nth-child(3) .etapes__num { animation-delay: 650ms; }
-  .rui__carte.est-apparu .rui__nom { animation: reveler-clip 900ms var(--tondeuse) 200ms backwards; }
   .profil.est-apparu .profil__logo { animation: rebondir 600ms var(--courbe) 250ms backwards; }
   .heros__visuel::before { animation: glisser-tuile 800ms var(--courbe) 500ms backwards; }
   .sur-coupes .vue--coupes { animation: poser 380ms var(--courbe); }
@@ -1230,30 +1190,15 @@ mark.a-completer { padding: 0 4px; border-radius: 4px; background: var(--brume);
 
 /* =====================================================================
    V6 « Écrin nuit » — direction luxe
-   Toute la page passe en bleu abysse ; titres en Bodoni Moda (Didone, OFL),
-   accents en italique ; filets platine ; angles vifs ; rouge réservé à l’action.
+   Toute la page passe en bleu abysse ; une seule police (Archivo), titres élargis ;
+   filets platine ; angles vifs ; rouge réservé à l’action.
    ===================================================================== */
-@font-face {
-  font-family: "Bodoni Moda";
-  src: url("{{serif:droit}}") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
-}
-@font-face {
-  font-family: "Bodoni Moda";
-  src: url("{{serif:italique}}") format("woff2");
-  font-weight: 400;
-  font-style: italic;
-  font-display: block;
-}
 :root {
   --abysse: #050D1E;
   --platine: #C9D6E8;
   --gris-clair: #A9B6CB;
   --filet-nuit: rgba(201, 214, 232, .16);
   --verre: linear-gradient(160deg, rgba(31, 84, 166, .16) 0%, rgba(10, 28, 58, .55) 100%);
-  --serif: "Bodoni Moda", "Didot", "Bodoni 72", "Bodoni MT", Georgia, serif;
   color-scheme: dark;
 }
 body { background: linear-gradient(180deg, #050D1E 0%, #071531 45%, #050D1E 100%); background-color: var(--abysse); color: var(--brume); }
@@ -1270,20 +1215,20 @@ a { color: var(--ciel); }
 :focus-visible { outline-color: var(--ciel); }
 
 /* Typographie */
+/* Une seule police partout : Archivo, titres élargis (125 %) en graisse moyenne, approche serrée */
 h1, h2 {
-  font-family: var(--serif);
-  font-weight: 400;
-  font-stretch: 100%;
-  letter-spacing: -.012em;
+  font-family: var(--police);
+  font-weight: 560;
+  font-stretch: 125%;
+  letter-spacing: -.03em;
   color: var(--porcelaine);
 }
-h1 { font-size: clamp(3rem, 1.9rem + 5.2vw, 6.6rem); line-height: .98; }
-h2 { font-size: clamp(2.4rem, 1.7rem + 3vw, 4.4rem); line-height: 1.02; }
-h1 em, h2 em { font-style: italic; color: var(--ciel); }
+h1 { font-size: clamp(2.5rem, 1.5rem + 4.2vw, 5rem); line-height: 1; }
+h2 { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.6rem); line-height: 1.04; }
+h1 em, h2 em { font-style: normal; color: var(--ciel); }
 .chapo { color: var(--brume); }
 .etiquette { color: var(--platine); letter-spacing: .3em; }
 .etiquette__num, .panneau .etiquette__num { color: var(--ciel); }
-.serif { font-family: var(--serif); font-weight: 400; }
 
 /* Boutons : rectangles nets, capitales espacées */
 .bouton { min-height: 52px; padding: 0 26px; border-radius: 3px; font-size: 13.5px; font-weight: 600; font-stretch: 112%; letter-spacing: .14em; text-transform: uppercase; }
@@ -1326,8 +1271,7 @@ h1 em, h2 em { font-style: italic; color: var(--ciel); }
 @supports not (overflow-x: clip) { .heros { overflow-x: hidden; } }
 .heros__trame { opacity: .14; }
 .heros__grain { display: none; }
-.heros__moien { font-family: var(--serif); font-weight: 400; font-size: 22px; }
-.heros__moien em { font-style: italic; }
+.heros__moien { font-size: 15px; font-weight: 600; font-stretch: 112%; letter-spacing: .08em; }
 .heros__chapo { color: var(--brume); }
 .heros__photo { border-radius: 999px 999px 4px 4px; box-shadow: 0 50px 90px -40px rgba(0, 0, 0, .8); }
 .heros__photo::after { background: linear-gradient(to top, rgba(5, 13, 30, .45), rgba(5, 13, 30, 0) 35%); }
@@ -1335,7 +1279,7 @@ h1 em, h2 em { font-style: italic; color: var(--ciel); }
 .heros .halo--heros { background: radial-gradient(closest-side, rgba(31, 84, 166, .45), rgba(31, 84, 166, 0)); }
 .etiquette-prix { gap: 4px; padding: 12px 20px 12px 24px; border: 1px solid rgba(201, 214, 232, .4); border-radius: 3px; background: #071531; box-shadow: 0 24px 48px -24px rgba(0, 0, 0, .8); }
 .etiquette-prix .etiquette { color: var(--platine); }
-.etiquette-prix__montant { font-size: 36px; line-height: 1; color: var(--porcelaine); }
+.etiquette-prix__montant { font-size: 32px; font-weight: 600; font-stretch: 112%; line-height: 1; color: var(--porcelaine); }
 @media (min-width: 1024px) {
   .heros { padding: 40px 48px 96px; }
   .heros h1 { max-width: 12.5ch; }
@@ -1345,13 +1289,13 @@ h1 em, h2 em { font-style: italic; color: var(--ciel); }
 /* Bandeau, séparateurs, halos */
 .bandeau { background: rgba(255, 255, 255, .02); border-block-color: var(--filet-nuit); }
 .bandeau__mot { color: var(--platine); }
-.bandeau__mot--creux { color: var(--porcelaine); font-family: var(--serif); font-style: italic; }
-.bandeau__mot--creux, .bandeau__mot--creux em { font-weight: 400; font-stretch: 100%; letter-spacing: .06em; text-transform: none; font-size: clamp(17px, 15px + .6vw, 22px); }
+.bandeau__mot--creux { color: var(--porcelaine); }
+.bandeau__mot em { font-style: normal; }
 .separateur__filet { stroke: rgba(201, 214, 232, .28); }
 .halo { background: radial-gradient(closest-side, rgba(31, 84, 166, .4), rgba(31, 84, 166, 0)); }
 
 /* Cartes en verre sombre, filet platine, angles nets */
-.vitrine__carte, .rui__carte, .suite__carte, .profil {
+.vitrine__carte, .suite__carte, .profil {
   border: 1px solid var(--filet-nuit);
   border-radius: 6px;
   background: var(--verre);
@@ -1371,17 +1315,6 @@ h1 em, h2 em { font-style: italic; color: var(--ciel); }
 .panneau { border: 1px solid var(--filet-nuit); border-radius: 6px; }
 .ticket::before { box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .9); }
 
-/* Rui */
-.rui__nom { font-weight: 400; font-stretch: 100%; letter-spacing: -.02em; line-height: .9; font-size: clamp(7rem, 3rem + 16vw, 14rem); }
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .rui__nom { background: linear-gradient(120deg, #FFFFFF 0%, #C9D6E8 45%, #7DB0E8 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-}
-.rui__trame { color: var(--ciel); opacity: .14; }
-.rui__texte p { color: var(--brume); }
-.langues, .langues li { border-color: var(--filet-nuit); }
-.langues li::before { width: 5px; height: 5px; border-radius: 0; background: var(--ciel); transform: rotate(45deg); }
-.langues .etiquette { color: var(--gris-clair); }
-
 
 /* Contact */
 .profil::before { height: 2px; background: linear-gradient(90deg, rgba(125, 176, 232, 0), #7DB0E8, rgba(125, 176, 232, 0)); }
@@ -1399,7 +1332,7 @@ mark.a-completer { background: var(--marine); color: var(--porcelaine); }
 .halo--coupes { height: 100%; top: 0; }
 .ticket .bouton { white-space: normal; padding: 10px 16px; font-size: 12.5px; letter-spacing: .1em; }
 @media (min-width: 1024px) {
-  .heros h1 { max-width: none; font-size: clamp(4rem, 2rem + 3.4vw, 5.6rem); }
+  .heros h1 { max-width: 12ch; font-size: clamp(3.4rem, 1.6rem + 3vw, 4.8rem); }
 }
 
 /* =====================================================================
@@ -1419,9 +1352,9 @@ mark.a-completer { background: var(--marine); color: var(--porcelaine); }
   pointer-events: none;
 }
 .photo__num { font-size: 11px; letter-spacing: .24em; color: var(--platine); }
-.photo__cartel em { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 17px; line-height: 1.15; color: var(--porcelaine); }
+.photo__cartel em { font-style: normal; font-weight: 560; font-stretch: 112%; font-size: 15px; line-height: 1.2; color: var(--porcelaine); }
 .galerie__item--vedette .photo__cartel { padding: 64px 22px 20px; }
-.galerie__item--vedette .photo__cartel em { font-size: clamp(22px, 18px + 1vw, 30px); }
+.galerie__item--vedette .photo__cartel em { font-size: clamp(19px, 16px + .8vw, 24px); font-stretch: 125%; }
 .photo__ouvrir { top: 10px; right: 10px; bottom: auto; }
 
 /* Mention verticale le long du hero (grands écrans) */
@@ -1463,28 +1396,26 @@ mark.a-completer { background: var(--marine); color: var(--porcelaine); }
 .pied__marque {
   margin: 0 auto;
   padding-top: 56px;
-  font-size: clamp(2.6rem, 1rem + 7.4vw, 8.5rem);
+  font-size: clamp(1.6rem, .4rem + 5.4vw, 6rem);
+  font-weight: 700;
+  font-stretch: 125%;
+  text-transform: uppercase;
   line-height: 1;
-  letter-spacing: -.02em;
+  letter-spacing: -.01em;
   white-space: nowrap;
   overflow: hidden;
   color: transparent;
   -webkit-text-stroke: 1px rgba(201, 214, 232, .28);
 }
+.pied__marque::before { content: attr(data-marque); } /* décor : contenu CSS, pas du texte à lire */
 .pied { overflow-x: clip; }
 
 /* Rythme : plus d’air entre les sections sur grand écran */
 @media (min-width: 1024px) {
   .vitrine { padding-block: 104px 120px; }
   .rdv { padding-block: 48px 72px; }
-  .rui { padding-block: 104px 72px; }
   .contact { padding-block: 104px 136px; }
   .page-coupes { padding-block: 48px 96px; }
 }
 
-/* Bodoni « texte » (taille optique 14) pour les petits corps : déliés lisibles */
-@font-face { font-family: "Bodoni Moda Texte"; src: url("{{serif:texte}}") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
-@font-face { font-family: "Bodoni Moda Texte"; src: url("{{serif:texte-italique}}") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
-.serif-texte, .photo__cartel em, .heros__moien em, .bandeau__mot--creux em { font-family: "Bodoni Moda Texte", var(--serif); font-weight: 400; }
-em.serif-texte { font-style: italic; }
 .photo__num { font-size: 12px; letter-spacing: .2em; }

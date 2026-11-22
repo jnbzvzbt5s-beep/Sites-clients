@@ -4,7 +4,6 @@
     "nom_court": "Rui’s",
     "nom_suite": "Barber Studio",
     "barbier": "Rui",
-    "ville": "Mersch",
     "pays": "LU",
     "depuis": "juillet 2023",
     "instagram": {
@@ -31,15 +30,15 @@
     }
   },
   "meta": {
-    "titre": "Rui’s Barber Studio — barbier à Mersch",
-    "description": "Coupe complète à 15 € à Mersch. Proposez un créneau sur Instagram, Rui vous confirme.",
+    "titre": "Rui’s Barber Studio — barbier au Luxembourg",
+    "description": "Coupe complète à 15 €. Proposez un créneau sur Instagram, Rui vous confirme.",
     "theme": "#050D1E"
   },
   "textes": {
-    "lieu": "Mersch · Luxembourg",
+    "lieu": "Luxembourg",
     "moien": "Moien !",
     "accroche": "Une coupe nette, sans vous presser.",
-    "chapo": "Je suis Rui, barbier à Mersch depuis juillet 2023.",
+    "chapo": "Sur rendez-vous, via Instagram.",
     "cta": "Prendre rendez-vous",
     "voir_coupes": "Voir les coupes",
     "prix_etiquette": "Coupe complète",
@@ -80,50 +79,13 @@
       "salut": "Bonjour Rui ! Je voudrais un rendez-vous pour une coupe complète.",
       "fin": "Merci !"
     },
-    "rui_index": "03 — Rui",
-    "rui_nom": "Rui",
-    "rui_mots": "Concentré · Serviable · Engagé",
-    "rui_texte": [
-      "Je coupe les cheveux depuis juillet 2023 : plus de 100 coupes à ce jour.",
-      "Je suis jeune et je progresse encore, alors chaque coupe compte pour moi.",
-      "Je prends le temps qu’il faut pour vos cheveux, sans vous presser.",
-      "Ce que mes clients me disent le plus : une coupe nette, un prix doux, un accueil sympa."
-    ],
-    "langues_titre": "Langues",
-    "langues": [
-      {
-        "texte": "Ech schwätze Lëtzebuergesch.",
-        "lang": "lb",
-        "code": "LB"
-      },
-      {
-        "texte": "Je parle français.",
-        "lang": "fr",
-        "code": "FR"
-      },
-      {
-        "texte": "Ich spreche Deutsch.",
-        "lang": "de",
-        "code": "DE"
-      },
-      {
-        "texte": "I speak English.",
-        "lang": "en",
-        "code": "EN"
-      },
-      {
-        "texte": "Falo português.",
-        "lang": "pt",
-        "code": "PT"
-      }
-    ],
-    "contact_index": "04 — Contact",
+    "contact_index": "03 — Contact",
     "contact_titre": "Contact",
-    "contact_sous_titre": "Rui’s Barber Studio · Mersch",
+    "contact_sous_titre": "Rui’s Barber Studio · Luxembourg",
     "contact_seul_moyen": "Instagram est le seul moyen de me joindre.",
     "contact_ecrire": "M’écrire",
     "contact_profil": "Voir mon profil",
-    "contact_lieu": "Je coupe à Mersch. L’adresse exacte vous est envoyée à la confirmation.",
+    "contact_lieu": "L’adresse exacte vous est envoyée à la confirmation.",
     "pied_cookies": "Ce site ne dépose aucun cookie.",
     "pied_mentions": "Mentions légales",
     "voir_toutes": "Voir toutes les coupes",
@@ -137,7 +99,6 @@
       "Coupe au bol",
       "Chignon",
       "Boucles",
-      "Mersch",
       "Coupe complète 15 €"
     ],
     "accents": {
@@ -145,7 +106,7 @@
       "coupes_titre": "coupes",
       "rdv_titre": "créneau"
     },
-    "rail": "Mersch · Luxembourg · Depuis juillet 2023"
+    "rail": "Barber Studio · Luxembourg"
   },
   "portrait": "À COMPLÉTER",
   "photos": [
